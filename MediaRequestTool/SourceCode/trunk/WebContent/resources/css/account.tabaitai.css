@@ -1,0 +1,24 @@
+#button-block,#search-block {
+	line-height: 22px;
+	margin-bottom: 10px;
+}
+
+#button-block {
+	float: right;
+	width: 200px;
+	text-align: right;
+}
+
+#search-block {
+	margin-right: 200px;
+}
+
+#tabaitai-form-body {
+	margin-bottom: 10px;
+}
+
+#tabaitai-form-footer {
+	text-align: right;
+	line-height: 22px;
+}
+

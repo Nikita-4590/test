@@ -1,0 +1,68 @@
+.dapps-box-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.dapps-box-main {
+	top: 0;
+	left: 0;
+	position: absolute;
+	border: 1px solid black;
+	box-shadow: 0px 0px 30px 2px;
+	background-color: #fff;
+	padding: 10px;
+}
+
+.dapps-box-main:focus {
+	outline: none;
+}
+
+.dapps-box-header {
+	zoom: 1;
+}
+
+.dapps-box-header:after {
+	clear: both;
+	display: block;
+	content: '';
+}
+
+.dapps-box-header .dapps-box-close-button {
+	text-decoration: none;
+	float: right;
+	width: 20px;
+	height: 20px;
+	color: #333;
+	cursor: pointer;
+	background-image: url(img/box/close.png);
+}
+
+.dapps-box-title {
+	margin-right: 20px;
+	font-weight: bold;
+	font-size: 15px;
+	margin-left: 10px;
+	line-height: 20px;
+}
+
+.dapps-box-content {
+	margin: 10px;
+}
+
+.dapps-box-button {
+	margin: 0 5px;
+	min-width: 70px;
+	border: 1px solid black;
+	padding: 0 5px;
+	font-size: 10px;
+	cursor: pointer;
+	height: 22px;
+	background-color: rgb(240, 240, 240);
+}
+
+.dapps-box-footer {
+	margin: 5px;
+}

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrs.mediarequest.mappers.AccountMapper">
+	<select id="getAll" parameterType="map"
+		resultType="com.hrs.mediarequest.pojos.Account">
+		SELECT *
+		FROM other_media.account_view
+		<where>
+			company_id = #{company_id}
+			<if test="media_name != null and media_name != '%%'">
+				AND media_name ILIKE #{media_name}
+			</if>
+			<if test="login_id != null and login_id != '%%'">
+				AND (login_id ILIKE #{login_id} OR admin_id ILIKE #{login_id})
+			</if>
+			<if test="shop_name != null and shop_name != '%%'">
+				AND replace(shop_name,'－','ー') ILIKE replace(#{shop_name},'－','ー')
+			</if>
+		</where>
+		<if test="sort != null and direction != null">
+			ORDER BY ${sort} ${direction} NULLS FIRST
+		</if>
+		<if test="sort == null">
+			ORDER BY media_name ASC NULLS FIRST, shop_name ASC NULLS FIRST, id ASC, login_id ASC
+		</if>
+	</select>
+	<select id="paging" parameterType="map"
+		resultType="com.hrs.mediarequest.pojos.Account">
+		SELECT *
+		FROM other_media.account_view
+		<where>
+			company_id = #{company_id}
+			<if test="media_name != null and media_name != ''">
+				AND media_name = #{media_name}
+			</if>
+			<if test="login_id != null and login_id != '%%'">
+				AND (login_id ILIKE #{login_id} OR admin_id ILIKE #{login_id})
+			</if>
+			<if test="shop_name != null and shop_name != '%%'">
+				AND replace(shop_name,'－','ー') ILIKE replace(#{shop_name},'－','ー')
+			</if>
+			<if test="status != null">
+				AND status IS ${status}
+			</if>
+		</where>
+		<if test="sort != null and direction != null">
+			ORDER BY ${sort} ${direction} NULLS FIRST
+		</if>
+		<if test="sort == null">
+			ORDER BY order_crawl_date DESC NULLS FIRST, order_sync_entry_date DESC NULLS FIRST, shop_name ASC NULLS FIRST, id ASC, login_id ASC
+		</if>
+		LIMIT #{page.limit} OFFSET #{page.offset}
+	</select>
+
+	<select id="count" parameterType="map" resultType="int">
+		SELECT COUNT(id)
+		FROM other_media.account_view
+		<where>
+			company_id = #{company_id}
+			<if test="media_name != null and media_name != ''">
+				AND media_name = #{media_name}
+			</if>
+			<if test="login_id != null and login_id != '%%'">
+				AND (login_id ILIKE #{login_id} OR admin_id ILIKE #{login_id})
+			</if>
+			<if test="shop_name != null and shop_name != '%%'">
+				AND replace(shop_name,'－','ー') ILIKE replace(#{shop_name},'－','ー')
+			</if>
+			<if test="status != null">
+				AND status IS ${status}
+			</if>
+		</where>
+	</select>
+</mapper>

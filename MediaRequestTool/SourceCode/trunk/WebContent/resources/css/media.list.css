@@ -1,0 +1,10 @@
+#media-form-footer {
+	text-align: right;
+	line-height: 22px;
+	margin-top: 10px;
+}
+#select-note {
+	margin-top: 0px;
+	margin-bottom: 10px;
+	font-size: 15px;
+}
