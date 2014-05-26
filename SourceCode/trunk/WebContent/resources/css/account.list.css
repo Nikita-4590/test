@@ -1,0 +1,33 @@
+#button-block,#search-block {
+	line-height: 22px;
+	margin-bottom: 10px;
+}
+
+#show-error-button-block,#search-button-block {
+	float: right;
+	width: 300px;
+	text-align: right;
+}
+
+#add-button-block,#search-input {
+	margin-right: 300px;
+}
+#search-left {
+	float: left;
+	width: 225px;
+}
+#search-right {
+	float: right;
+	width: 75px;
+	text-align: right;
+}
+#search-middle {
+	margin-left: 230px;
+	margin-right: 85px;
+}
+#search-middle input, #search-middle select {
+	width: 100%;
+}
+#account-list-page{
+	width: 1200px;
+}
