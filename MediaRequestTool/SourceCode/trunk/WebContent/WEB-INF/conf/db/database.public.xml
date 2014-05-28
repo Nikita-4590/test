@@ -12,9 +12,9 @@
 			</transactionManager>
 			<dataSource type="POOLED">
 				<property name="driver" value="org.postgresql.Driver" />
-				<property name="url" value="jdbc:postgresql://127.0.0.1:5432/postgres?useUnicode=yes&amp;characterEncoding=UTF8" />
+				<property name="url" value="jdbc:postgresql://127.0.0.1:5432/padb_public?useUnicode=yes&amp;characterEncoding=UTF8" />
 				<property name="username" value="postgres" />
-				<property name="password" value="abc123" />
+				<property name="password" value="02091990vd" />
 			</dataSource>
 		</environment>
 	</environments>
@@ -22,5 +22,6 @@
 	<mappers>
 		<mapper resource="com/hrs/mediarequesttool/mappers/CompanyDatabaseMapper.xml" />
 		<mapper resource="com/hrs/mediarequesttool/mappers/database/EntryMediaMapper.xml" />
+		<mapper resource="com/hrs/mediarequesttool/mappers/RelationRequestMapper.xml" />
 	</mappers>
 </configuration>

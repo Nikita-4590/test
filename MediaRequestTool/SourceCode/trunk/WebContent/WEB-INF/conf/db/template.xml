@@ -24,5 +24,6 @@
 		<mapper resource="com/hrs/mediarelation/mappers/HireSectionMapper.xml" />
 		<mapper resource="com/hrs/mediarelation/mappers/database/SchemaMapper.xml" />
 		<mapper resource="com/hrs/mediarelation/mappers/database/EntryMediaMapper.xml" />
+		<mapper resource="com.hrs.mediarequest.mappers/RelationRequestMapper.xml" />
 	</mappers>
 </configuration>
