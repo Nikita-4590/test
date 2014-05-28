@@ -25,60 +25,65 @@ import com.hrs.mediarequesttool.pojos.Status;
 @Controller
 @RequestMapping("/request")
 public class RelationRequestController extends BaseController {
-	
+
 	@RequestMapping("/")
 	public ModelAndView index(ModelMap model) {
 		return redirect("request/list/", model);
 	}
-	
+
 	@RequestMapping("/list/")
 	public ModelAndView getAllRequest(ModelMap model) throws GenericException {
 		ViewBuilder viewBuilder = getViewBuilder("request.list", model);
 		viewBuilder.setScripts("request.list.js");
-		viewBuilder.setStylesheets("relation.list.css","global.css");
+		viewBuilder.setStylesheets("relation.list.css", "global.css");
 		viewBuilder.setPageTitle("List");
-		return view(viewBuilder);		
+		return view(viewBuilder);
 	}
-	
-	
+
 	@RequestMapping(value = "/ajax_list/", method = RequestMethod.GET)
 	@ResponseBody
-	public ModelAndView ajaxList(HttpServletRequest httpRequest, ModelMap model,Authentication authentication) {		
+	public ModelAndView ajaxList(HttpServletRequest httpRequest,
+			ModelMap model, Authentication authentication) {
 		String pageParam = httpRequest.getParameter("page");
 		String sortParam = httpRequest.getParameter("sort");
 		String requestIdParam = httpRequest.getParameter("id");
 		String statusParam = httpRequest.getParameter("status");
-		String directionParam = httpRequest.getParameter("sort_direction");		
+		String directionParam = httpRequest.getParameter("sort_direction");
 		String companyParam = httpRequest.getParameter("company_id");
 		String mediaParam = httpRequest.getParameter("media_id");
 		int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
-		
+
 		try {
-			
-			RelationRequestDAL requestDAL =  getDAL(RelationRequestDAL.class);
+
+			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
 			Role role = new Role();
-			PagingResult<RelationRequest> relationRequests = requestDAL.paging(page, directionParam, sortParam, requestIdParam, statusParam, companyParam,mediaParam,role.generateSQL(authentication.getPrincipal()));
+			PagingResult<RelationRequest> relationRequests = requestDAL.paging(
+					page, directionParam, sortParam, requestIdParam,
+					statusParam, companyParam, mediaParam,
+					role.generateSQL(authentication.getPrincipal()));
 			model.addAttribute("relationRequests", relationRequests);
 			model.addAttribute("compare_status", "担当者決定");
-			
+
 		} catch (GenericException e) {
 			e.printStackTrace();
-		}  catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return view("relation.ajax_list", model);
 	}
-	
-	@RequestMapping(value="/load_status", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+
+	@RequestMapping(value = "/load_status", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseBody
-	public String loadStatus(Authentication authentication,HttpServletResponse response) throws GenericException {
+	public String loadStatus(Authentication authentication,
+			HttpServletResponse response) throws GenericException {
 		String result = null;
 		try {
 			StatusDAL statusDAL = getDAL(StatusDAL.class);
 			Role role = new Role();
-			List<Status> status = statusDAL.getAll(role.generateSQL(authentication.getPrincipal()));
+			List<Status> status = statusDAL.getAll(role
+					.generateSQL(authentication.getPrincipal()));
 			Gson gson = new Gson();
-			result = gson.toJson(status);			
+			result = gson.toJson(status);
 			return result;
 		} catch (GenericException e) {
 			e.printStackTrace();

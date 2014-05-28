@@ -53,12 +53,4 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 		}		
 	}
 	
-	public String parse(String input) {
-		if(input == null) {
-			return input;
-		} else {
-			input = "%" + input + "%";
-			return input.replace(" ", "%");
-		}
-	}
 }

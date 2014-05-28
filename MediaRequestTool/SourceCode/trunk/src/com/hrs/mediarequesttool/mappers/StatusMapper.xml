@@ -3,7 +3,7 @@
 <mapper namespace="com.hrs.mediarequesttool.mappers.StatusMapper">
 	<select id="getAll" parameterType="map"
 		resultType="com.hrs.mediarequesttool.pojos.Status">
-		SELECT * FROM other_media.relation_request_status where status_type in 
+		SELECT * FROM other_media.relation_request_status WHERE status_type in 
 		<foreach collection="sql" index="index" item="item" open="(" separator="," close=")">
 			#{item}
 		</foreach>

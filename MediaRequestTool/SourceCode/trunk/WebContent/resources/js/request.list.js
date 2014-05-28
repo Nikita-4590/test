@@ -1,164 +1,181 @@
-$(me.dapps).bind('load', function() {
-	/*
-	 * global status data
-	 */
-	var status_data = undefined;
-	
-	/*
-	 * global search by
-	 */
-	var search_by = undefined;
-	
-	var table = $('#request-ajax-table').table({
-		width : '100%',
-		select_row : false,
-		sortable : true,
-		paging : true,
-		use_hashes : false,
-		sort_data : me.dapps.global['data_bindding'],
-		no_data_message: me.dapps.ui.enhanced.locale.text('INF100'),
-		url_patterns : {
-			url : me.dapps.global['url.request_list'],
-			page : 'page={page}',
-			sort : 'sort={sort}',
-			sort_direction : 'sort_direction={sort_direction}',
-			query: '{query_name}={query_value}'
-		},
-		data_binds : [ { 
-			name: 'id', 
-			type: 'text',
-			comparison: 'ilike',
-		}, { 
-			name: 'company_id', 
-			type: 'text',
-			comparison: 'ilike',
-		}, {
-			name: 'status',
-			type: 'text',
-			comparison: 'ilike'
-		},{
-			name: 'media_id',
-			type: 'text',
-			comparison: 'ilike'
-		}
-		],
-		row_selected : function(row) {
-			var requestId = $(row).attr('row-id');		
-			var url = me.dapps.global['url.request_redirect'].replace('{request_id}',requestId);
-			window.open(url);
-		},
-		post_load: function (targetTable) {
-			// restore queries value
-			var queries = targetTable.queries;			
-			if (isArray(queries)) {
-				for (index in queries) {
-					if (queries[index].query_name == 'query') {
-						$('#search-request-query').val(queries[index].query_value);
-						break;
+$(me.dapps).bind(
+	'load',
+	function() {
+		/*
+		 * global status data
+		 */
+		var status_data = undefined;
+
+		/*
+		 * global search by
+		 */
+		var search_by = undefined;
+
+		var table = $('#request-ajax-table').table(
+			{
+				width : '100%',
+				select_row : false,
+				sortable : true,
+				paging : true,
+				use_hashes : false,
+				sort_data : me.dapps.global['data_bindding'],
+				no_data_message : me.dapps.ui.enhanced.locale
+						.text('INF100'),
+				url_patterns : {
+					url : me.dapps.global['url.request_list'],
+					page : 'page={page}',
+					sort : 'sort={sort}',
+					sort_direction : 'sort_direction={sort_direction}',
+					query : '{query_name}={query_value}'
+				},
+				data_binds : [ {
+					name : 'id',
+					type : 'text',
+					comparison : 'ilike',
+				}, {
+					name : 'company_id',
+					type : 'text',
+					comparison : 'ilike',
+				}, {
+					name : 'status',
+					type : 'text',
+					comparison : 'ilike'
+				}, {
+					name : 'media_id',
+					type : 'text',
+					comparison : 'ilike'
+				} ],
+				row_selected : function(row) {
+					var requestId = $(row).attr('row-id');
+					var url = me.dapps.global['url.request_redirect']
+							.replace('{request_id}', requestId);
+					window.open(url);
+				},
+				post_load : function(targetTable) {
+					// restore queries value
+					var queries = targetTable.queries;
+					if (isArray(queries)) {
+						for (index in queries) {
+							if (queries[index].query_name === 'query') {
+								$('#search-request-query').val(
+										queries[index].query_value);
+								break;
+							}
+						}
 					}
 				}
-			}
-		}
-	});
-	
-	generatedTextSearch(null);	
-	
-	/*
-	 * clear form begin create form
-	 */
-	
-	function clearFormSearch() {
-		$('#search_form_input').empty();	
-		$('#search_form_label').empty();
-		
-	}
-	
-	/*
-	 * load status from sever
-	 */
-	
-	function loadStatus() {		
-		if(status_data == undefined) {
-			$.ajax({
-				url : me.dapps.global['status_load'],
-				type : 'get',				
-				contentType: "application/json;charset=utf-8",
-				success : function(response) {				
-					status_data = response;
-					generatedStatusBoxSearch();
-				},
-				error : function(e) {
-					window.alert('connect to sever error');
-					/*
-					 * process when call sever error
-					 */
-					//TODO
-				}
 			});
-		} else {
-			generatedStatusBoxSearch();
-		}		
-	}
-	
-	/*
-	 * generated status combobox
-	 */
-	
-	function generatedStatusBoxSearch() {
-		if($.isArray(status_data)) {		
-			var label = $('<label />').text('ステータス	').addClass('label_control');			
-			var search_select =  $('<select />').addClass('input_search').attr({'id' : 'search_value','type' : 'submit'});			
-			for(var i in status_data) {				
-				var option = $('<option />').attr({'value' : status_data[i].status_type}).text(status_data[i].description);
-				search_select.append(option);
+
+		generatedTextSearch(null);
+
+		/*
+		 * clear form begin create form
+		 */
+
+		function clearFormSearch() {
+			$('#search_form_input','#search_form_label').empty();
+		}
+
+		/*
+		 * load status from sever
+		 */
+
+		function loadStatus() {
+			if (typeof status_data === 'undefined') {
+				$.ajax({
+					url : me.dapps.global['status_load'],
+					type : 'get',
+					contentType : 'application/json;charset=utf-8',
+					success : function(response) {
+						status_data = response;
+						generatedStatusBoxSearch();
+					},
+					error : function(e) {
+						window.alert('connect to sever error');
+						/*
+						 * process when call sever error
+						 */
+						// TODO
+					}
+				});
+			} else {
+				generatedStatusBoxSearch();
 			}
-			$('#search_form_label').append(label);
-			$('#search_form_input').append(search_select);			
-			search_by = 'status';
 		}
-	};
-	/*
-	 * generated box search by input text
-	 */
-	function generatedTextSearch(searchtype) {
-		var label = undefined;
-		if(searchtype == 'media_id') {
-			label = 'フリーテキスト';	
-		} else if(searchtype == 'company_id') {
-			label = '企業ID';
-		} else {
-			label = '依頼ID';
+
+		/*
+		 * generated status combobox
+		 */
+
+		function generatedStatusBoxSearch() {
+			if ($.isArray(status_data)) {
+				var label = $('<label />').text('ステータス	').addClass(
+						'label_control');
+				var search_select = $('<select />')
+						.addClass('input_search').attr({
+							'id' : 'search_value',
+							'type' : 'submit'
+						});
+				for ( var i in status_data) {
+					var option = $('<option />').attr({
+						'value' : status_data[i].status_type
+					}).text(status_data[i].description);
+					search_select.append(option);
+				}
+				$('#search_form_label').append(label);
+				$('#search_form_input').append(search_select);
+				search_by = 'status';
+			}
 		}
-		$('#search_form_label').append($('<label />').text(label).addClass('label_control'));
-		$('#search_form_input').append($('<input/>').addClass('input_search').attr({ id: 'search_value','type' : 'text','placeholder' : 'ここに検索文字を入力してください'}));
-	}
-	/*
-	 * generated button submit for form
-	 */	
-	$('#select_search').change( function() {
-		clearFormSearch();
-		if($(this).val() == 'status') {				
-			loadStatus();
-		} else {			
-			generatedTextSearch($(this).val());
+		;
+		/*
+		 * generated box search by input text
+		 */
+		function generatedTextSearch(searchtype) {
+			var label = undefined;
+			if (searchtype === 'media_id') {
+				label = 'フリーテキスト';
+			} else if (searchtype === 'company_id') {
+				label = '企業ID';
+			} else {
+				label = '依頼ID';
+			}
+			$('#search_form_label').append(
+				$('<label />').text(label).addClass('label_control'));
+			$('#search_form_input').append(
+				$('<input/>').addClass('input_search').attr({
+					id : 'search_value',
+					'type' : 'text',
+					'placeholder' : 'ここに検索文字を入力してください'
+				}));
 		}
+		/*
+		 * generated button submit for form
+		 */
+		$('#select_search').change(function() {
+			clearFormSearch();
+			if ($(this).val() == 'status') {
+				loadStatus();
+			} else {
+				generatedTextSearch($(this).val());
+			}
+		});
+
+		/*
+		 * function when click submit form or enter
+		 */
+		$('#search-relation-request-form').submit(function(e) {
+			e.preventDefault();
+			var queryValue = undefined;
+			if ($('#select_search').val() === 'status') {
+				queryValue = $.trim($('#search_value').val());
+			} else {
+				queryValue = $.trim($('#search_value').val());
+			}
+			table.search([ {
+				query_type : 'all',
+				query_name : $('#select_search').val(),
+				query_value : queryValue
+			} ]);
+		});
 	});
-	
-	/*
-	 * function when click submit form or enter
-	 */	
-	$('#search-relation-request-form').submit( function (e) {
-		e.preventDefault();
-		var queryValue = undefined;
-		if($('#select_search').val() == 'status') {
-			queryValue = $.trim($('#search_value').val());			
-		} else {
-			queryValue = $.trim($('#search_value').val());
-		}		
-		table.search([ {
-			query_type : 'all',
-			query_name : $('#select_search').val(),
-			query_value : queryValue			
-		} ]);
-	});
-});
