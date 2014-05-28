@@ -33,6 +33,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 				result.setList(_paging);
 			}
 			return result;
+			
 		} catch (Exception e) {
 			throw new GenericException(e, this.getClass());
 		} finally {
@@ -41,6 +42,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 	}
 	
 	public List<RelationRequest> getAll(String requestId,String status,String companyParam) throws GenericException {		
+		
 		try {
 			openSession();
 			return mapper.getAll(parse(requestId),parse(companyParam),parse(status));
