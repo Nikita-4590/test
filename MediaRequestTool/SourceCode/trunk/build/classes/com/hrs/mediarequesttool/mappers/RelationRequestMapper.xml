@@ -56,7 +56,23 @@
 	</select>
 		
 	<select id="paging" parameterType="map" resultMap="mapping">
-		SELECT relation_request.*,contract_company.company_name as company_name,media.media_name as media_name,relation_request_status.description 
+		SELECT relation_request.relation_request_id as relation_request_id,
+		relation_request.company_id as company_id,
+		relation_request.media_id as media_id,
+		relation_request.requester_name as requester_name,
+		relation_request.requester_mail as requester_mail,
+		relation_request.requester_phone as requester_phone,
+		relation_request.url as url,
+		relation_request.login_id_1 as login_id_1,
+		relation_request.login_id_2 as login_id_2,
+		relation_request.login_password_1 as login_password_1,
+		relation_request.login_password_2 as login_password_2,
+		cast(relation_request.crawl_date as timestamp(0)) as crawl_date,
+		relation_request.other_comment as other_comment,		
+		relation_request.status as status,
+		relation_request.assign_user_name as assign_user_name,
+		cast(relation_request.created_at as timestamp(0)) as created_at,
+		cast(relation_request.updated_at as timestamp(0)) as updated_at	,contract_company.company_name as company_name,media.media_name as media_name,relation_request_status.description 
 		as status_name,contract_company.company_id as company_company_id FROM
 		other_media.relation_request as relation_request inner join other_media.contract_company as 
 		contract_company on contract_company.id = relation_request.company_id inner join other_media.media
