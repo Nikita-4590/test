@@ -52,12 +52,15 @@ public class RelationRequestController extends BaseController {
 		String companyParam = httpRequest.getParameter("company_id");
 		String mediaParam = httpRequest.getParameter("media_id");
 		int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
+		
 		try {
+			
 			RelationRequestDAL requestDAL =  getDAL(RelationRequestDAL.class);
 			Role role = new Role();
 			PagingResult<RelationRequest> relationRequests = requestDAL.paging(page, directionParam, sortParam, requestIdParam, statusParam, companyParam,mediaParam,role.generateSQL(authentication.getPrincipal()));
 			model.addAttribute("relationRequests", relationRequests);
 			model.addAttribute("compare_status", "担当者決定");
+			
 		} catch (GenericException e) {
 			e.printStackTrace();
 		}  catch (Exception e) {
@@ -69,18 +72,19 @@ public class RelationRequestController extends BaseController {
 	@RequestMapping(value="/load_status", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public String loadStatus(Authentication authentication,HttpServletResponse response) throws GenericException {
+		String result = null;
 		try {
 			StatusDAL statusDAL = getDAL(StatusDAL.class);
 			Role role = new Role();
 			List<Status> status = statusDAL.getAll(role.generateSQL(authentication.getPrincipal()));
 			Gson gson = new Gson();
-			String result = gson.toJson(status);			
+			result = gson.toJson(status);			
 			return result;
 		} catch (GenericException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return result;
 	}
 }
