@@ -58,4 +58,12 @@ public abstract class AbstractDAL<MAPPER> {
 		this.session = session;
 		autoCloseSession = false;
 	}
+	protected String parse(String input) {
+		if(input == null) {
+			return input;
+		} else {
+			input = "%" + input + "%";
+			return input.replace(" ", "%");
+		}
+	}
 }

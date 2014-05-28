@@ -1,4 +1,5 @@
 package com.hrs.mediarequesttool.dals;
+
 import java.util.*;
 
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -9,17 +10,19 @@ import com.hrs.mediarequesttool.pojos.Status;
 
 public class StatusDAL extends AbstractDAL<StatusMapper> {
 	StatusDAL() {
-		
+
 	}
+
 	public StatusDAL(SqlSessionFactory sqlSessionFactory) {
-		super(sqlSessionFactory,StatusMapper.class);
+		super(sqlSessionFactory, StatusMapper.class);
 	}
-	public List<Status> getAll(String[] sql) throws GenericException {	
-		try {					
-			openSession();			
-			return mapper.getAll(sql);
+
+	public List<Status> getAll(String[] roles) throws GenericException {
+		try {
+			openSession();
+			return mapper.getAll(roles);
 		} catch (Exception e) {
-			throw new GenericException(e,this.getClass());
+			throw new GenericException(e, this.getClass());
 		} finally {
 			closeSession();
 		}

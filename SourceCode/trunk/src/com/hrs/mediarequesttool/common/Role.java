@@ -3,39 +3,34 @@ package com.hrs.mediarequesttool.common;
 import com.hrs.mediarequesttool.pojos.User;
 
 public class Role {
-	private static  String[] media_checker = {"ASSIGNED","CONFIRMING"};
-	private static  String[] leader = {"ASSIGNED","CONFIRMING","FINISHED"};
-	private static  String[] member = {"ASSIGNED","CONFIRMING","FINISHED","OK"};
-	
-	
+	private final static String[] MEDIA_CHECKER = { "ASSIGNED", "CONFIRMING" };
+	private final static String[] LEADER = { "ASSIGNED", "CONFIRMING", "FINISHED" };
+	private final static String[] MEMBER = { "ASSIGNED", "CONFIRMING", "FINISHED",
+			"OK" };
+
 	public String[] generateSQL(Object object) {
-		User user = (User) object;
-		String[] sql = null;
-		switch(user.getUser_role()) {
-			case 0 :
-				sql = leader;
+		if (object instanceof User) {
+			User user = (User) object;
+			String[] sql = null;
+			switch (user.getUser_role()) {
+			case 0:
+				sql = LEADER;
 				break;
-			case 1 :
-				sql = media_checker;
+			case 1:
+				sql = MEDIA_CHECKER;
 				break;
-			case 2 :
-				sql = member;
+			case 2:
+				sql = MEMBER;
 				break;
-			default :
-				sql = member;
-		}		
-		return sql;
-	}
-	public String createSQL(String[] roleLst) {
-		String sql = "";
-		int count = 0;
-		for(String i : roleLst) {
-			if(count != 0) {
-				sql += " or ";
+			default:
+				sql = MEMBER;
+				break;
 			}
-			sql += "status_type = '" + i + "'";
-			count ++;
+			return sql;
+		} else {
+			// ...
+			return MEMBER;
 		}
-		return sql;
 	}
+	
 }
