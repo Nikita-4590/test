@@ -26,9 +26,9 @@
 		<thead>
 			<tr>
 				<th style="width : 10%;">ステータス</th>
-				<th style="width : 10%;">登録日時</th>
+				<th style="width : 15%;">登録日時</th>
 				<th style="width : 15%;">希望連携開始日</th>
-				<th style="width : 15%;">企業ID</th>
+				<th style="width : 10%;">企業ID</th>
 				<th style="width : 10%;">社名</th>
 				<th style="width : 15%;">媒体</th>				
 				<th style="width : 10%;">依頼ID</th>
