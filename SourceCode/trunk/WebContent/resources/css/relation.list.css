@@ -1,0 +1,39 @@
+.status_combobox {
+	min-width : 40px;
+	text-align: center;
+}
+
+#search_form_control {
+	margin-bottom : 20px;
+	width : 100%;
+	float : left;
+}
+
+#search_form_type {
+	float : left;
+	width : 20%;	
+}
+#search_form_text {
+	width : 70%;
+	float : right ;
+}
+#search_form_input{
+	width : 60%;
+	float : left;
+	margin-left : 5px;
+}
+.input_search {
+	width : 90%;
+}
+.label_control {
+	width : 20%;
+}
+#search_form_label{
+	width : 15%;
+	float : left;
+}
+#search_form_btn {
+	width : 8%;
+	margin-right : 15%;
+	float : right;
+}

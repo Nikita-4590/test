@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hrs.mediarequest.mappers.AccountMapper">
+<mapper namespace="com.hrs.mediarequesttool.mappers.AccountMapper">
 	<select id="getAll" parameterType="map"
-		resultType="com.hrs.mediarequest.pojos.Account">
+		resultType="com.hrs.mediarequesttool.pojos.Account">
 		SELECT *
 		FROM other_media.account_view
 		<where>
@@ -25,7 +25,7 @@
 		</if>
 	</select>
 	<select id="paging" parameterType="map"
-		resultType="com.hrs.mediarequest.pojos.Account">
+		resultType="com.hrs.mediarequesttool.pojos.Account">
 		SELECT *
 		FROM other_media.account_view
 		<where>

@@ -22,7 +22,7 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 
 		logger.info("[" + user.getUser_id() + "] : LOGIN SUCCEEDED from " + request.getRemoteAddr());
 
-		response.sendRedirect(request.getContextPath() + "/company/");
+		response.sendRedirect(request.getContextPath() + "/request/");
 	}
 
 }

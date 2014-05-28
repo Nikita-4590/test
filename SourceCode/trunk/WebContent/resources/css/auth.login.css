@@ -6,10 +6,10 @@
 	margin-left: -225px;
 	height: 190px;
 	width: 450px;
-	outline: 1px solid rgb(85, 142, 213);
+	border-radius : 10px;	
 	background: white;
+	border: 1px solid rgb(85, 142, 213);
 }
-
 #login-message-inform {
 	margin: 10px 5px 0 5px;
 	height: 50px;

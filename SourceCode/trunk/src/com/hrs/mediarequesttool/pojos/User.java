@@ -22,6 +22,8 @@ public class User implements Serializable {
 	private String updated_at;
 	
 	private boolean enabled_flag;
+	
+	private int user_role;
 
 	public int getId() {
 		return id;
@@ -77,6 +79,20 @@ public class User implements Serializable {
 
 	public void setEnabled_flag(boolean enabled_flag) {
 		this.enabled_flag = enabled_flag;
+	}
+
+	/**
+	 * @return the user_role
+	 */
+	public int getUser_role() {
+		return user_role;
+	}
+
+	/**
+	 * @param user_role the user_role to set
+	 */
+	public void setUser_role(int user_role) {
+		this.user_role = user_role;
 	}
 	
 }
