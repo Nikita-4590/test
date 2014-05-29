@@ -5,7 +5,7 @@
     resultType="com.hrs.mediarequesttool.pojos.User">
     SELECT *
     FROM
-      other_media.user_relation_request
+      other_media.user
     WHERE
       user_id = #{user_id}
   </select>

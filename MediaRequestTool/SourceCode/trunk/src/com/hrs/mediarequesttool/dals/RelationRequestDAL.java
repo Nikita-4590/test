@@ -12,7 +12,7 @@ import com.hrs.mediarequesttool.pojos.RelationRequest;
 
 public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 	
-	public RelationRequestDAL() {		
+	public RelationRequestDAL() {
 	}
 	
 	public RelationRequestDAL(SqlSessionFactory sessionFactory) {
@@ -24,7 +24,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 		
 		try {
 			openSession();			
-			PagingResult<RelationRequest> result = new PagingResult<RelationRequest>();			
+			PagingResult<RelationRequest> result = new PagingResult<RelationRequest>();	
 			Page pagingSetting = new Page(page);
 			int total = mapper.count(parse(requestId), parse(companyParam), parse(status),parse(mediaParam),role);
 			result.setPage(page, total, pagingSetting.getLimit());
@@ -41,7 +41,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 		}
 	}
 	
-	public List<RelationRequest> getAll(String requestId,String status,String companyParam) throws GenericException {		
+	public List<RelationRequest> getAll(String requestId,String status,String companyParam) throws GenericException {
 		
 		try {
 			openSession();

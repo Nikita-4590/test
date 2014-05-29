@@ -1,5 +1,6 @@
 package com.hrs.mediarequesttool.controllers;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +44,7 @@ public class RelationRequestController extends BaseController {
 	@RequestMapping(value = "/ajax_list/", method = RequestMethod.GET)
 	@ResponseBody
 	public ModelAndView ajaxList(HttpServletRequest httpRequest,
-			ModelMap model, Authentication authentication) {
+			ModelMap model, Authentication authentication) throws UnsupportedEncodingException {
 		String pageParam = httpRequest.getParameter("page");
 		String sortParam = httpRequest.getParameter("sort");
 		String requestIdParam = httpRequest.getParameter("id");
@@ -52,7 +53,6 @@ public class RelationRequestController extends BaseController {
 		String companyParam = httpRequest.getParameter("company_id");
 		String mediaParam = httpRequest.getParameter("media_id");
 		int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
-
 		try {
 
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
@@ -69,7 +69,7 @@ public class RelationRequestController extends BaseController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return view("relation.ajax_list", model);
+		return view("request.ajax_list", model);
 	}
 
 	@RequestMapping(value = "/load_status", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
