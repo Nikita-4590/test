@@ -100,7 +100,9 @@ function confirmChange(requestId) {
 		url : me.dapps.global['url.confirm_change'],
 		method : 'post',
 		data : {
-			relation_request_id : requestId
+			relation_request_id : requestId,
+			assign_user_name : $('#assign-user-name').val(),
+			new_status: $('#new-status').val()
 		},
 		callback : function(targetBox) {
 			targetBox.main.find('#change-request-form').validator();

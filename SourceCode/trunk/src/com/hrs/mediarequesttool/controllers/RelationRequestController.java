@@ -1,6 +1,7 @@
 package com.hrs.mediarequesttool.controllers;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import com.hrs.mediarequesttool.common.PagingResult;
 import com.hrs.mediarequesttool.common.Role;
 import com.hrs.mediarequesttool.common.exception.GenericException;
 import com.hrs.mediarequesttool.common.exception.ResourceNotFoundException;
+import com.hrs.mediarequesttool.common.validator.Validator;
 import com.hrs.mediarequesttool.dals.DALFactory;
 import com.hrs.mediarequesttool.dals.RelationRequestDAL;
 import com.hrs.mediarequesttool.dals.StatusDAL;
@@ -159,7 +161,6 @@ public class RelationRequestController extends BaseController {
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-change", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
-			model.addAttribute("requestId", requestId);
 			
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 			
@@ -172,7 +173,19 @@ public class RelationRequestController extends BaseController {
 				throw new ResourceNotFoundException();
 			}
 			
+			String assignedPerson = httpRequest.getParameter("assign_user_name");
+			String newStatus = httpRequest.getParameter("new_status");
+			boolean isValidData = false;
+			
+			isValidData = validateAssignerAndStatus(assignedPerson, request.getStatus(), newStatus);
+			
+			if (!isValidData) {
+				throw new ResourceNotFoundException();
+			}
+			
 			model.addAttribute("request", request);
+			model.addAttribute("assignedPerson", assignedPerson);
+			model.addAttribute("newStatus", newStatus);
 			
 			return view(builder);
 		} catch (NumberFormatException e) {
@@ -214,6 +227,44 @@ public class RelationRequestController extends BaseController {
 		return GSON.toJson(map);
 		*/
 		return "";
+	}
+	
+	private boolean validateAssignerAndStatus(String assignedPerson, String currentStatus, String newStatus) {
+		if (Validator.isNullOrEmpty(assignedPerson) || Validator.checkExceedLength(Constants.MAX_LENGTH_ASSIGNED_PERSON, assignedPerson)) {
+			return false;
+		}
+		
+		if (StringUtils.strip(currentStatus).equals("NEW")) {
+			if (!Arrays.asList(Constants.NEXT_NEW).contains(StringUtils.strip(newStatus))) {
+				return false;
+			}
+		} else if (StringUtils.strip(currentStatus).equals("ASSIGNED")) {
+			if (!Arrays.asList(Constants.NEXT_ASSIGNED).contains(StringUtils.strip(newStatus))) {
+				return false;
+			}
+		} else if (StringUtils.strip(currentStatus).equals("CONFIRMING")) {
+			if (!Arrays.asList(Constants.NEXT_CONFIRMING).contains(StringUtils.strip(newStatus))) {
+				return false;
+			}
+		} else if (StringUtils.strip(currentStatus).equals("OK")) {
+			if (!Arrays.asList(Constants.NEXT_OK).contains(StringUtils.strip(newStatus))) {
+				return false;
+			}
+		} else if (StringUtils.strip(currentStatus).equals("NG")) {
+			if (!Arrays.asList(Constants.NEXT_NG).contains(StringUtils.strip(newStatus))) {
+				return false;
+			}
+		} else if (StringUtils.strip(currentStatus).equals("FINISHED")) {
+			if (!Arrays.asList(Constants.NEXT_FINISHED).contains(StringUtils.strip(newStatus))) {
+				return false;
+			}
+		} else if (StringUtils.strip(currentStatus).equals("DELETED")) {
+			if (!Arrays.asList(Constants.NEXT_DELETED).contains(StringUtils.strip(newStatus))) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 }
