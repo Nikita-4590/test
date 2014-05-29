@@ -109,7 +109,7 @@
 						CAST(relation_request.status AS TEXT) like #{status}
 					</if>
 					<if test="requestId != null">
-						and CAST(relation_request.relation_request_id AS TEXT) like
+						and CAST(relation_request.relation_request_id AS TEXT) =
 						#{requestId}
 					</if>
 					<if test="companyParam != null">
