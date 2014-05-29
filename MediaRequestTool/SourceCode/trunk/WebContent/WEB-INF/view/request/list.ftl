@@ -26,14 +26,14 @@
 	<table id="request-ajax-table" cellpadding="0" cellspacing="0">
 		<thead>
 			<tr>
-				<th style="width : 10%;">ステータス</th>
-				<th style="width : 15%;">登録日時</th>
-				<th style="width : 15%;">希望連携開始日</th>
+				<th style="width : 13%;">ステータス</th>
+				<th style="width : 10%;">登録日時</th>
+				<th style="width : 10%;">希望連携開始日</th>
 				<th style="width : 10%;">企業ID</th>
-				<th style="width : 10%;">社名</th>
-				<th style="width : 15%;">媒体</th>
-				<th style="width : 10%;">依頼ID</th>
-				<th style="width : 15%;">HRS担当者</th>
+				<th style="width : 15%;">社名</th>
+				<th style="width : 25%;">媒体</th>
+				<th style="width : 7%;">依頼ID</th>
+				<th style="width : 10%;">HRS担当者</th>
 			</tr>
 		</thead>
 	</table>
