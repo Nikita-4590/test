@@ -25,11 +25,11 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 		try {
 			openSession();			
 			PagingResult<RelationRequest> result = new PagingResult<RelationRequest>();	
-			Page pagingSetting = new Page(page);
-			int total = mapper.count(requestId, parse(companyParam), parse(status),parse(mediaParam),role);
+			Page pagingSetting = new Page(page);			
+			int total = mapper.count(parseId(requestId), parse(companyParam), parse(status),parse(mediaParam),role);
 			result.setPage(page, total, pagingSetting.getLimit());
 			if (!result.isExceed() && total != 0) {
-				List<RelationRequest> _paging = mapper.paging(pagingSetting,sort,direction,requestId,parse(status),parse(companyParam),parse(mediaParam),role);
+				List<RelationRequest> _paging = mapper.paging(pagingSetting,sort,direction,parseId(requestId),parse(status),parse(companyParam),parse(mediaParam),role);
 				result.setList(_paging);
 			}
 			return result;
