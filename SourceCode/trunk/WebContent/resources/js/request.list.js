@@ -73,7 +73,8 @@ $(me.dapps).bind(
 		 */
 
 		function clearFormSearch() {
-			$('#search_form_input','#search_form_label').empty();
+			$('#search_form_input').empty();
+			$('#search_form_label').empty();
 		}
 
 		/*
@@ -109,7 +110,7 @@ $(me.dapps).bind(
 
 		function generatedStatusBoxSearch() {
 			if ($.isArray(status_data)) {
-				var label = $('<label />').text('ステータス	').addClass(
+				var label = $('<label />').text('検索文字').addClass(
 						'label_control');
 				var search_select = $('<select />')
 						.addClass('input_search').attr({
@@ -132,14 +133,7 @@ $(me.dapps).bind(
 		 * generated box search by input text
 		 */
 		function generatedTextSearch(searchtype) {
-			var label = undefined;
-			if (searchtype === 'media_id') {
-				label = 'フリーテキスト';
-			} else if (searchtype === 'company_id') {
-				label = '企業ID';
-			} else {
-				label = '依頼ID';
-			}
+			var label = '検索文字';
 			$('#search_form_label').append(
 				$('<label />').text(label).addClass('label_control'));
 			$('#search_form_input').append(
