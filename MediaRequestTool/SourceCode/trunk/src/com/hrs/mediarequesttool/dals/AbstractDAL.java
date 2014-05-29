@@ -62,7 +62,7 @@ public abstract class AbstractDAL<MAPPER> {
 		if(input == null) {
 			return input;
 		} else {
-			input = "%" + input + "%";
+			input = "%" + input.toLowerCase() + "%";
 			return input.replace(" ", "%");
 		}
 	}

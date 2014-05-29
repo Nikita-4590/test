@@ -53,11 +53,11 @@
 						#{requestId}
 					</if>
 					<if test="companyParam != null">
-						AND contract_company.company_id like #{companyParam} OR
-						contract_company.company_name like #{companyParam}
+						AND lower(contract_company.company_id) like #{companyParam} OR
+						lower(contract_company.company_name) like #{companyParam}
 					</if>
 					<if test="mediaParam != null">
-						AND media.media_id like #{mediaParam} or media.media_name like
+						AND lower(media.media_id) like #{mediaParam} or lower(media.media_name) like
 						#{mediaParam}
 					</if>
 				</where>
@@ -113,11 +113,11 @@
 						#{requestId}
 					</if>
 					<if test="companyParam != null">
-						ADN contract_company.company_id like #{companyParam} or
-						contract_company.company_name like #{companyParam}
+						AND lower(contract_company.company_id) like #{companyParam} or
+						lower(contract_company.company_name) like #{companyParam}
 					</if>
 					<if test="mediaParam != null">
-						AND media.media_id like #{mediaParam} or media.media_name like
+						AND lower(media.media_id) like #{mediaParam} or lower(media.media_name) like
 						#{mediaParam}
 					</if>
 				</where>
