@@ -46,10 +46,10 @@
 						</foreach>
 					</if>
 					<if test="status != null">
-						CAST(relation_request.status AS TEXT) LIKE #{status}
+						lower(CAST(relation_request.status AS TEXT)) LIKE #{status}
 					</if>
 					<if test="requestId != null">
-						AND CAST(relation_request.relation_request_id AS TEXT) =
+						AND lower(CAST(relation_request.relation_request_id AS TEXT)) =
 						#{requestId}
 					</if>
 					<if test="companyParam != null">
@@ -106,10 +106,10 @@
 						</foreach>
 					</if>
 					<if test="status != null">
-						CAST(relation_request.status AS TEXT) like #{status}
+						lower(CAST(relation_request.status AS TEXT)) like #{status}
 					</if>
 					<if test="requestId != null">
-						and CAST(relation_request.relation_request_id AS TEXT) =
+						and lower(CAST(relation_request.relation_request_id AS TEXT)) =
 						#{requestId}
 					</if>
 					<if test="companyParam != null">
