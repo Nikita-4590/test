@@ -5,8 +5,8 @@
 	<span>現在のステータス　　 : ${request.status_description!""}</span></br>
 	<span>現在のHRS担当者  : ${request.assign_user_name!""}</span></br></br>
 	
-	<span>新規のステータス　　 : ${assignedPerson!""}</span></br>
-	<span>新規のHRS担当者  : ${newStatus!""}</span>
+	<span>新規のステータス　　 : ${newStatusDescription!""}</span></br>
+	<span>新規のHRS担当者  : ${newAssignedPerson!""}</span>
 </form>
 </#escape>
 </#compress>
