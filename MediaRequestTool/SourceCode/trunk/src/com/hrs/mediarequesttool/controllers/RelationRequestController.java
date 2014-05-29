@@ -173,19 +173,23 @@ public class RelationRequestController extends BaseController {
 				throw new ResourceNotFoundException();
 			}
 			
-			String assignedPerson = httpRequest.getParameter("assign_user_name");
+			String newAssignedPerson = httpRequest.getParameter("assign_user_name");
 			String newStatus = httpRequest.getParameter("new_status");
 			boolean isValidData = false;
 			
-			isValidData = validateAssignerAndStatus(assignedPerson, request.getStatus(), newStatus);
+			isValidData = validateAssignerAndStatus(newAssignedPerson, request.getStatus(), newStatus);
 			
 			if (!isValidData) {
 				throw new ResourceNotFoundException();
 			}
 			
+			StatusDAL statusDAL = DALFactory.getDAL(StatusDAL.class, sqlSessionFactory);
+			
+			Status status = statusDAL.getDescription(newStatus);
+			
 			model.addAttribute("request", request);
-			model.addAttribute("assignedPerson", assignedPerson);
-			model.addAttribute("newStatus", newStatus);
+			model.addAttribute("newAssignedPerson", newAssignedPerson);
+			model.addAttribute("newStatusDescription", status.getDescription());
 			
 			return view(builder);
 		} catch (NumberFormatException e) {
@@ -262,6 +266,8 @@ public class RelationRequestController extends BaseController {
 			if (!Arrays.asList(Constants.NEXT_DELETED).contains(StringUtils.strip(newStatus))) {
 				return false;
 			}
+		} else {
+			return false;
 		}
 		
 		return true;

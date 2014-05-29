@@ -38,4 +38,15 @@ public class StatusDAL extends AbstractDAL<StatusMapper> {
 			closeSession();
 		}
 	}
+	
+	public Status getDescription(String statusType) throws GenericException {
+		try {
+			openSession();
+			return mapper.getDescription(statusType);
+		} catch (Exception e) {
+			throw new GenericException(e, this.getClass());
+		} finally {
+			closeSession();	
+		}
+	}
 }
