@@ -20,7 +20,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 	}
 	
 	public PagingResult<RelationRequest> paging(int page,String direction,String sort, String requestId, String status, String companyParam,String 
-			mediaParam, String[] role) throws GenericException {		
+			mediaParam, String[] role) throws GenericException {
 		
 		try {
 			openSession();			

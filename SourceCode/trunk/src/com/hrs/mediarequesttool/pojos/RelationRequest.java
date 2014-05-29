@@ -30,7 +30,7 @@ public class RelationRequest {
 	
 	private String company_name;
 	private String media_name;
-	private String status_name;
+	private String status_description;
 	
 	/**
 	 * @return the requester_name
@@ -233,18 +233,6 @@ public class RelationRequest {
 		this.media_name = media_name;
 	}
 	/**
-	 * @return the status_name
-	 */
-	public String getStatus_name() {
-		return status_name;
-	}
-	/**
-	 * @param status_name the status_name to set
-	 */
-	public void setStatus_name(String status_name) {
-		this.status_name = status_name;
-	}
-	/**
 	 * @return the company_id
 	 */
 	public int getCompany_id() {
@@ -303,6 +291,18 @@ public class RelationRequest {
 	 */
 	public void setCompany_company_id(String company_company_id) {
 		this.company_company_id = company_company_id;
+	}
+	/**
+	 * @return the status_description
+	 */
+	public String getStatus_description() {
+		return status_description;
+	}
+	/**
+	 * @param status_description the status_description to set
+	 */
+	public void setStatus_description(String status_description) {
+		this.status_description = status_description;
 	}
 	
 	
