@@ -66,4 +66,11 @@ public abstract class AbstractDAL<MAPPER> {
 			return input.replace(" ", "%");
 		}
 	}
+	protected String parseId(String input) {
+		if(input == null || input.length() == 0) {
+			return null;
+		} else {
+			return input;
+		}
+	}
 }
