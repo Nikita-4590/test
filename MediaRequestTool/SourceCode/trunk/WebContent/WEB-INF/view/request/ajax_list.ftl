@@ -3,10 +3,10 @@
 <#if relationRequests??>
 	<tbody current-page="${relationRequests.currentPage}" total-page="${relationRequests.totalPage}">
 	<#list relationRequests.list as relationRequest>
-	<tr row-id="${relationRequest.relation_request_id}" <#if relationRequest.status_name ? lower_case  == compare_status> class="account-disabled" </#if>>
+	<tr row-id="${relationRequest.relation_request_id}" <#if relationRequest.status_description ? lower_case  == compare_status> class="account-disabled" </#if>>
 		<td>
-			<#if relationRequest.status_name??>
-				${relationRequest.status_name}
+			<#if relationRequest.status_description??>
+				${relationRequest.status_description}
 			</#if>
 		</td>	
 		<td>

@@ -2,131 +2,131 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hrs.mediarequesttool.mappers.RelationRequestMapper">
 
-	<resultMap type="com.hrs.mediarequesttool.pojos.RelationRequest"
-		id="mapping">
-		<result property="relation_request_id" column="relation_request_id" />
-		<result property="company_id" column="company_id" />
-		<result property="media_id" column="media_id" />
-		<result property="requester_name" column="requester_name" />
-		<result property="company_company_id" column="company_company_id" />
-		<result property="requester_mail" column="requester_mail" />
-		<result property="requester_phone" column="requester_phone" />
-		<result property="url" column="url" />
-		<result property="login_id_1" column="login_id_1" />
-		<result property="login_id_2" column="login_id_2" />
-		<result property="login_password_1" column="login_password_1" />
-		<result property="login_password_2" column="login_password_2" />
-		<result property="crawl_date" column="crawl_date" />
-		<result property="other_comment" column="other_comment" />
-		<result property="status" column="status" />
-		<result property="assign_user_name" column="assign_user_name" />
-		<result property="update_user_id" column="update_user_id" />
-		<result property="created_at" column="created_at" />
-		<result property="updated_at" column="updated_at" />
-		<result property="company_name" column="company_name" />
-		<result property="media_name" column="media_name" />
-		<result property="status_name" column="status_name" />
-	</resultMap>
+    <resultMap type="com.hrs.mediarequesttool.pojos.RelationRequest"
+        id="mapping">
+        <result property="relation_request_id" column="relation_request_id" />
+        <result property="company_id" column="company_id" />
+        <result property="media_id" column="media_id" />
+        <result property="requester_name" column="requester_name" />
+        <result property="company_company_id" column="company_company_id" />
+        <result property="requester_mail" column="requester_mail" />
+        <result property="requester_phone" column="requester_phone" />
+        <result property="url" column="url" />
+        <result property="login_id_1" column="login_id_1" />
+        <result property="login_id_2" column="login_id_2" />
+        <result property="login_password_1" column="login_password_1" />
+        <result property="login_password_2" column="login_password_2" />
+        <result property="crawl_date" column="crawl_date" />
+        <result property="other_comment" column="other_comment" />
+        <result property="status" column="status" />
+        <result property="assign_user_name" column="assign_user_name" />
+        <result property="update_user_id" column="update_user_id" />
+        <result property="created_at" column="created_at" />
+        <result property="updated_at" column="updated_at" />
+        <result property="company_name" column="company_name" />
+        <result property="media_name" column="media_name" />
+        <result property="status_description" column="status_description" />
+    </resultMap>
 
 
-	<select id="count" parameterType="map" resultType="int">
-		
-		SELECT  count(relation_request.relation_request_id) from
-				other_media.relation_request AS
-				relation_request INNER JOIN other_media.contract_company AS
-				contract_company ON relation_request.company_id = contract_company.id
-				INNER JOIN other_media.media AS media on media.id =
-				relation_request.media_id
-				<where>
-					<if test="status == null">
-						relation_request.status in
-						<foreach collection="sql" index="index" item="item" open="("
-							separator="," close=")">
-							#{item}
-						</foreach>
-					</if>
-					<if test="status != null">
-						lower(CAST(relation_request.status AS TEXT)) LIKE #{status}
-					</if>
-					<if test="requestId != null">
-						AND lower(CAST(relation_request.relation_request_id AS TEXT)) =
-						#{requestId}
-					</if>
-					<if test="companyParam != null">
-						AND lower(contract_company.company_id) like #{companyParam} OR
-						lower(contract_company.company_name) like #{companyParam}
-					</if>
-					<if test="mediaParam != null">
-						AND lower(media.media_id) like #{mediaParam} or lower(media.media_name) like
-						#{mediaParam}
-					</if>
-				</where>
-	</select>
+    <select id="count" parameterType="map" resultType="int">
+        
+        SELECT  count(relation_request.relation_request_id) from
+                other_media.relation_request AS
+                relation_request INNER JOIN other_media.contract_company AS
+                contract_company ON relation_request.company_id = contract_company.id
+                INNER JOIN other_media.media AS media on media.id =
+                relation_request.media_id
+                <where>
+                    <if test="status == null">
+                        relation_request.status in
+                        <foreach collection="sql" index="index" item="item" open="("
+                            separator="," close=")">
+                            #{item}
+                        </foreach>
+                    </if>
+                    <if test="status != null">
+                        lower(CAST(relation_request.status AS TEXT)) LIKE #{status}
+                    </if>
+                    <if test="requestId != null">
+                        AND lower(CAST(relation_request.relation_request_id AS TEXT)) =
+                        #{requestId}
+                    </if>
+                    <if test="companyParam != null">
+                        AND lower(contract_company.company_id) like #{companyParam} OR
+                        lower(contract_company.company_name) like #{companyParam}
+                    </if>
+                    <if test="mediaParam != null">
+                        AND lower(media.media_id) like #{mediaParam} or lower(media.media_name) like
+                        #{mediaParam}
+                    </if>
+                </where>
+    </select>
 
-	<select id="paging" parameterType="map" resultMap="mapping">
-		SELECT  relation_request.relation_request_id AS relation_request_id,
-				relation_request.company_id AS company_id,
-				relation_request.media_id AS
-				media_id,
-				relation_request.requester_name AS requester_name,
-				relation_request.requester_mail AS requester_mail,
-				relation_request.requester_phone AS requester_phone,
-				relation_request.url AS url,
-				relation_request.login_id_1 AS login_id_1,
-				relation_request.login_id_2 AS login_id_2,
-				relation_request.login_password_1 AS login_password_1,
-				relation_request.login_password_2 AS login_password_2,
-				CAST(relation_request.crawl_date AS timestamp(0)) as crawl_date,
-				relation_request.other_comment AS other_comment,
-				relation_request.status AS status,
-				relation_request.assign_user_name AS
-				assign_user_name,
-				CAST(relation_request.created_at AS timestamp(0)) as
-				created_at,
-				CAST(relation_request.updated_at as timestamp(0)) AS
-				updated_at ,
-				contract_company.company_name AS
-				company_name,media.media_name AS media_name,
-				relation_request_status.description
-				AS status_name,contract_company.company_id AS company_company_id FROM
-				other_media.relation_request AS relation_request INNER JOIN
-				other_media.contract_company AS
-				contract_company ON contract_company.id = relation_request.company_id INNER JOIN
-				other_media.media
-				AS media ON media.id = relation_request.media_id
-				INNER JOIN other_media.relation_request_status
-				AS relation_request_status ON relation_request_status.status_type =
-				relation_request.status
-				<where>
-					<if test="status == null">
-						relation_request_status.status_type in
-						<foreach collection="sql" index="index" item="item" open="("
-							separator="," close=")">
-							#{item}
-						</foreach>
-					</if>
-					<if test="status != null">
-						lower(CAST(relation_request.status AS TEXT)) like #{status}
-					</if>
-					<if test="requestId != null">
-						and lower(CAST(relation_request.relation_request_id AS TEXT)) =
-						#{requestId}
-					</if>
-					<if test="companyParam != null">
-						AND lower(contract_company.company_id) like #{companyParam} or
-						lower(contract_company.company_name) like #{companyParam}
-					</if>
-					<if test="mediaParam != null">
-						AND lower(media.media_id) like #{mediaParam} or lower(media.media_name) like
-						#{mediaParam}
-					</if>
-				</where>
-				<if test="sort != null and direction != null">
-					ORDER BY relation_request.${sort} ${direction}
-				</if>
-				<if test="sort == null or direction == null">
-					ORDER BY contract_company.created_at ASC
-				</if>
-				LIMIT #{page.limit} OFFSET #{page.offset}
-	</select>
+    <select id="paging" parameterType="map" resultMap="mapping">
+        SELECT  relation_request.relation_request_id AS relation_request_id,
+                relation_request.company_id AS company_id,
+                relation_request.media_id AS
+                media_id,
+                relation_request.requester_name AS requester_name,
+                relation_request.requester_mail AS requester_mail,
+                relation_request.requester_phone AS requester_phone,
+                relation_request.url AS url,
+                relation_request.login_id_1 AS login_id_1,
+                relation_request.login_id_2 AS login_id_2,
+                relation_request.login_password_1 AS login_password_1,
+                relation_request.login_password_2 AS login_password_2,
+                CAST(relation_request.crawl_date AS timestamp(0)) as crawl_date,
+                relation_request.other_comment AS other_comment,
+                relation_request.status AS status,
+                relation_request.assign_user_name AS
+                assign_user_name,
+                CAST(relation_request.created_at AS timestamp(0)) as
+                created_at,
+                CAST(relation_request.updated_at as timestamp(0)) AS
+                updated_at ,
+                contract_company.company_name AS
+                company_name,media.media_name AS media_name,
+                relation_request_status.description
+                AS status_description,contract_company.company_id AS company_company_id FROM
+                other_media.relation_request AS relation_request INNER JOIN
+                other_media.contract_company AS
+                contract_company ON contract_company.id = relation_request.company_id INNER JOIN
+                other_media.media
+                AS media ON media.id = relation_request.media_id
+                INNER JOIN other_media.relation_request_status
+                AS relation_request_status ON relation_request_status.status_type =
+                relation_request.status
+                <where>
+                    <if test="status == null">
+                        relation_request_status.status_type in
+                        <foreach collection="sql" index="index" item="item" open="("
+                            separator="," close=")">
+                            #{item}
+                        </foreach>
+                    </if>
+                    <if test="status != null">
+                        lower(CAST(relation_request.status AS TEXT)) like #{status}
+                    </if>
+                    <if test="requestId != null">
+                        and lower(CAST(relation_request.relation_request_id AS TEXT)) =
+                        #{requestId}
+                    </if>
+                    <if test="companyParam != null">
+                        AND lower(contract_company.company_id) like #{companyParam} or
+                        lower(contract_company.company_name) like #{companyParam}
+                    </if>
+                    <if test="mediaParam != null">
+                        AND lower(media.media_id) like #{mediaParam} or lower(media.media_name) like
+                        #{mediaParam}
+                    </if>
+                </where>
+                <if test="sort != null and direction != null">
+                    ORDER BY relation_request.${sort} ${direction}
+                </if>
+                <if test="sort == null or direction == null">
+                    ORDER BY contract_company.created_at ASC
+                </if>
+                LIMIT #{page.limit} OFFSET #{page.offset}
+    </select>
 </mapper>

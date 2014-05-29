@@ -4,7 +4,7 @@ import com.hrs.mediarequesttool.pojos.User;
 
 public class Role {
 	private final static String[] MEDIA_CHECKER = { "ASSIGNED", "CONFIRMING" };
-	private final static String[] LEADER = { "ASSIGNED", "CONFIRMING", "FINISHED" };
+	private final static String[] LEADER = { "ASSIGNED", "CONFIRMING", "NEW" };
 	private final static String[] MEMBER = { "ASSIGNED", "CONFIRMING", "FINISHED",
 			"OK" };
 
