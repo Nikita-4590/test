@@ -186,4 +186,17 @@
 		</if>
 		LIMIT #{page.limit} OFFSET #{page.offset}
 	</select>
+    <!-- select to check exist -->
+	<select id="get" parameterType="int"
+		resultType="com.hrs.mediarequesttool.pojos.RelationRequest">
+		SELECT
+			request.*,
+			status.description as status_description
+		FROM
+			other_media.relation_request as request
+		INNER JOIN
+			other_media.relation_request_status as status ON request.status = status.status_type
+		WHERE
+			request.relation_request_id = #{request_id}
+	</select>
 </mapper>

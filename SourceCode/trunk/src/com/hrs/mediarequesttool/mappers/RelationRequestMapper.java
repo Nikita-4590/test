@@ -29,4 +29,7 @@ public interface RelationRequestMapper {
 			@Param("companyParam") String companyParam,
 			@Param("mediaParam") String mediaParam,
 			@Param("sql") String[] sql);
+	
+	// get Request detail information
+	RelationRequest get(@Param("request_id") int requestId);
 }	
