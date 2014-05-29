@@ -146,7 +146,7 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("request", request);
 					
 			builder.setPageTitle("依頼詳細");
-			//builder.setStylesheets("global.form.css");
+			builder.setStylesheets("global.form.css", "request.detail.css");
 			builder.setScripts("jquery/jquery.form.min.js", "request.change.js");
 			
 		} catch (Exception e) {
