@@ -6,18 +6,27 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
+import com.hrs.mediarequesttool.common.exception.BadRequestException;
+import com.hrs.mediarequesttool.common.Constants;
+import com.hrs.mediarequesttool.common.DBConnection;
 import com.hrs.mediarequesttool.common.PagingResult;
 import com.hrs.mediarequesttool.common.Role;
 import com.hrs.mediarequesttool.common.exception.GenericException;
+import com.hrs.mediarequesttool.common.exception.ResourceNotFoundException;
+import com.hrs.mediarequesttool.dals.DALFactory;
 import com.hrs.mediarequesttool.dals.RelationRequestDAL;
 import com.hrs.mediarequesttool.dals.StatusDAL;
 import com.hrs.mediarequesttool.pojos.RelationRequest;
@@ -92,4 +101,119 @@ public class RelationRequestController extends BaseController {
 		}
 		return result;
 	}
+	
+	@RequestMapping("/view_request/{relation_request_id}/")
+	public ModelAndView viewRequest(HttpServletRequest httpRequest, @PathVariable("relation_request_id") int requestId, ModelMap model, RedirectAttributes redirectAttributes) {
+		ViewBuilder builder = getViewBuilder("request.detail", model);
+		
+		try {
+			// get data from database 
+			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
+			
+			// get Request detail
+			
+			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
+			
+			RelationRequest request = requestDAL.get(requestId);
+			
+			if (request == null) {
+				throw new ResourceNotFoundException();
+			}
+			
+			StatusDAL statusDAL = DALFactory.getDAL(StatusDAL.class, sqlSessionFactory);
+			String [] listNextStatus = null;
+			
+			if (StringUtils.strip(request.getStatus()).equals("NEW")) {
+				listNextStatus = Constants.NEXT_NEW;
+			} else if (StringUtils.strip(request.getStatus()).equals("ASSIGNED")) {
+				listNextStatus = Constants.NEXT_ASSIGNED;
+			} else if (StringUtils.strip(request.getStatus()).equals("CONFIRMING")) {
+				listNextStatus = Constants.NEXT_CONFIRMING;
+			} else if (StringUtils.strip(request.getStatus()).equals("OK")) {
+				listNextStatus = Constants.NEXT_OK;
+			} else if (StringUtils.strip(request.getStatus()).equals("NG")) {
+				listNextStatus = Constants.NEXT_NG;
+			} else if (StringUtils.strip(request.getStatus()).equals("FINISHED")) {
+				listNextStatus = Constants.NEXT_FINISHED;
+			} else if (StringUtils.strip(request.getStatus()).equals("DELETED")) {
+				listNextStatus = Constants.NEXT_DELETED;
+			} 
+			
+			List<Status> listStatus = statusDAL.getListNextStatus(listNextStatus);
+			model.addAttribute("listStatus", listStatus);
+			model.addAttribute("request", request);
+					
+			builder.setPageTitle("依頼詳細");
+			//builder.setStylesheets("global.form.css");
+			builder.setScripts("jquery/jquery.form.min.js", "request.change.js");
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return view(builder);
+	}
+	
+	@RequestMapping(value = "/confirm_change/", method = RequestMethod.POST)
+	public ModelAndView confirmChange(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
+		try {
+			ViewBuilder builder = getViewBuilder("request.confirm-change", model);
+			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
+			model.addAttribute("requestId", requestId);
+			
+			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
+			
+			// get Request detail
+			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
+			
+			RelationRequest request = requestDAL.get(requestId);
+			
+			if (request == null) {
+				throw new ResourceNotFoundException();
+			}
+			
+			model.addAttribute("request", request);
+			
+			return view(builder);
+		} catch (NumberFormatException e) {
+			throw new ResourceNotFoundException(e, this.getClass());
+		} catch (GenericException e) {
+			throw new BadRequestException(e, this.getClass());
+		}
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/change/", method = RequestMethod.POST)
+	public String submitChange(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
+		/*
+		Map<String, Object> map = new HashMap<String, Object>();
+		String messageId = null;
+		boolean success = false;
+		SqlSession session = null;
+		
+		RelationRequest request = new RelationRequest();
+		
+		try {
+			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
+			
+			RequestValidator requestValidator = new RequestValidator(httpRequest, request);
+			
+			if (requestValidator.validateChange()) {
+				success = true;
+			}
+			
+			
+		} catch (GenericException e) {
+			// inform error message about access database failure
+			messageId = "ERR550";
+		} catch (NumberFormatException e) {
+			throw new BadRequestException(e, this.getClass());
+		}
+		
+		
+		return GSON.toJson(map);
+		*/
+		return "";
+	}
+	
 }

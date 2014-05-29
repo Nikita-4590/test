@@ -8,4 +8,12 @@
 			#{item}
 		</foreach>
 	</select>
+	
+	<select id="getListNextStatus" parameterType="map"
+		resultType="com.hrs.mediarequesttool.pojos.Status">
+		SELECT * FROM other_media.relation_request_status WHERE status_type in 
+		<foreach collection="listNextStatus" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
 </mapper>

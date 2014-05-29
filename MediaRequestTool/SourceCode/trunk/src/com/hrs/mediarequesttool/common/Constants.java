@@ -48,4 +48,13 @@ public class Constants {
 	public final static int FATAL = 2;
 	public final static int OLD_TABLE_TYPE = 1;
 	public final static int DATA_DIFFERENT_TYPE = 2;
+	
+	public final static String[] NEXT_NEW = {"NEW", "ASSIGNED"};
+	public final static String[] NEXT_ASSIGNED = {"ASSIGNED", "CONFIRMING"};
+	public final static String[] NEXT_CONFIRMING = {"CONFIRMING", "ASSIGNED", "OK", "NG"};
+	public final static String[] NEXT_OK = {"OK", "ASSIGNED", "FINISHED", "DELETED"};
+	public final static String[] NEXT_NG = {"NG", "ASSIGNED", "CONFIRMING", "DELETED"};
+	public final static String[] NEXT_FINISHED = {"FINISHED"};
+	public final static String[] NEXT_DELETED = {"DELETED"};
+	public final static int MAX_LENGTH_ASSIGNED_PERSON = 100;
 }
