@@ -31,5 +31,5 @@ public interface RelationRequestMapper {
 			@Param("sql") String[] sql);
 	
 	// get Request detail information
-	RelationRequest get(@Param("request_id") int requestId);
+	RelationRequest get(@Param("request_id") int requestId, @Param("pgcrypto") String pgcrypto);
 }	

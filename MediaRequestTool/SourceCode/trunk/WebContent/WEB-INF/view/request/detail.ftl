@@ -27,8 +27,10 @@
 		
 		<div class="form-line">
 			<div class="form-col-right">
-				<input type="text" id="assign-user-name" name="assign_user_name" maxlength="50" 
-					<#if request?? && request.assign_user_name??>value= "${request.assign_user_name}"</#if> />
+				<input type="text" id="assign-user-name" name="assign_user_name" maxlength="100" 
+					<#if request?? && request.assign_user_name??>value= "${request.assign_user_name}"</#if>
+					dapps-validate-rule="{'required':true}" 
+					dapps-validate-message-id="WRN350" />
 				</input>
 			</div>
 			<div class="form-col-left">
@@ -36,6 +38,7 @@
 			</div>	
 		</div>
 	</div>
+	<h3>申込者情報</h3>
 	<#-- ------------------------------------------------->
 	<div id="request-form-center" class="form">
 		<div class="form-line">
@@ -83,8 +86,8 @@
 			</div>	
 		</div>
 		
-	</div>
-	
+	</div> </br>
+	<h3>媒体アカウント情報</h3>
 	<#-- ------------------------------------------------->
 	<div id="request-form-bottom" class="form">
 		<div class="form-line">
@@ -132,8 +135,28 @@
 			</div>	
 		</div>
 		
-	</div>
-	
+		<div class="form-line">
+			<div class="form-col-right">
+				<label>${request.login_password_2!""}</label>
+			</div>
+			<div class="form-col-left">
+				<label for="login_password_2">パスワード2</label>
+			</div>	
+		</div>
+		
+		<div class="form-line">
+			<div class="form-col-right">
+				<label>${request.crawl_date!""}</label>
+			</div>
+			<div class="form-col-left">
+				<label for="crawl_date">連携開始日</label>
+			</div>	
+		</div>
+		
+	</div> </br>
+	<h3>その他伝達事項</h3>
+	<#-- ------------------------------------------------->
+	<span>${request.other_comment!""}</span></br></br></br>
 </div>
 
 <script type="text/javascript">

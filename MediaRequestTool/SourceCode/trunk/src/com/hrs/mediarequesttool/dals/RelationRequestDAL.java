@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import com.hrs.mediarequesttool.common.PropertiesLoader;
 import com.hrs.mediarequesttool.common.Page;
 import com.hrs.mediarequesttool.common.PagingResult;
 import com.hrs.mediarequesttool.common.exception.GenericException;
@@ -49,7 +50,8 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 	public RelationRequest get(int requestId) throws GenericException {
 		try {
 			openSession();
-			return mapper.get(requestId);
+			String pgcrypto = PropertiesLoader.instance.getPgcryptoPasswd();
+			return mapper.get(requestId, pgcrypto);
 		} catch (Exception e) {
 			throw new GenericException(e);
 		} finally {

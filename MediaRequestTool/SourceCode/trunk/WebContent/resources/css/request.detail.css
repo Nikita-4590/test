@@ -1,4 +1,4 @@
-#button-block,#search-block {
+#button-block, #search-block {
 	line-height: 22px;
 	margin-bottom: 10px;
 }
@@ -13,8 +13,8 @@
 	margin-right: 200px;
 }
 
-#request-form-top {
-	margin-bottom: 10px;
+#request-form-top, #request-form-center, #request-form-bottom {
+	margin-top: 15px;
 }
 
 #request-form-footer {
