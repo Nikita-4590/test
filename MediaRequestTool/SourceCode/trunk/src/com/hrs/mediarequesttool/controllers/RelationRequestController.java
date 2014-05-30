@@ -73,7 +73,7 @@ public class RelationRequestController extends BaseController {
 					statusParam, companyParam, mediaParam,
 					role.generateSQL(authentication.getPrincipal()));
 			model.addAttribute("relationRequests", relationRequests);
-			model.addAttribute("compare_status", "担当者決定");
+			model.addAttribute("compare_status", "NEW");
 
 		} catch (GenericException e) {
 			e.printStackTrace();
