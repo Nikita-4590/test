@@ -3,7 +3,6 @@ package com.hrs.mediarequesttool.dals;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSessionFactory;
-
 import com.hrs.mediarequesttool.common.PropertiesLoader;
 import com.hrs.mediarequesttool.common.Page;
 import com.hrs.mediarequesttool.common.PagingResult;
@@ -52,6 +51,17 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			openSession();
 			String pgcrypto = PropertiesLoader.instance.getPgcryptoPasswd();
 			return mapper.get(requestId, pgcrypto);
+		} catch (Exception e) {
+			throw new GenericException(e);
+		} finally {
+			closeSession();
+		}
+	}
+	
+	public void updateRequest(RelationRequest request) throws GenericException {
+		try {
+			openSession();
+			mapper.updateRequest(request);
 		} catch (Exception e) {
 			throw new GenericException(e);
 		} finally {

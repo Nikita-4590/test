@@ -206,6 +206,7 @@
 		</if>
 		LIMIT #{page.limit} OFFSET #{page.offset}
 	</select>
+	
 	<!-- select to check exist -->
 	<select id="get" parameterType="map"
 		resultType="com.hrs.mediarequesttool.pojos.RelationRequest">
@@ -243,4 +244,15 @@
 		WHERE
 		request.relation_request_id = #{request_id}
 	</select>
+	
+	<!-- update data -->
+	<update id="updateRequest" parameterType="com.hrs.mediarequesttool.pojos.RelationRequest">
+		UPDATE
+			other_media.relation_request
+		SET
+			status = #{status},
+			assign_user_name = #{assign_user_name}
+		WHERE
+			relation_request_id = #{relation_request_id}	
+	</update>
 </mapper>
