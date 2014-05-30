@@ -3,7 +3,7 @@ package com.hrs.mediarequesttool.pojos;
 public class RelationRequest {
 	private int relation_request_id;
 	
-	private int company_id;
+	private int company_auto_id;
 	private int media_id;
 	private String requester_name;
 	
@@ -11,7 +11,7 @@ public class RelationRequest {
 	private String requester_phone;
 	private String url;
 	
-	private String company_company_id;
+	private String company_id;
 	
 	private String login_id_1;
 	private String login_id_2;
@@ -231,24 +231,24 @@ public class RelationRequest {
 	 */
 	public void setMedia_name(String media_name) {
 		this.media_name = media_name;
-	}
-	/**
-	 * @return the company_id
-	 */
-	public int getCompany_id() {
-		return company_id;
-	}
-	/**
-	 * @param company_id the company_id to set
-	 */
-	public void setCompany_id(int company_id) {
-		this.company_id = company_id;
-	}
+	}	
 	/**
 	 * @return the media_id
 	 */
 	public int getMedia_id() {
 		return media_id;
+	}
+	public int getCompany_auto_id() {
+		return company_auto_id;
+	}
+	public void setCompany_auto_id(int company_auto_id) {
+		this.company_auto_id = company_auto_id;
+	}
+	public String getCompany_id() {
+		return company_id;
+	}
+	public void setCompany_id(String company_id) {
+		this.company_id = company_id;
 	}
 	/**
 	 * @param media_id the media_id to set
@@ -283,15 +283,7 @@ public class RelationRequest {
 	/**
 	 * @return the company_company_id
 	 */
-	public String getCompany_company_id() {
-		return company_company_id;
-	}
-	/**
-	 * @param company_company_id the company_company_id to set
-	 */
-	public void setCompany_company_id(String company_company_id) {
-		this.company_company_id = company_company_id;
-	}
+	
 	/**
 	 * @return the status_description
 	 */
@@ -304,21 +296,4 @@ public class RelationRequest {
 	public void setStatus_description(String status_description) {
 		this.status_description = status_description;
 	}
-	
-	
-		
-	
-	  
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

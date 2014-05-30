@@ -45,6 +45,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			closeSession();
 		}
 	}
+
 	public RelationRequest get(int requestId) throws GenericException {
 		try {
 			openSession();
