@@ -3,18 +3,16 @@
 <div class="page">
 	<div id="request-form-top" class="form">
 		<div class="form-line">
-			<div class="form-col-right">
 				<label>依頼ID: ${request.relation_request_id}</label>
-			</div>
-		</div>
-	
-		<div class="form-line">
-			<div class="form-col-right">
 				<label>現在のステータス: ${request.status_description}</label>
-			</div>
 		</div>
 		
-		<select name="new_status" id="new-status">
+		<div class="form-line">
+				<label for="assign_user_name">HRS担当者</label>
+				<input type="text" id="assign-user-name" name="assign_user_name" maxlength="100" 
+					<#if request?? && request.assign_user_name??>value= "${request.assign_user_name}"</#if>/>
+				</input>
+			<select name="new_status" id="new-status">
 			<#list listStatus as status>
 				<#if status?? && status.status_type == request.status>
 					<option value="${status.status_type}" selected="selected">${status.description}</option>
@@ -22,20 +20,8 @@
 					<option value="${status.status_type}">${status.description}</option>
 				</#if>	
 			</#list>
-		</select>
-		<a href="#" class="button-link" onclick="confirmChange(${request.relation_request_id}); return false;">変更する</a>
-		
-		<div class="form-line">
-			<div class="form-col-right">
-				<input type="text" id="assign-user-name" name="assign_user_name" maxlength="100" 
-					<#if request?? && request.assign_user_name??>value= "${request.assign_user_name}"</#if>
-					dapps-validate-rule="{'required':true}" 
-					dapps-validate-message-id="WRN350" />
-				</input>
-			</div>
-			<div class="form-col-left">
-				<label for="assign_user_name">HRS担当者</label>
-			</div>	
+			</select>
+			<a href="#" class="button-link" onclick="confirmChange(${request.relation_request_id}); return false;">変更する</a>
 		</div>
 	</div>
 	<h3>申込者情報</h3>
