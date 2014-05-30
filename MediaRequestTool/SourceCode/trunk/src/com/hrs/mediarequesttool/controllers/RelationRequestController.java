@@ -48,7 +48,7 @@ public class RelationRequestController extends BaseController {
 		ViewBuilder viewBuilder = getViewBuilder("request.list", model);
 		viewBuilder.setScripts("request.list.js");
 		viewBuilder.setStylesheets("relation.list.css", "global.css");
-		viewBuilder.setPageTitle("List");
+		viewBuilder.setPageTitle("依頼一覧");
 		return view(viewBuilder);
 	}
 
