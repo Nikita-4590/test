@@ -57,8 +57,7 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/ajax_list/", method = RequestMethod.GET)
 	@ResponseBody
-	public ModelAndView ajaxList(HttpServletRequest httpRequest,
-			ModelMap model, Authentication authentication) throws UnsupportedEncodingException {
+	public ModelAndView ajaxList(HttpServletRequest httpRequest, ModelMap model, Authentication authentication) throws UnsupportedEncodingException {
 		String pageParam = httpRequest.getParameter("page");
 		String sortParam = httpRequest.getParameter("sort");
 		String requestIdParam = httpRequest.getParameter("id");
@@ -71,9 +70,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
 			Role role = new Role();
-			PagingResult<RelationRequest> relationRequests = requestDAL.paging(
-					page, directionParam, sortParam, requestIdParam,
-					statusParam, companyParam, mediaParam,
+			PagingResult<RelationRequest> relationRequests = requestDAL.paging(page, directionParam, sortParam, requestIdParam, statusParam, companyParam, mediaParam,
 					role.generateSQL(authentication.getPrincipal()));
 			model.addAttribute("relationRequests", relationRequests);
 			model.addAttribute("compare_status", "NEW");
@@ -88,14 +85,12 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/load_status", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseBody
-	public String loadStatus(Authentication authentication,
-			HttpServletResponse response) throws GenericException {
+	public String loadStatus(Authentication authentication, HttpServletResponse response) throws GenericException {
 		String result = null;
 		try {
 			StatusDAL statusDAL = getDAL(StatusDAL.class);
 			Role role = new Role();
-			List<Status> status = statusDAL.getAll(role
-					.generateSQL(authentication.getPrincipal()));
+			List<Status> status = statusDAL.getAll(role.generateSQL(authentication.getPrincipal()));
 			Gson gson = new Gson();
 			result = gson.toJson(status);
 			return result;
@@ -106,28 +101,28 @@ public class RelationRequestController extends BaseController {
 		}
 		return result;
 	}
-	
+
 	@RequestMapping("/view_request/{relation_request_id}/")
 	public ModelAndView viewRequest(HttpServletRequest httpRequest, @PathVariable("relation_request_id") int requestId, ModelMap model, RedirectAttributes redirectAttributes) {
 		ViewBuilder builder = getViewBuilder("request.detail", model);
-		
+
 		try {
-			// get data from database 
+			// get data from database
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
-			
+
 			// get Request detail
-			
+
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
-			
+
 			RelationRequest request = requestDAL.get(requestId);
-			
+
 			if (request == null) {
 				throw new ResourceNotFoundException();
 			}
-			
+
 			StatusDAL statusDAL = DALFactory.getDAL(StatusDAL.class, sqlSessionFactory);
-			String [] listNextStatus = null;
-			
+			String[] listNextStatus = null;
+
 			if (StringUtils.strip(request.getStatus()).equals("NEW")) {
 				listNextStatus = Constants.NEXT_NEW;
 			} else if (StringUtils.strip(request.getStatus()).equals("ASSIGNED")) {
@@ -142,58 +137,58 @@ public class RelationRequestController extends BaseController {
 				listNextStatus = Constants.NEXT_FINISHED;
 			} else if (StringUtils.strip(request.getStatus()).equals("DELETED")) {
 				listNextStatus = Constants.NEXT_DELETED;
-			} 
-			
+			}
+
 			List<Status> listStatus = statusDAL.getListNextStatus(listNextStatus);
 			model.addAttribute("listStatus", listStatus);
 			model.addAttribute("request", request);
-					
+
 			builder.setPageTitle("依頼詳細");
 			builder.setStylesheets("global.form.css", "request.detail.css");
 			builder.setScripts("jquery/jquery.form.min.js", "request.change.js");
-			
+
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
+
 		return view(builder);
 	}
-	
+
 	@RequestMapping(value = "/confirm_change/", method = RequestMethod.POST)
 	public ModelAndView confirmChange(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-change", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
-			
+
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
-			
+
 			// get Request detail
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
-			
+
 			RelationRequest request = requestDAL.get(requestId);
-			
+
 			if (request == null) {
 				throw new ResourceNotFoundException();
 			}
-			
+
 			String newAssignedPerson = httpRequest.getParameter("assign_user_name");
 			String newStatus = httpRequest.getParameter("new_status");
 			boolean isValidData = false;
-			
+
 			isValidData = validateAssignerAndStatus(newAssignedPerson, request.getStatus(), newStatus);
-			
+
 			if (!isValidData) {
 				throw new ResourceNotFoundException();
 			}
-			
+
 			StatusDAL statusDAL = DALFactory.getDAL(StatusDAL.class, sqlSessionFactory);
-			
+
 			Status status = statusDAL.getDescription(newStatus);
-			
+
 			model.addAttribute("request", request);
 			model.addAttribute("newAssignedPerson", newAssignedPerson);
 			model.addAttribute("newStatusDescription", status.getDescription());
-			
+
 			return view(builder);
 		} catch (NumberFormatException e) {
 			throw new ResourceNotFoundException(e, this.getClass());
@@ -201,39 +196,39 @@ public class RelationRequestController extends BaseController {
 			throw new BadRequestException(e, this.getClass());
 		}
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "/change/", method = RequestMethod.POST)
 	public String submitChange(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-		
+
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
-		
+
 		try {
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
-			
+
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
-			
+
 			// get Request detail
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
-			
+
 			RelationRequest request = requestDAL.get(requestId);
-			
+
 			if (request == null) {
 				messageId = "";
 			}
-			
+
 			String newAssignedPerson = httpRequest.getParameter("assign_user_name");
 			String newStatus = httpRequest.getParameter("new_status");
 			boolean isValidData = false;
-			
+
 			isValidData = validateAssignerAndStatus(newAssignedPerson, request.getStatus(), newStatus);
-			
+
 			if (!isValidData) {
 				messageId = "";
 			}
-			
+
 		} catch (GenericException e) {
 			messageId = "";
 		} finally {
@@ -242,7 +237,7 @@ public class RelationRequestController extends BaseController {
 				session = null;
 			}
 		}
-		
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("message_id", messageId);
 		map.put("success", success);
@@ -250,15 +245,15 @@ public class RelationRequestController extends BaseController {
 		if (success) {
 			map.put("url", "/request/list/");
 		}
-		
+
 		return GSON.toJson(map);
 	}
-	
+
 	private boolean validateAssignerAndStatus(String assignedPerson, String currentStatus, String newStatus) {
 		if (Validator.isNullOrEmpty(assignedPerson) || Validator.checkExceedLength(Constants.MAX_LENGTH_ASSIGNED_PERSON, assignedPerson)) {
 			return false;
 		}
-		
+
 		if (StringUtils.strip(currentStatus).equals("NEW")) {
 			if (!Arrays.asList(Constants.NEXT_NEW).contains(StringUtils.strip(newStatus))) {
 				return false;
@@ -290,8 +285,8 @@ public class RelationRequestController extends BaseController {
 		} else {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 }
