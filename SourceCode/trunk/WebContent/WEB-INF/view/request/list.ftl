@@ -7,7 +7,7 @@
     	    <label>検索タイプ</label>
     	    <select id="select_search" class="form-control">
     	        <option value="id">依頼ID</option>
-    	        <option value="company_id">企業ID</option>
+    	        <option value="company_id">企業ID,社名</option>
     	        <option value="status">ステータス</option>
     	        <option value="media_id">その他</option>
     	    </select>
@@ -26,12 +26,12 @@
 	<table id="request-ajax-table" cellpadding="0" cellspacing="0">
 		<thead>
 			<tr>
-				<th style="width : 13%;">ステータス</th>
-				<th style="width : 10%;">登録日時</th>
-				<th style="width : 10%;">希望連携開始日</th>
-				<th style="width : 10%;">企業ID</th>
-				<th style="width : 15%;">社名</th>
-				<th style="width : 25%;">媒体</th>
+				<th style="width : 16%;">ステータス</th>
+				<th style="width : 14%;">登録日時</th>
+				<th style="width : 14%;">希望連携開始日</th>
+				<th style="width : 7%;">企業ID</th>
+				<th style="width : 11%;">社名</th>
+				<th style="width : 21%;">媒体</th>
 				<th style="width : 7%;">依頼ID</th>
 				<th style="width : 10%;">HRS担当者</th>
 			</tr>

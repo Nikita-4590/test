@@ -5,10 +5,10 @@
 	<resultMap type="com.hrs.mediarequesttool.pojos.RelationRequest"
 		id="mapping">
 		<result property="relation_request_id" column="relation_request_id" />
-		<result property="company_id" column="company_id" />
+		<result property="company_auto_id" column="company_auto_id" />
 		<result property="media_id" column="media_id" />
 		<result property="requester_name" column="requester_name" />
-		<result property="company_company_id" column="company_company_id" />
+		<result property="company_id" column="company_id" />
 		<result property="requester_mail" column="requester_mail" />
 		<result property="requester_phone" column="requester_phone" />
 		<result property="url" column="url" />
@@ -86,16 +86,29 @@
 					#{status}
 				</if>
 				AND lower(media.media_name) LIKE #{mediaParam}
+				<if test="status == null">
+					OR relation_request.status in
+					<foreach collection="sql" index="index" item="item" open="("
+						separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+				<if test="status != null">
+					OR lower(CAST(relation_request.status AS TEXT)) LIKE
+					#{status}
+				</if>
+				AND lower(relation_request.assign_user_name) LIKE #{mediaParam}
 			</if>
 		</where>
 	</select>
 
 	<select id="paging" parameterType="map" resultMap="mapping">
 		SELECT relation_request.relation_request_id AS relation_request_id,
-		relation_request.company_id AS company_id,
+		relation_request.company_id AS company_auto_id,
 		relation_request.media_id AS
 		media_id,
-		relation_request.requester_name AS requester_name,
+		relation_request.requester_name
+		AS requester_name,
 		relation_request.requester_mail AS requester_mail,
 		relation_request.requester_phone AS requester_phone,
 		relation_request.url AS url,
@@ -103,20 +116,21 @@
 		relation_request.login_id_2 AS login_id_2,
 		relation_request.login_password_1 AS login_password_1,
 		relation_request.login_password_2 AS login_password_2,
-		CAST(relation_request.crawl_date AS timestamp(0)) as crawl_date,
+		to_char(relation_request.crawl_date, 'YYYY年MM月DD日 HH24:MI:SS'::text)
+		AS crawl_date,
 		relation_request.other_comment AS other_comment,
 		relation_request.status AS status,
 		relation_request.assign_user_name AS
 		assign_user_name,
-		CAST(relation_request.created_at AS timestamp(0)) as
-		created_at,
-		CAST(relation_request.updated_at as timestamp(0)) AS
-		updated_at ,
+		to_char(relation_request.created_at, 'YYYY年MM月DD日 HH24:MI:SS'::text)
+		AS created_at ,
+		to_char(relation_request.updated_at, 'YYYY年MM月DD日
+		HH24:MI:SS'::text) AS updated_at,
 		contract_company.company_name AS
 		company_name,media.media_name AS media_name,
 		relation_request_status.description
 		AS
-		status_description,contract_company.company_id AS company_company_id
+		status_description,contract_company.company_id AS company_id
 		FROM
 		other_media.relation_request AS relation_request INNER JOIN
 		other_media.contract_company AS
@@ -132,7 +146,7 @@
 		relation_request.status
 		<where>
 			<if test="status == null">
-				relation_request_status.status_type in
+				relation_request.status IN
 				<foreach collection="sql" index="index" item="item" open="("
 					separator="," close=")">
 					#{item}
@@ -150,7 +164,7 @@
 			<if test="companyParam != null">
 				AND lower(contract_company.company_id) like #{companyParam}
 				<if test="status == null">
-					OR relation_request_status.status_type in
+					OR relation_request.status IN
 					<foreach collection="sql" index="index" item="item" open="("
 						separator="," close=")">
 						#{item}
@@ -165,7 +179,7 @@
 			<if test="mediaParam != null">
 				AND lower(media.media_id) like #{mediaParam}
 				<if test="status == null">
-					OR relation_request_status.status_type in
+					OR relation_request.status IN
 					<foreach collection="sql" index="index" item="item" open="("
 						separator="," close=")">
 						#{item}
@@ -176,6 +190,18 @@
 					#{status}
 				</if>
 				AND lower(media.media_name) LIKE #{mediaParam}
+				<if test="status == null">
+					OR relation_request.status IN
+					<foreach collection="sql" index="index" item="item" open="("
+						separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+				<if test="status != null">
+					OR lower(CAST(relation_request.status AS TEXT)) LIKE
+					#{status}
+				</if>
+				AND lower(relation_request.assign_user_name) LIKE #{mediaParam}
 			</if>
 		</where>
 		<if test="sort != null and direction != null">
@@ -186,17 +212,17 @@
 		</if>
 		LIMIT #{page.limit} OFFSET #{page.offset}
 	</select>
-    <!-- select to check exist -->
+	<!-- select to check exist -->
 	<select id="get" parameterType="int"
 		resultType="com.hrs.mediarequesttool.pojos.RelationRequest">
 		SELECT
-			request.*,
-			status.description as status_description
+		request.*,
+		status.description as status_description
 		FROM
-			other_media.relation_request as request
+		other_media.relation_request as request
 		INNER JOIN
-			other_media.relation_request_status as status ON request.status = status.status_type
+		other_media.relation_request_status as status ON request.status = status.status_type
 		WHERE
-			request.relation_request_id = #{request_id}
+		request.relation_request_id = #{request_id}
 	</select>
 </mapper>

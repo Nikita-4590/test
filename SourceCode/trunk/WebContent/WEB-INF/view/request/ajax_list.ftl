@@ -1,6 +1,6 @@
 <@compress single_line=true>
 <#escape x as x?html>
-<#if relationRequests??>
+<#if relationRequests?? && relationRequests.list??>
 	<tbody current-page="${relationRequests.currentPage}" total-page="${relationRequests.totalPage}">
 	<#list relationRequests.list as relationRequest>
 	<tr row-id="${relationRequest.relation_request_id}" <#if relationRequest.status_description ? lower_case  == compare_status> class="account-disabled" </#if>>
@@ -20,8 +20,8 @@
 			</#if>
 		</td>
 		<td>
-			<#if relationRequest.company_company_id??>
-				${relationRequest.company_company_id}
+			<#if relationRequest.company_id??>
+				${relationRequest.company_id}
 			</#if>
 		</td>
 		

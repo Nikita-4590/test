@@ -51,15 +51,47 @@ $(me.dapps).bind(
 							.replace('{request_id}', requestId);
 					window.open(url);
 				},
-				post_load : function(targetTable) {
-					// restore queries value
-					var queries = targetTable.queries;
-					if (isArray(queries)) {
-						for (index in queries) {
-							if (queries[index].query_name === 'query') {
-								$('#search-request-query').val(
-										queries[index].query_value);
-								break;
+				post_load : function(targetTable, e) {
+					if (isSet(e) && e.status != 200) {
+						if (isUnset(me.dapps.global['account.list_error_box'])) {
+							me.dapps.global['account.list_error_box'] = new me.dapps.box({
+								auto_hide : false,
+								close_button : false,
+								button : {
+									align : 'right',
+									list : [ {
+										text : 'OK',
+										action : function(errorBox) {
+											if (errorBox._error.status == 403) {
+												location.href = me.dapps.global['url.context'] + "/";
+											} else {
+												errorBox.close();
+											}
+										}
+									} ]
+								}
+							});
+						}
+
+						var messageId = 'ERR301';
+
+						if (e.status == 403) {
+							messageId = 'ERR300';
+						}
+
+						message = me.dapps.ui.enhanced.locale.text(messageId);
+
+						me.dapps.global['account.list_error_box']._error = e;
+						me.dapps.global['account.list_error_box'].show(message);
+					} else {
+						var queries = targetTable.queries;
+						if (isArray(queries)) {
+							for (index in queries) {
+								if (queries[index].query_name === 'query') {
+									$('#search-request-query').val(
+											queries[index].query_value);
+									break;
+								}
 							}
 						}
 					}
