@@ -8,7 +8,7 @@
 			<#if relationRequest.status_description??>
 				${relationRequest.status_description}
 			</#if>
-		</td>	
+		</td>
 		<td>
 			<#if relationRequest.created_at??>
 					${relationRequest.created_at}
@@ -33,18 +33,18 @@
 		<td>
 			<#if relationRequest.media_name??>
 				${relationRequest.media_name}
-			</#if>	
-		</td>	
+			</#if>
+		</td>
 		<td>
 			<#if relationRequest.relation_request_id??>
 				${relationRequest.relation_request_id}
-			</#if>	
+			</#if>
 		</td>
 		<td>
 			<#if relationRequest.assign_user_name??>
 				${relationRequest.assign_user_name}
 			</#if>
-		</td>	
+		</td>
 	</tr>	 
 	</#list>
 	</tbody>
