@@ -20,8 +20,6 @@ public class Role {
 				sql = MEDIA_CHECKER;
 				break;
 			case 2:
-				sql = MEMBER;
-				break;
 			default:
 				sql = MEMBER;
 				break;
