@@ -2,12 +2,15 @@ package com.hrs.mediarequesttool.controllers;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -202,35 +205,53 @@ public class RelationRequestController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/change/", method = RequestMethod.POST)
 	public String submitChange(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-		/*
-		Map<String, Object> map = new HashMap<String, Object>();
+		
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
 		
-		RelationRequest request = new RelationRequest();
-		
 		try {
-			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
+			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
 			
-			RequestValidator requestValidator = new RequestValidator(httpRequest, request);
+			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 			
-			if (requestValidator.validateChange()) {
-				success = true;
+			// get Request detail
+			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
+			
+			RelationRequest request = requestDAL.get(requestId);
+			
+			if (request == null) {
+				messageId = "";
 			}
 			
+			String newAssignedPerson = httpRequest.getParameter("assign_user_name");
+			String newStatus = httpRequest.getParameter("new_status");
+			boolean isValidData = false;
+			
+			isValidData = validateAssignerAndStatus(newAssignedPerson, request.getStatus(), newStatus);
+			
+			if (!isValidData) {
+				messageId = "";
+			}
 			
 		} catch (GenericException e) {
-			// inform error message about access database failure
-			messageId = "ERR550";
-		} catch (NumberFormatException e) {
-			throw new BadRequestException(e, this.getClass());
+			messageId = "";
+		} finally {
+			if (session != null) {
+				session.close();
+				session = null;
+			}
 		}
 		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("message_id", messageId);
+		map.put("success", success);
+
+		if (success) {
+			map.put("url", "/request/list/");
+		}
 		
 		return GSON.toJson(map);
-		*/
-		return "";
 	}
 	
 	private boolean validateAssignerAndStatus(String assignedPerson, String currentStatus, String newStatus) {

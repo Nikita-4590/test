@@ -207,16 +207,40 @@
 		LIMIT #{page.limit} OFFSET #{page.offset}
 	</select>
 	<!-- select to check exist -->
-	<select id="get" parameterType="int"
+	<select id="get" parameterType="map"
 		resultType="com.hrs.mediarequesttool.pojos.RelationRequest">
 		SELECT
-            request.*,
-            status.description as status_description
-        FROM
-            other_media.relation_request as request
-        INNER JOIN
-            other_media.relation_request_status as status ON request.status = status.status_type
-        WHERE
-            request.relation_request_id = #{request_id}
+			request.relation_request_id,
+			request.company_id AS company_auto_id,
+			request.media_id,
+			request.requester_name,
+			request.requester_mail,
+			request.requester_phone,
+			request.url,
+			company.company_id, 
+			request.login_id_1,
+			request.login_id_2,
+			pgp_sym_decrypt(request.login_password_1, #{pgcrypto}) as login_password_1,
+			pgp_sym_decrypt(request.login_password_2, #{pgcrypto}) as login_password_2,
+			request.crawl_date,
+			request.other_comment,
+			request.status,
+			request.assign_user_name,
+			request.update_user_id,
+			request.created_at,
+			request.updated_at,
+			company.company_name,
+			media.media_name,
+			status.description as status_description
+		FROM
+		other_media.relation_request as request
+		INNER JOIN
+		other_media.relation_request_status as status ON request.status = status.status_type
+		INNER JOIN
+			other_media.contract_company as company ON request.company_id = company.id
+		INNER JOIN
+			other_media.media as media ON request.media_id = media.id
+		WHERE
+		request.relation_request_id = #{request_id}
 	</select>
 </mapper>

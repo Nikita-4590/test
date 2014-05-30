@@ -2,11 +2,11 @@
 <#escape x as x?html>
 <form id="change-request-form" action="${formatter.url("/request/change/?ajax")}" method="post">
 	<input type="hidden" name="relation_request_id" value="${request.relation_request_id}" />
-	<span>現在のステータス　　 : ${request.status_description!""}</span></br>
-	<span>現在のHRS担当者  : ${request.assign_user_name!""}</span></br></br>
+	<label>現在のステータス　　 : ${request.status_description!""}</label></br>
+	<label>現在のHRS担当者  : ${request.assign_user_name!""}</label></br></br>
 	
-	<span>新規のステータス　　 : ${newStatusDescription!""}</span></br>
-	<span>新規のHRS担当者  : ${newAssignedPerson!""}</span>
+	<label name="new_status">新規のステータス　　 : ${newStatusDescription!""}</label></br>
+	<label name="assign_user_name">新規のHRS担当者  : ${newAssignedPerson!""}</label>
 </form>
 </#escape>
 </#compress>
