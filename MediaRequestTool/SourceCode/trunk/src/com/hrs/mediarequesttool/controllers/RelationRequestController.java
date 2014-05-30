@@ -183,11 +183,11 @@ public class RelationRequestController extends BaseController {
 
 			StatusDAL statusDAL = DALFactory.getDAL(StatusDAL.class, sqlSessionFactory);
 
-			Status status = statusDAL.getDescription(newStatus);
+			Status changedStatus = statusDAL.get(newStatus);
 
 			model.addAttribute("request", request);
 			model.addAttribute("newAssignedPerson", newAssignedPerson);
-			model.addAttribute("newStatusDescription", status.getDescription());
+			model.addAttribute("changedStatus", changedStatus);
 
 			return view(builder);
 		} catch (NumberFormatException e) {
@@ -204,6 +204,7 @@ public class RelationRequestController extends BaseController {
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
+		RelationRequestDAL requestDAL = null;
 
 		try {
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
@@ -211,22 +212,39 @@ public class RelationRequestController extends BaseController {
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 
 			// get Request detail
-			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
+			requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
 
 			if (request == null) {
+				
 				messageId = "";
-			}
+			} else {
 
-			String newAssignedPerson = httpRequest.getParameter("assign_user_name");
-			String newStatus = httpRequest.getParameter("new_status");
-			boolean isValidData = false;
+				String newAssignedPerson = httpRequest.getParameter("assign_user_name");
+				String newStatus = httpRequest.getParameter("new_status");
+				boolean isValidData = false;
 
-			isValidData = validateAssignerAndStatus(newAssignedPerson, request.getStatus(), newStatus);
+				isValidData = validateAssignerAndStatus(newAssignedPerson, request.getStatus(), newStatus);
 
-			if (!isValidData) {
-				messageId = "";
+				if (isValidData) {
+					request.setStatus(newStatus);
+					request.setAssign_user_name(newAssignedPerson);
+					
+					// create session
+					session = sqlSessionFactory.openSession();
+
+					requestDAL.setSession(session);
+
+					// update request
+					requestDAL.updateRequest(request);
+					
+					session.commit();
+					
+					success = true;
+				} else {
+					messageId = "";
+				}
 			}
 
 		} catch (GenericException e) {
@@ -235,6 +253,9 @@ public class RelationRequestController extends BaseController {
 			if (session != null) {
 				session.close();
 				session = null;
+			}
+			if (requestDAL != null) {
+				requestDAL.forceCloseSession();
 			}
 		}
 

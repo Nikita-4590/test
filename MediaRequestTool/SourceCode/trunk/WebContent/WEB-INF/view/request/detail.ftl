@@ -1,29 +1,31 @@
 <#compress>
 <#escape x as x?html>
 <div class="page">
-	<div id="request-form-top" class="form">
-		<div class="form-line">
-				<label>依頼ID: ${request.relation_request_id}</label>
-				<label>現在のステータス: ${request.status_description}</label>
+	<form id="request-form">
+		<div id="request-form-top" class="form">
+			<div class="form-line">
+					<label>依頼ID: ${request.relation_request_id}</label>
+					<label>現在のステータス: ${request.status_description}</label>
+			</div>
+			
+			<div class="form-line">
+					<label for="assign_user_name">HRS担当者</label>
+					<input type="text" id="assign-user-name" name="assign_user_name" maxlength="100" 
+						<#if request?? && request.assign_user_name??>value= "${request.assign_user_name}"</#if>/>
+					</input>
+				<select name="new_status" id="new-status">
+				<#list listStatus as status>
+					<#if status?? && status.status_type == request.status>
+						<option value="${status.status_type}" selected="selected">${status.description}</option>
+					<#else>
+						<option value="${status.status_type}">${status.description}</option>
+					</#if>	
+				</#list>
+				</select>
+				<a href="#" class="button-link" onclick="confirmChange(${request.relation_request_id}); return false;">変更する</a>
+			</div>
 		</div>
-		
-		<div class="form-line">
-				<label for="assign_user_name">HRS担当者</label>
-				<input type="text" id="assign-user-name" name="assign_user_name" maxlength="100" 
-					<#if request?? && request.assign_user_name??>value= "${request.assign_user_name}"</#if>/>
-				</input>
-			<select name="new_status" id="new-status">
-			<#list listStatus as status>
-				<#if status?? && status.status_type == request.status>
-					<option value="${status.status_type}" selected="selected">${status.description}</option>
-				<#else>
-					<option value="${status.status_type}">${status.description}</option>
-				</#if>	
-			</#list>
-			</select>
-			<a href="#" class="button-link" onclick="confirmChange(${request.relation_request_id}); return false;">変更する</a>
-		</div>
-	</div>
+	</form>	
 	<h3>申込者情報</h3>
 	<#-- ------------------------------------------------->
 	<div id="request-form-center" class="form">
@@ -148,6 +150,7 @@
 <script type="text/javascript">
 	me.dapps.global['url.context'] = '${formatter.url("")}';
 	me.dapps.global['url.confirm_change'] = '${formatter.url("/request/confirm_change/?ajax")}';
+	me.dapps.global['message.assign_person_warning'] = "WRN506";
 </script>				
 </#escape>
 </#compress>
