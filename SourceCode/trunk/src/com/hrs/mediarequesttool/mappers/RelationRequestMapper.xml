@@ -102,48 +102,42 @@
 		</where>
 	</select>
 
-	<select id="paging" parameterType="map" resultMap="mapping">
-		SELECT relation_request.relation_request_id AS relation_request_id,
-		relation_request.company_id AS company_auto_id,
-		relation_request.media_id AS
-		media_id,
-		relation_request.requester_name
-		AS requester_name,
-		relation_request.requester_mail AS requester_mail,
-		relation_request.requester_phone AS requester_phone,
-		relation_request.url AS url,
-		relation_request.login_id_1 AS login_id_1,
-		relation_request.login_id_2 AS login_id_2,
-		relation_request.login_password_1 AS login_password_1,
-		relation_request.login_password_2 AS login_password_2,
-		to_char(relation_request.crawl_date, 'YYYY年MM月DD日 HH24:MI:SS'::text)
-		AS crawl_date,
-		relation_request.other_comment AS other_comment,
-		relation_request.status AS status,
-		relation_request.assign_user_name AS
-		assign_user_name,
-		to_char(relation_request.created_at, 'YYYY年MM月DD日 HH24:MI:SS'::text)
-		AS created_at ,
-		to_char(relation_request.updated_at, 'YYYY年MM月DD日
-		HH24:MI:SS'::text) AS updated_at,
-		contract_company.company_name AS
-		company_name,media.media_name AS media_name,
-		relation_request_status.description
-		AS
-		status_description,contract_company.company_id AS company_id
+		<select id="paging" parameterType="map" resultMap="mapping">
+		SELECT
+			relation_request.relation_request_id AS relation_request_id,
+			relation_request.company_id AS company_auto_id,
+			relation_request.media_id AS
+			media_id,relation_request.requester_name AS requester_name,
+			relation_request.requester_mail AS requester_mail,
+			relation_request.requester_phone AS requester_phone,
+			relation_request.url AS url,
+			relation_request.login_id_1 AS login_id_1,
+			relation_request.login_id_2 AS login_id_2,
+			relation_request.login_password_1 AS login_password_1,
+			relation_request.login_password_2 AS login_password_2,
+			to_char(relation_request.crawl_date, 'YYYY年MM月DD日 HH24:MI:SS'::text) AS crawl_date,
+			relation_request.other_comment AS other_comment,
+			relation_request.status AS status,
+			relation_request.assign_user_name AS assign_user_name,
+			to_char(relation_request.created_at, 'YYYY年MM月DD日 HH24:MI:SS'::text) AS created_at,
+			to_char(relation_request.updated_at,'YYYY年MM月DD日 HH24:MI:SS'::text) AS
+			updated_at,
+			contract_company.company_name AS company_name,
+			media.media_name AS media_name,
+			relation_request_status.description AS status_description,
+			contract_company.company_id AS company_id
 		FROM
-		other_media.relation_request AS relation_request INNER JOIN
-		other_media.contract_company AS
-		contract_company ON contract_company.id
-		= relation_request.company_id INNER JOIN
-		other_media.media
-		AS media ON
-		media.id = relation_request.media_id
-		INNER JOIN
-		other_media.relation_request_status
-		AS relation_request_status ON
-		relation_request_status.status_type =
-		relation_request.status
+			other_media.relation_request AS relation_request
+			INNER JOIN other_media.contract_company AS
+			contract_company ON
+			contract_company.id
+			= relation_request.company_id INNER JOIN other_media.media
+			AS media ON
+			media.id = relation_request.media_id
+			INNER JOIN other_media.relation_request_status
+			AS relation_request_status ON
+			relation_request_status.status_type =
+			relation_request.status
 		<where>
 			<if test="status == null">
 				relation_request.status IN
@@ -216,13 +210,13 @@
 	<select id="get" parameterType="int"
 		resultType="com.hrs.mediarequesttool.pojos.RelationRequest">
 		SELECT
-		request.*,
-		status.description as status_description
-		FROM
-		other_media.relation_request as request
-		INNER JOIN
-		other_media.relation_request_status as status ON request.status = status.status_type
-		WHERE
-		request.relation_request_id = #{request_id}
+            request.*,
+            status.description as status_description
+        FROM
+            other_media.relation_request as request
+        INNER JOIN
+            other_media.relation_request_status as status ON request.status = status.status_type
+        WHERE
+            request.relation_request_id = #{request_id}
 	</select>
 </mapper>
