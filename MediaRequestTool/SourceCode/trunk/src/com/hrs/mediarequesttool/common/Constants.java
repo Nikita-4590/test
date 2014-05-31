@@ -57,4 +57,5 @@ public class Constants {
 	public final static String[] NEXT_FINISHED = {"FINISHED"};
 	public final static String[] NEXT_DELETED = {"DELETED"};
 	public final static int MAX_LENGTH_ASSIGNED_PERSON = 100;
+	public final static String HIGHT_LIGHT_RECORD = "NEW";
 }
