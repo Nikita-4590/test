@@ -58,7 +58,7 @@ public abstract class AbstractDAL<MAPPER> {
 		this.session = session;
 		autoCloseSession = false;
 	}
-	protected String parse(String input) {
+	protected String parseTextSearch(String input) {
 		if(input == null) {
 			return input;
 		} else {
@@ -66,7 +66,7 @@ public abstract class AbstractDAL<MAPPER> {
 			return input.replace(" ", "%");
 		}
 	}
-	protected String parseId(String input) {
+	protected String parseIdSearch(String input) {
 		if(input == null || input.length() == 0) {
 			return null;
 		} else {

@@ -19,7 +19,7 @@ public interface RelationRequestMapper {
 			@Param("companyParam") String companyParam, 
 			@Param("status") String status,
 			@Param("mediaParam") String mediaParam,
-			@Param("sql") String[] sql);
+			@Param("roles") String[] roles);
 	
 	List<RelationRequest> paging(@Param("page") Page page,
 			@Param("sort") String sort, 
@@ -28,7 +28,7 @@ public interface RelationRequestMapper {
 			@Param("status") String status,
 			@Param("companyParam") String companyParam,
 			@Param("mediaParam") String mediaParam,
-			@Param("sql") String[] sql);
+			@Param("roles") String[] roles,@Param("priority") String priority);
 	
 	// get Request detail information
 	RelationRequest get(@Param("request_id") int requestId, @Param("pgcrypto") String pgcrypto);
