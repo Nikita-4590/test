@@ -31,6 +31,7 @@ import com.hrs.mediarequesttool.common.Role;
 import com.hrs.mediarequesttool.common.exception.GenericException;
 import com.hrs.mediarequesttool.common.exception.ResourceNotFoundException;
 import com.hrs.mediarequesttool.common.validator.Validator;
+import com.hrs.mediarequesttool.dals.CommentDAL;
 import com.hrs.mediarequesttool.dals.DALFactory;
 import com.hrs.mediarequesttool.dals.RelationRequestDAL;
 import com.hrs.mediarequesttool.dals.StatusDAL;
@@ -205,6 +206,7 @@ public class RelationRequestController extends BaseController {
 		boolean success = false;
 		SqlSession session = null;
 		RelationRequestDAL requestDAL = null;
+		CommentDAL commentDAL = null;
 
 		try {
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
@@ -217,15 +219,14 @@ public class RelationRequestController extends BaseController {
 			RelationRequest request = requestDAL.get(requestId);
 
 			if (request == null) {
-				
-				messageId = "";
+				// inform error message about invalid data
+				messageId = "WRN2";
 			} else {
-
+				
 				String newAssignedPerson = httpRequest.getParameter("assign_user_name");
 				String newStatus = httpRequest.getParameter("new_status");
-				boolean isValidData = false;
 
-				isValidData = validateAssignerAndStatus(newAssignedPerson, request.getStatus(), newStatus);
+				boolean isValidData = validateAssignerAndStatus(newAssignedPerson, request.getStatus(), newStatus);
 
 				if (isValidData) {
 					request.setStatus(newStatus);
@@ -235,20 +236,38 @@ public class RelationRequestController extends BaseController {
 					session = sqlSessionFactory.openSession();
 
 					requestDAL.setSession(session);
-
+					
+					// get old information before update
+					RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
+					
 					// update request
 					requestDAL.updateRequest(request);
 					
+					// get new information after update
+					
+					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
+					
+					// open sql session
+					commentDAL = DALFactory.getDAL(CommentDAL.class, sqlSessionFactory);
+					commentDAL.setSession(session);
+					
+					// Insert into table comment
+					commentDAL.updateRequest(oldRequest, newRequest);
+					
 					session.commit();
 					
+					// Display information message when delete successful
+					messageId = "INF1";
 					success = true;
 				} else {
-					messageId = "";
+					// inform error message about invalid data
+					messageId = "WRN2";
 				}
 			}
 
 		} catch (GenericException e) {
-			messageId = "";
+			// inform error message about invalid data
+			messageId = "WRN2";
 		} finally {
 			if (session != null) {
 				session.close();

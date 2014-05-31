@@ -347,16 +347,6 @@
 		<put-attribute name="body"
 			value="/WEB-INF/view/auth/login.ftl" type="freemarker" />
 	</definition>
-
-	<definition name="company.list" extends="full.definition">
-		<put-attribute name="body"
-			value="/WEB-INF/view/company/list.ftl" type="freemarker" />
-	</definition>
-
-	<definition name="company.ajax_list" extends="ajax.definition">
-		<put-attribute name="body"
-			value="/WEB-INF/view/company/ajax_list.ftl" type="freemarker" />
-	</definition>
 	
 	<definition name="request.list" extends="full.definition">
 		<put-attribute name="body"

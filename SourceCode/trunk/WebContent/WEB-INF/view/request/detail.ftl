@@ -150,7 +150,7 @@
 <script type="text/javascript">
 	me.dapps.global['url.context'] = '${formatter.url("")}';
 	me.dapps.global['url.confirm_change'] = '${formatter.url("/request/confirm_change/?ajax")}';
-	me.dapps.global['message.assign_person_warning'] = "WRN506";
+	me.dapps.global['message.assign_person_warning'] = "WRN1";
 </script>				
 </#escape>
 </#compress>

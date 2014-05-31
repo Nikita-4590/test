@@ -16,7 +16,6 @@ import com.hrs.mediarequesttool.common.Breadcrumb;
 import com.hrs.mediarequesttool.common.Formatter;
 import com.hrs.mediarequesttool.common.exception.GenericException;
 import com.hrs.mediarequesttool.dals.DALFactory;
-import com.hrs.mediarequesttool.pojos.Account;
 import com.hrs.mediarequesttool.pojos.User;
 
 public abstract class BaseController {
@@ -75,9 +74,6 @@ public abstract class BaseController {
 		 * model.addAttribute("base_server_name", serverName); model.addAttribute("base_server_port", serverPort); model.addAttribute("base_request_is_secure", httpRequest.isSecure());
 		 */
 		// add account type contants
-		model.addAttribute("account_type_tabaitai", Account.TABAITAI);
-		model.addAttribute("account_type_ukerukun", Account.UKERUKUN);
-		model.addAttribute("account_type_fac", Account.FAC);
 	}
 
 	protected ModelAndView redirect(String router) {
