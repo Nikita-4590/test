@@ -59,22 +59,22 @@ public class RelationRequestController extends BaseController {
 	@RequestMapping(value = "/ajax_list/", method = RequestMethod.GET)
 	@ResponseBody
 	public ModelAndView ajaxList(HttpServletRequest httpRequest, ModelMap model, Authentication authentication) throws UnsupportedEncodingException {
-		String pageParam = httpRequest.getParameter("page");
-		String sortParam = httpRequest.getParameter("sort");
-		String requestIdParam = httpRequest.getParameter("id");
-		String statusParam = httpRequest.getParameter("status");
-		String directionParam = httpRequest.getParameter("sort_direction");
-		String companyParam = httpRequest.getParameter("company_id");
-		String mediaParam = httpRequest.getParameter("media_id");
-		int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
 		try {
-
+			String pageParam = httpRequest.getParameter("page");
+			String sortParam = httpRequest.getParameter("sort");
+			String requestIdParam = httpRequest.getParameter("id");
+			String statusParam = httpRequest.getParameter("status");
+			String directionParam = httpRequest.getParameter("sort_direction");
+			String companyParam = httpRequest.getParameter("company_id");
+			String mediaParam = httpRequest.getParameter("media_id");
+			int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
+			
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
-			Role role = new Role();
+			Role role = new Role(authentication.getPrincipal());
 			PagingResult<RelationRequest> relationRequests = requestDAL.paging(page, directionParam, sortParam, requestIdParam, statusParam, companyParam, mediaParam,
-					role.generateSQL(authentication.getPrincipal()));
+					role.getRoles(),role.getPriority());
 			model.addAttribute("relationRequests", relationRequests);
-			model.addAttribute("compare_status", "NEW");
+			model.addAttribute("compare_status", Constants.HIGHT_LIGHT_RECORD);
 
 		} catch (GenericException e) {
 			e.printStackTrace();
@@ -90,8 +90,8 @@ public class RelationRequestController extends BaseController {
 		String result = null;
 		try {
 			StatusDAL statusDAL = getDAL(StatusDAL.class);
-			Role role = new Role();
-			List<Status> status = statusDAL.getAll(role.generateSQL(authentication.getPrincipal()));
+			Role role = new Role(authentication.getPrincipal());			
+			List<Status> status = statusDAL.getAll(role.getRoles());
 			Gson gson = new Gson();
 			result = gson.toJson(status);
 			return result;
