@@ -45,4 +45,25 @@
 	width: 1200px;
 }
 
+.status {
+	width : 15%;
+}
+.time_common {
+	width : 155px;
+}
+.company_id {
+	width : 7%;
+}
+.company_name {
+	width : 11%;
+}
+.media_name {
+	width : 22%;
+}
+.request_id {
+	width : 7%;
+}
+.tantosha {
+	width : auto;
+}
 
