@@ -87,7 +87,7 @@ me.dapps.ui.enhanced.locale['ERR403'] = 'セッションが切断されました
 me.dapps.ui.enhanced.locale['ERR404'] = '予期せぬエラーが発生したため、処理を中断しました。';
 me.dapps.ui.enhanced.locale['INF500'] = '変更が正常に完了しました。';
 me.dapps.ui.enhanced.locale['WRN500'] = '店舗情報を入力してください。';
-me.dapps.ui.enhanced.locale['WRN501'] = 'URLを入力してください。';
+me.dapps.ui.enhanced.locale['WRN501'] = 'HRS担当者を入力してください。';
 me.dapps.ui.enhanced.locale['WRN502'] = '{0}を入力してください。';
 me.dapps.ui.enhanced.locale['WRN503'] = '{0}を入力してください。';
 me.dapps.ui.enhanced.locale['WRN504'] = '連携対象応募日時は連携開始日時以前を入力してください。';
@@ -104,3 +104,7 @@ me.dapps.ui.enhanced.locale['ERR600'] = '削除に失敗しました。';
 me.dapps.ui.enhanced.locale['ERR601'] = 'データを入力した際に、不具合が発生しました。';
 me.dapps.ui.enhanced.locale['ERR602'] = 'セッションが切断されました。再度ログインしてください。';
 me.dapps.ui.enhanced.locale['ERR603'] = '予期せぬエラーが発生したため、処理を中断しました。';
+
+me.dapps.ui.enhanced.locale['WRN1'] = 'HRS担当者を入力してください。';
+me.dapps.ui.enhanced.locale['WRN2'] = 'データを入力した際に、不具合が発生しました。';
+me.dapps.ui.enhanced.locale['INF1'] = '変更が正常に完了しました。';
