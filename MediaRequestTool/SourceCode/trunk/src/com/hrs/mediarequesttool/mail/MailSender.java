@@ -61,11 +61,11 @@ public abstract class MailSender extends Thread {
 		props.put("mail.smtp.user", PropertiesLoader.instance.getMailAddress());
 		props.put("mail.smtp.host", PropertiesLoader.instance.getMailHost());
 		props.put("mail.smtp.port", PropertiesLoader.instance.getMailPort());
-		//props.put("mail.smtp.auth", "false");
-		//props.put("mail.smtp.starttls.enable", "true");
-		//props.put("mail.smtp.socketFactory.port", PropertiesLoader.instance.getMailPort());
-		//props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		//props.put("mail.smtp.socketFactory.fallback", "false");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.socketFactory.port", PropertiesLoader.instance.getMailPort());
+		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		props.put("mail.smtp.socketFactory.fallback", "false");
 		try {
 			Authenticator auth = new SMTPAuthenticator();
 			Session session = Session.getInstance(props, auth);

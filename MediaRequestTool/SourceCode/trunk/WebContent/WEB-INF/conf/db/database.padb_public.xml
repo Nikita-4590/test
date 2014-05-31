@@ -25,9 +25,10 @@
 
 	<mappers>
 		<mapper resource="com/hrs/mediarequesttool/mappers/UserMapper.xml" />
-		<mapper resource="com/hrs/mediarequesttool/mappers/AccountMapper.xml" />
-		<mapper resource="com/hrs/mediarequesttool/mappers/CompanyMapper.xml" />
 		<mapper resource="com/hrs/mediarequesttool/mappers/RelationRequestMapper.xml" />
 		<mapper resource="com/hrs/mediarequesttool/mappers/StatusMapper.xml" />
+		<mapper resource="com/hrs/mediarequesttool/mappers/CommentMapper.xml" />
+		<mapper resource="com/hrs/mediarequesttool/mappers/MediaMapper.xml" />
+		<mapper resource="com/hrs/mediarequesttool/mappers/MediaLabelMapper.xml" />
 	</mappers>
 </configuration>

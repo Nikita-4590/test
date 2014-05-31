@@ -18,10 +18,6 @@
 		
 		$(me.dapps).trigger('load');
 	});
-	
-	var ACCOUNT_TYPE_TABAITAI = ${account_type_tabaitai};
-	var ACCOUNT_TYPE_UKERUKUN = ${account_type_ukerukun};
-	var ACCOUNT_TYPE_FAC = ${account_type_fac};
 </script>
 <#if scripts??>
 	<#list scripts as script>
