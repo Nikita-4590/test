@@ -124,11 +124,38 @@ function() {
 					generatedStatusBoxSearch();
 				},
 				error : function(e) {
-					window.alert('connect to sever error');
-					/*
-					 * process when call sever error
-					 */
-					// TODO
+					if (isSet(e) && e.status != 200) {
+						if (isUnset(me.dapps.global['relation_request.get_status_box'])) {
+							me.dapps.global['relation_request.get_status_box'] = new me.dapps.box({
+								auto_hide : false,
+								close_button : false,
+								button : {
+									align : 'right',
+									list : [ {
+										text : 'OK',
+										action : function(errorBox) {
+											if (errorBox._error.status == 403) {
+												location.href = me.dapps.global['url.context'] + "/";
+											} else {
+												errorBox.close();
+											}
+										}
+									} ]
+								}
+							});
+						}
+
+						var messageId = 'ERR301';
+
+						if (e.status == 403) {
+							messageId = 'ERR300';
+						}
+
+						message = me.dapps.ui.enhanced.locale.text(messageId);
+
+						me.dapps.global['relation_request.get_status_box']._error = e;
+						me.dapps.global['relation_request.get_status_box'].show(message);
+					}
 				}
 			});
 		} else {
