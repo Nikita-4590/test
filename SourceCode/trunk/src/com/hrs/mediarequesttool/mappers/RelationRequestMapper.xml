@@ -7,6 +7,7 @@
         <result property="relation_request_id" column="relation_request_id" />
         <result property="company_auto_id" column="company_auto_id" />
         <result property="media_id" column="media_id" />
+        <result property="media_auto_id" column="media_auto_id"/>
         <result property="requester_name" column="requester_name" />
         <result property="company_id" column="company_id" />
         <result property="requester_mail" column="requester_mail" />
@@ -102,8 +103,8 @@
         SELECT
             relation_request.relation_request_id AS relation_request_id,
             relation_request.company_id AS company_auto_id,
-            relation_request.media_id AS
-            media_id,relation_request.requester_name AS requester_name,
+            relation_request.media_id AS media_auto_id,
+            relation_request.requester_name AS requester_name,
             relation_request.requester_mail AS requester_mail,
             relation_request.requester_phone AS requester_phone,
             relation_request.url AS url,
@@ -111,7 +112,7 @@
             relation_request.login_id_2 AS login_id_2,
             relation_request.login_password_1 AS login_password_1,
             relation_request.login_password_2 AS login_password_2,
-            to_char(relation_request.crawl_date, 'YYYY年MM月DD日 HH24:MI:SS'::text) AS crawl_date,
+            to_char(relation_request.crawl_date, 'YYYY年MM月DD日'::text) AS crawl_date,
             relation_request.other_comment AS other_comment,
             relation_request.status AS status,
             relation_request.assign_user_name AS assign_user_name,
@@ -120,7 +121,8 @@
             contract_company.company_name AS company_name,
             media.media_name AS media_name,
             relation_request_status.description AS status_description,
-            contract_company.company_id AS company_id
+            contract_company.company_id AS company_id,
+            media.media_id as media_id
         FROM
             other_media.relation_request AS relation_request
             INNER JOIN other_media.contract_company AS contract_company ON
