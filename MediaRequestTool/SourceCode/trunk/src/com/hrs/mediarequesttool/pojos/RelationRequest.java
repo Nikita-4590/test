@@ -4,7 +4,8 @@ public class RelationRequest {
 	private int relation_request_id;
 	
 	private int company_auto_id;
-	private int media_id;
+	private int media_auto_id;
+	private String media_id;
 	private String requester_name;
 	
 	private String requester_mail;
@@ -46,14 +47,6 @@ public class RelationRequest {
 	
 	public void setCompany_auto_id(int company_auto_id) {
 		this.company_auto_id = company_auto_id;
-	}
-	
-	public int getMedia_id() {
-		return media_id;
-	}
-	
-	public void setMedia_id(int media_id) {
-		this.media_id = media_id;
 	}
 	
 	public String getRequester_name() {
@@ -207,5 +200,22 @@ public class RelationRequest {
 	public void setStatus_description(String status_description) {
 		this.status_description = status_description;
 	}
+
+	public int getMedia_auto_id() {
+		return media_auto_id;
+	}
+
+	public void setMedia_auto_id(int media_auto_id) {
+		this.media_auto_id = media_auto_id;
+	}
+
+	public String getMedia_id() {
+		return media_id;
+	}
+
+	public void setMedia_id(String media_id) {
+		this.media_id = media_id;
+	}
+	
 	
 }

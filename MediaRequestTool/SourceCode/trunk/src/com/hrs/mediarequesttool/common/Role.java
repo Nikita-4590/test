@@ -12,10 +12,6 @@ public class Role {
 	private final static String LEADER_STATUS_PRIORITY = "created_at";
 	private final static String MEDIA_CHECKER_STATUS_PRIORITY = "status";
 
-	public String getSortPriority(Object object) {
-		return null;
-	}
-
 	private String[] roles;
 	private String priority;
 
