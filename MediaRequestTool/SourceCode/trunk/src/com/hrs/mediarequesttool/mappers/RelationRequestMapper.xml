@@ -116,24 +116,19 @@
             relation_request.status AS status,
             relation_request.assign_user_name AS assign_user_name,
             to_char(relation_request.created_at, 'YYYY年MM月DD日 HH24:MI:SS'::text) AS created_at,
-            to_char(relation_request.updated_at,'YYYY年MM月DD日 HH24:MI:SS'::text) AS
-            updated_at,
+            to_char(relation_request.updated_at,'YYYY年MM月DD日 HH24:MI:SS'::text) AS updated_at,
             contract_company.company_name AS company_name,
             media.media_name AS media_name,
             relation_request_status.description AS status_description,
             contract_company.company_id AS company_id
         FROM
             other_media.relation_request AS relation_request
-            INNER JOIN other_media.contract_company AS
-            contract_company ON
-            contract_company.id
-            = relation_request.company_id INNER JOIN other_media.media
-            AS media ON
-            media.id = relation_request.media_id
-            INNER JOIN other_media.relation_request_status
-            AS relation_request_status ON
-            relation_request_status.status_type =
-            relation_request.status
+            INNER JOIN other_media.contract_company AS contract_company ON
+                contract_company.id = relation_request.company_id 
+            INNER JOIN other_media.media AS media ON
+                media.id = relation_request.media_id
+            INNER JOIN other_media.relation_request_status AS relation_request_status ON
+                relation_request_status.status_type = relation_request.status
         <where>
             <if test="status == null">
                 relation_request.status IN
@@ -194,14 +189,14 @@
         </if>
         <if test="sort == null or direction == null">
             ORDER BY 
-                contract_company.${priority} ASC,
-                relation_request.created_at ASC,
-                relation_request.crawl_date ASC,
-                relation_request.relation_request_id ASC,
-                contract_company.company_id ASC,
-                contract_company.company_name ASC,
-                media.media_name ASC,
-                relation_request.assign_user_name ASC
+                relation_request.${priority} DESC,
+                relation_request.created_at DESC,
+                relation_request.crawl_date DESC,
+                relation_request.relation_request_id DESC,
+                contract_company.company_id DESC,
+                contract_company.company_name DESC,
+                media.media_name DESC,
+                relation_request.assign_user_name DESC
         </if>
         LIMIT #{page.limit} OFFSET #{page.offset}
     </select>

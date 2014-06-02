@@ -178,7 +178,7 @@ public abstract class BaseController {
 	public <T> T getDAL(Class<T> clazz) throws GenericException{
 		return DALFactory.getDAL(clazz, servletContext);
 	}
-	public	User	getCurrentUser(){
+	public User getCurrentUser(){
 		return AuthProvider.getUser();
 	}
 }
