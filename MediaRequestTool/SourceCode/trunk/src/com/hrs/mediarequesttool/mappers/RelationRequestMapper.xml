@@ -168,7 +168,8 @@
         SELECT
             request.relation_request_id,
             request.company_id AS company_auto_id,
-            request.media_id,
+            request.media_id as media_auto_id,
+            media.media_id,
             request.requester_name,
             request.requester_mail,
             request.requester_phone,

@@ -33,8 +33,10 @@ import com.hrs.mediarequesttool.common.exception.ResourceNotFoundException;
 import com.hrs.mediarequesttool.common.validator.Validator;
 import com.hrs.mediarequesttool.dals.CommentDAL;
 import com.hrs.mediarequesttool.dals.DALFactory;
+import com.hrs.mediarequesttool.dals.MediaLabelDAL;
 import com.hrs.mediarequesttool.dals.RelationRequestDAL;
 import com.hrs.mediarequesttool.dals.StatusDAL;
+import com.hrs.mediarequesttool.pojos.MediaLabel;
 import com.hrs.mediarequesttool.pojos.RelationRequest;
 import com.hrs.mediarequesttool.pojos.Status;
 
@@ -141,12 +143,22 @@ public class RelationRequestController extends BaseController {
 			}
 
 			List<Status> listStatus = statusDAL.getListNextStatus(listNextStatus);
+			
+			MediaLabelDAL mediaLabelDAL = DALFactory.getDAL(MediaLabelDAL.class, sqlSessionFactory);
+			
+			MediaLabel mediaLabel = mediaLabelDAL.get(request.getMedia_id());
+			
+			if (mediaLabel == null) {
+				throw new ResourceNotFoundException();
+			} 
+			
 			model.addAttribute("listStatus", listStatus);
 			model.addAttribute("request", request);
+			model.addAttribute("mediaLabel", mediaLabel);
 
 			builder.setPageTitle("依頼詳細");
 			builder.setStylesheets("global.form.css", "request.detail.css");
-			builder.setScripts("jquery/jquery.form.min.js", "request.change.js");
+			builder.setScripts("jquery/jquery.form.min.js", "request.detail.js", "request.change.js");
 
 		} catch (Exception e) {
 			// TODO: handle exception

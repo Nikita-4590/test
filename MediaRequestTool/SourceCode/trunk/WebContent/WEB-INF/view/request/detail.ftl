@@ -96,33 +96,40 @@
 			</div>	
 		</div>
 		
+		<#if mediaLabel?? && mediaLabel.login_id_1??>
 		<div class="form-line">
 			<div class="form-col-right">
 				<label>${request.login_id_1!""}</label>
 			</div>
 			<div class="form-col-left">
-				<label for="login_id_1">ログインID1</label>
+				<label for="login_id_1">${mediaLabel.login_id_1}</label>
 			</div>	
 		</div>
+		</#if>
 		
+		<#if mediaLabel?? && mediaLabel.login_id_2??>
 		<div class="form-line">
 			<div class="form-col-right">
 				<label>${request.login_id_2!""}</label>
 			</div>
 			<div class="form-col-left">
-				<label for="login_id_2">ログインID2</label>
+				<label for="login_id_2">${mediaLabel.login_id_2}</label>
 			</div>	
 		</div>
+		</#if>
 		
+		<#if mediaLabel?? && mediaLabel.login_password_1??>
 		<div class="form-line">
 			<div class="form-col-right">
 				<label>${request.login_password_1!""}</label>
 			</div>
 			<div class="form-col-left">
-				<label for="login_password_1">パスワード1</label>
+				<label for="login_password_1">${mediaLabel.login_password_1}</label>
 			</div>	
 		</div>
+		</#if>
 		
+		<#if mediaLabel?? && mediaLabel.login_password_2??>
 		<div class="form-line">
 			<div class="form-col-right">
 				<label>${request.login_password_2!""}</label>
@@ -131,10 +138,13 @@
 				<label for="login_password_2">パスワード2</label>
 			</div>	
 		</div>
+		</#if>
 		
 		<div class="form-line">
 			<div class="form-col-right">
-				<label>${request.crawl_date!""}</label>
+				<input type="text" id="crawl-date" name="crawl_date" <#if request?? && request.crawl_date??>value="${request.crawl_date}"</#if> 
+					dapps-ui-datepicker="{'input':{'format':'yy-mm-dd'},'output':{'format':'yy年mm月dd日'}}" />
+				<a href="#" class="button-link" id="submit-edit-date">変更</a>	
 			</div>
 			<div class="form-col-left">
 				<label for="crawl_date">連携開始日</label>
@@ -144,7 +154,9 @@
 	</div> </br>
 	<h3>その他伝達事項</h3>
 	<#-- ------------------------------------------------->
-	<span>${request.other_comment!""}</span></br></br></br>
+	<div id="request-form-comment" class="form">
+		<span>${request.other_comment!""}</span></br></br></br>
+	</div>	
 </div>
 
 <script type="text/javascript">
