@@ -32,11 +32,9 @@ me.dapps.sort_control.prototype.createControls = function(sort_data) {
 		this.main = $('<div />').addClass('dapps-table-header-sort-control');
 		this.header.append(this.main);
 		this.main.click(function() {
-		
-			thisControl.changeDirection();		
+			thisControl.changeDirection();
 		});
 	} else {
-		
 		this.header.append(this.main);
 		this.main = $('<div />');
 	}	

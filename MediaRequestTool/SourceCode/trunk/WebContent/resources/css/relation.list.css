@@ -51,6 +51,9 @@
 .time_common {
 	width : 155px;
 }
+.time_common_date {
+	width : 130px;
+}
 .company_id {
 	width : 7%;
 }

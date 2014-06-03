@@ -187,18 +187,44 @@
             </if>
         </where>
         <if test="sort != null and direction != null">
-            ORDER BY relation_request.${sort} ${direction}
+            ORDER BY
+            <if test="sort != 'status'">
+                relation_request.${sort} ${direction}
+            </if>
+            <if test="sort == 'status'">
+               CASE
+	               WHEN relation_request.status = 'NEW' THEN 1
+	               WHEN relation_request.status = 'ASSIGNED' THEN 2
+	               WHEN relation_request.status = 'CONFIRMING' THEN 3
+	               WHEN relation_request.status = 'OK' THEN 4
+	               WHEN relation_request.status = 'NG' THEN 5
+	               WHEN relation_request.status = 'FINISHED' THEN 6
+	               WHEN relation_request.status = 'DELETED' THEN 7 END
+            </if>
+            ${direction}
         </if>
         <if test="sort == null or direction == null">
-            ORDER BY 
-                relation_request.${priority} DESC,
-                relation_request.created_at DESC,
-                relation_request.crawl_date DESC,
-                relation_request.relation_request_id DESC,
-                contract_company.company_id DESC,
-                contract_company.company_name DESC,
-                media.media_name DESC,
-                relation_request.assign_user_name DESC
+            ORDER BY
+               <if test="priority != null and priority == 'status'">
+                CASE 
+	               WHEN relation_request.status = 'NEW' THEN 1
+                   WHEN relation_request.status = 'ASSIGNED' THEN 2
+                   WHEN relation_request.status = 'CONFIRMING' THEN 3
+                   WHEN relation_request.status = 'OK' THEN 4
+                   WHEN relation_request.status = 'NG' THEN 5
+                   WHEN relation_request.status = 'FINISHED' THEN 6
+                   WHEN relation_request.status = 'DELETED' THEN 7 END
+               </if>
+               <if test="priority != null and priority != 'status'">
+                   relation_request.${priority} DESC,
+               </if>                
+               relation_request.created_at DESC,
+               relation_request.crawl_date DESC,
+               relation_request.relation_request_id DESC,
+               contract_company.company_id DESC,
+               contract_company.company_name DESC,
+               media.media_name DESC,
+               relation_request.assign_user_name DESC
         </if>
         LIMIT #{page.limit} OFFSET #{page.offset}
     </select>
