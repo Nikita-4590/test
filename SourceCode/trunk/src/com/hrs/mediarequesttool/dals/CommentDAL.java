@@ -126,7 +126,7 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 			try {
 				RelationRequest request = RelationRequest.class.cast(object);
 				MediaDAL mediaDAL = DALFactory.getDAL(MediaDAL.class, this.sessionFactory);
-				Media media = mediaDAL.get(request.getMedia_id());
+				Media media = mediaDAL.get(request.getCompany_auto_id());
 				MediaLabelDAL dal = DALFactory.getDAL(MediaLabelDAL.class, this.sessionFactory);
 				MediaLabel label = dal.get(media.getMedia_id());
 
