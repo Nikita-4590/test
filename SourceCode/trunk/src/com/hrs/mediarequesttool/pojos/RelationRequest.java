@@ -2,33 +2,25 @@ package com.hrs.mediarequesttool.pojos;
 
 public class RelationRequest {
 	private int relation_request_id;
-	
 	private int company_auto_id;
 	private int media_auto_id;
 	private String media_id;
 	private String requester_name;
-	
 	private String requester_mail;
 	private String requester_phone;
 	private String url;
-	
 	private String company_id;
-	
 	private String login_id_1;
 	private String login_id_2;
 	private String login_password_1;
 	private String login_password_2;
-		
-	
 	private String crawl_date;
 	private String other_comment;
 	private String status;
 	private String assign_user_name;
-	
 	private int update_user_id;
 	private String created_at;
 	private String updated_at;
-	
 	private String company_name;
 	private String media_name;
 	private String status_description;
@@ -47,6 +39,22 @@ public class RelationRequest {
 	
 	public void setCompany_auto_id(int company_auto_id) {
 		this.company_auto_id = company_auto_id;
+	}
+
+	public int getMedia_auto_id() {
+		return media_auto_id;
+	}
+
+	public void setMedia_auto_id(int media_auto_id) {
+		this.media_auto_id = media_auto_id;
+	}
+
+	public String getMedia_id() {
+		return media_id;
+	}
+
+	public void setMedia_id(String media_id) {
+		this.media_id = media_id;
 	}
 	
 	public String getRequester_name() {
@@ -200,22 +208,5 @@ public class RelationRequest {
 	public void setStatus_description(String status_description) {
 		this.status_description = status_description;
 	}
-
-	public int getMedia_auto_id() {
-		return media_auto_id;
-	}
-
-	public void setMedia_auto_id(int media_auto_id) {
-		this.media_auto_id = media_auto_id;
-	}
-
-	public String getMedia_id() {
-		return media_id;
-	}
-
-	public void setMedia_id(String media_id) {
-		this.media_id = media_id;
-	}
-	
 	
 }

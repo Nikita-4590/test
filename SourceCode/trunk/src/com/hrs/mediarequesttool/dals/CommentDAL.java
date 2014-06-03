@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.hrs.mediarequesttool.dals.DALFactory;
-import com.hrs.mediarequesttool.dals.MediaDAL;
 import com.hrs.mediarequesttool.dals.MediaLabelDAL;
-import com.hrs.mediarequesttool.pojos.Media;
 import com.hrs.mediarequesttool.pojos.MediaLabel;
 import com.hrs.mediarequesttool.pojos.CommentProperty;
 import com.hrs.mediarequesttool.mail.HistorySender;
@@ -125,10 +123,8 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 			type = RelationRequest.class;
 			try {
 				RelationRequest request = RelationRequest.class.cast(object);
-				MediaDAL mediaDAL = DALFactory.getDAL(MediaDAL.class, this.sessionFactory);
-				Media media = mediaDAL.get(request.getCompany_auto_id());
-				MediaLabelDAL dal = DALFactory.getDAL(MediaLabelDAL.class, this.sessionFactory);
-				MediaLabel label = dal.get(media.getMedia_id());
+				MediaLabelDAL mediaLabelDAL = DALFactory.getDAL(MediaLabelDAL.class, this.sessionFactory);
+				MediaLabel label = mediaLabelDAL.get(request.getMedia_id());
 
 				propertyMap.put("login_id_1", label.getLogin_id_1());
 				propertyMap.put("login_id_2", label.getLogin_id_2());
