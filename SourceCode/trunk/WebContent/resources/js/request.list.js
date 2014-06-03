@@ -73,10 +73,10 @@ function() {
 						});
 					}
 
-					var messageId = 'ERR301';
+					var messageId = 'ERR101';
 
 					if (e.status == 403) {
-						messageId = 'ERR300';
+						messageId = 'ERR100';
 					}
 
 					message = me.dapps.ui.enhanced.locale.text(messageId);
@@ -145,10 +145,10 @@ function() {
 							});
 						}
 
-						var messageId = 'ERR301';
+						var messageId = 'ERR101';
 
 						if (e.status == 403) {
-							messageId = 'ERR300';
+							messageId = 'ERR100';
 						}
 
 						message = me.dapps.ui.enhanced.locale.text(messageId);
