@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -158,7 +161,7 @@ public class RelationRequestController extends BaseController {
 
 			builder.setPageTitle("依頼詳細");
 			builder.setStylesheets("global.form.css", "request.detail.css");
-			builder.setScripts("jquery/jquery.form.min.js", "request.detail.js", "request.change.js");
+			builder.setScripts("jquery/jquery.form.min.js", "request.detail.js", "request.change.js", "request.renkei.js");
 
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -201,6 +204,35 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("request", request);
 			model.addAttribute("newAssignedPerson", newAssignedPerson);
 			model.addAttribute("changedStatus", changedStatus);
+
+			return view(builder);
+		} catch (NumberFormatException e) {
+			throw new ResourceNotFoundException(e, this.getClass());
+		} catch (GenericException e) {
+			throw new BadRequestException(e, this.getClass());
+		}
+	}
+	
+	@RequestMapping(value = "/confirm_change_renkei_date/", method = RequestMethod.POST)
+	public ModelAndView confirmChangeRenkeiDate(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
+		try {
+			ViewBuilder builder = getViewBuilder("request.confirm-change-renkei-date", model);
+			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
+			String renkeiDate = httpRequest.getParameter("renkei_date");
+
+			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
+
+			// get Request detail
+			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
+
+			RelationRequest request = requestDAL.get(requestId);
+
+			if (request == null || !validateRenkeiDate(renkeiDate)) {
+				throw new ResourceNotFoundException();
+			}
+
+			model.addAttribute("request", request);
+			model.addAttribute("renkeiDate", renkeiDate);
 
 			return view(builder);
 		} catch (NumberFormatException e) {
@@ -339,6 +371,22 @@ public class RelationRequestController extends BaseController {
 		}
 
 		return true;
+	}
+	
+	private boolean validateRenkeiDate(String renkeiDate) {
+		if (Validator.isNullOrEmpty(renkeiDate)) {
+			return false;
+		} else {
+			DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
+			
+			DateTime crawlDate = DateTime.parse(renkeiDate, dateFormatter);
+			
+			DateTime tomorrow = DateTime.now().plusDays(1).withTime(0, 0, 0, 0);
+			
+			boolean checkCrawlDate = crawlDate.isAfter(tomorrow) || crawlDate.isEqual(tomorrow);
+			
+			return checkCrawlDate;
+		}
 	}
 
 }
