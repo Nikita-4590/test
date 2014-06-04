@@ -368,4 +368,9 @@
 			value="/WEB-INF/view/request/confirm_change.ftl" type="freemarker" />
 	</definition>
 	
+	<definition name="request.confirm-change-renkei-date" extends="ajax.definition">
+		<put-attribute name="body"
+			value="/WEB-INF/view/request/confirm_change_renkei_date.ftl" type="freemarker" />
+	</definition>
+	
 </tiles-definitions>

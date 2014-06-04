@@ -41,7 +41,7 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 		REQUEST_MAP.put("url", "管理画面URL");
 		REQUEST_MAP.put("login_id_1", "login_id_1");
 		REQUEST_MAP.put("login_id_2", "login_id_2");
-		REQUEST_MAP.put("crawl_date", "連携開始日時");
+		REQUEST_MAP.put("crawl_date", "連携開始日");
 	}
 	
 	// restricted constructor
