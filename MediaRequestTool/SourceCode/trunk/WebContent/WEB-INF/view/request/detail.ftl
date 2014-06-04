@@ -144,7 +144,9 @@
 			<div class="form-col-right">
 				<input type="text" id="crawl-date" name="crawl_date" <#if request?? && request.crawl_date??>value="${request.crawl_date}"</#if> 
 					dapps-ui-datepicker="{'input':{'format':'yy-mm-dd'},'output':{'format':'yy年mm月dd日'}}" />
-				<a href="#" class="button-link" id="submit-edit-date">変更</a>	
+				<input type="hidden" id="crawl-date-original" name="crawl_date_original" <#if request?? && request.crawl_date??>value="${request.crawl_date}"</#if> 
+					dapps-ui-datepicker="{'input':{'format':'yy-mm-dd'},'output':{'format':'yy年mm月dd日'}}" />	
+				<a href="#" class="button-link" onclick="confirmChangeRenkeiDate(${request.relation_request_id}); return false;">変更する</a>
 			</div>
 			<div class="form-col-left">
 				<label for="crawl_date">連携開始日</label>
@@ -162,6 +164,7 @@
 <script type="text/javascript">
 	me.dapps.global['url.context'] = '${formatter.url("")}';
 	me.dapps.global['url.confirm_change'] = '${formatter.url("/request/confirm_change/?ajax")}';
+	me.dapps.global['url.confirm_change_renkei_date'] = '${formatter.url("/request/confirm_change_renkei_date/?ajax")}';
 	me.dapps.global['message.assign_person_warning'] = "WRN1";
 </script>				
 </#escape>
