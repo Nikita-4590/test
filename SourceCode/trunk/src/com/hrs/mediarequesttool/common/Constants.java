@@ -16,7 +16,7 @@ public class Constants {
 	public final static String ENABLE_FLAG_IS_TRUE = "1";
 	public final static String MREC = ".mrec.jp";
 	public final static String SERVICE_R_RECLOG = "r-reclog";
-	public final static String DATE_FORMAT = "yyyy-MM-dd";
+	public final static String DATE_FORMAT = "yyyy年MM月dd日";
 	public final static String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	public final static int MAX_LENGTH_EMAIL_ADDRESS = 255;
 	public final static int MAX_LENGTH_PASSWORD = 20;

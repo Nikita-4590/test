@@ -1,19 +1,20 @@
 <#compress>
 <#escape x as x?html>
-<div class="page">
-	<form id="request-form">
-		<div id="request-form-top" class="form">
-			<div class="form-line">
-					<label>依頼ID: ${request.relation_request_id}</label>
-					<label>現在のステータス: ${request.status_description}</label>
-			</div>
+<div class="page" id="request-detail-page">
+	<div id="request-form-top" class="form">
+		<div class="form-line">
+			<label id="request-id">依頼ID:</label>
+			<span>${request.relation_request_id}</span>
+			<label id="status-description">現在のステータス:</label>
+			<span>${request.status_description}</span>
+		</div>
 			
-			<div class="form-line">
-					<label for="assign_user_name">HRS担当者</label>
-					<input type="text" id="assign-user-name" name="assign_user_name" maxlength="100" 
-						<#if request?? && request.assign_user_name??>value= "${request.assign_user_name}"</#if>/>
-					</input>
-				<select name="new_status" id="new-status">
+		<div class="form-line">
+			<label id="assign_user_name">HRS担当者</label>
+			<input type="text" id="assign-user-name" name="assign_user_name" maxlength="100" 
+				<#if request?? && request.assign_user_name??>value= "${request.assign_user_name}"</#if>/>
+			</input>
+			<select name="new_status" id="new-status">
 				<#list listStatus as status>
 					<#if status?? && status.status_type == request.status>
 						<option value="${status.status_type}" selected="selected">${status.description}</option>
@@ -21,11 +22,10 @@
 						<option value="${status.status_type}">${status.description}</option>
 					</#if>	
 				</#list>
-				</select>
-				<a href="#" class="button-link" onclick="confirmChange(${request.relation_request_id}); return false;">変更する</a>
-			</div>
-		</div>
-	</form>	
+			</select>
+			<a href="#" class="button-link" onclick="confirmChange(${request.relation_request_id}); return false;">変更する</a>
+		</div>	
+	</div>	
 	<h3>申込者情報</h3>
 	<#-- ------------------------------------------------->
 	<div id="request-form-center" class="form">
@@ -74,7 +74,7 @@
 			</div>	
 		</div>
 		
-	</div> </br>
+	</div> 
 	<h3>媒体アカウント情報</h3>
 	<#-- ------------------------------------------------->
 	<div id="request-form-bottom" class="form">
@@ -143,8 +143,6 @@
 		<div class="form-line">
 			<div class="form-col-right">
 				<input type="text" id="crawl-date" name="crawl_date" <#if request?? && request.crawl_date??>value="${request.crawl_date}"</#if> 
-					dapps-ui-datepicker="{'input':{'format':'yy-mm-dd'},'output':{'format':'yy年mm月dd日'}}" />
-				<input type="hidden" id="crawl-date-original" name="crawl_date_original" <#if request?? && request.crawl_date??>value="${request.crawl_date}"</#if> 
 					dapps-ui-datepicker="{'input':{'format':'yy-mm-dd'},'output':{'format':'yy年mm月dd日'}}" />	
 				<a href="#" class="button-link" onclick="confirmChangeRenkeiDate(${request.relation_request_id}); return false;">変更する</a>
 			</div>
