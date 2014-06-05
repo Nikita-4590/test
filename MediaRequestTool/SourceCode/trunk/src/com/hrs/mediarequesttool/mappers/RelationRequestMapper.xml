@@ -33,7 +33,7 @@
                 AND lower(company_name) like #{companyParam}
             </if>
             <if test="mediaParam != null">
-                AND lower(media.media_id) like #{mediaParam}
+                AND lower(media_id) like #{mediaParam}
                 <if test="status == null">
                     OR status in
                     <foreach collection="roles" index="index" item="item" open="("
@@ -131,7 +131,7 @@
 					       WHEN status = 'OK' THEN 4
 					       WHEN status = 'NG' THEN 3
 					       WHEN status = 'FINISHED' THEN 2
-					       WHEN status = 'DELETED' THEN 1 END
+					       WHEN status = 'DELETED' THEN 1 END 
 					</if>
 					${direction}
 				</if>
@@ -145,7 +145,7 @@
 				          WHEN status = 'OK' THEN 4
 				          WHEN status = 'NG' THEN 3
 				          WHEN status = 'FINISHED' THEN 2
-				          WHEN status = 'DELETED' THEN 1 END DESC
+				          WHEN status = 'DELETED' THEN 1 END DESC,
 			        </if>
 			        
 			        <if test="priority != null and priority != 'status'">
