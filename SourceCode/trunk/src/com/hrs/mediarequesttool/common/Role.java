@@ -9,8 +9,8 @@ public class Role {
 	private final static String[] MEMBER = { "ASSIGNED", "CONFIRMING",
 			"FINISHED", "OK" };
 	private final static String MEMBER_STATUS_PRIORITY = "crawl_date";
-	private final static String LEADER_STATUS_PRIORITY = "created_at";
-	private final static String MEDIA_CHECKER_STATUS_PRIORITY = "status";
+	private final static String LEADER_STATUS_PRIORITY = "status";
+	private final static String MEDIA_CHECKER_STATUS_PRIORITY = "created_at";
 
 	private String[] roles;
 	private String priority;
