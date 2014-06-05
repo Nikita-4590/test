@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +31,6 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 	
 	static {
 		REQUEST_MAP = new LinkedHashMap<String, String>();
-		
-		REQUEST_MAP = new LinkedHashMap<String, String>();
 		REQUEST_MAP.put("relation_request_id", "依頼ID");
 		REQUEST_MAP.put("company_name", "御社名");
 		REQUEST_MAP.put("requester_name", "ご担当者名");
@@ -42,6 +41,9 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 		REQUEST_MAP.put("login_id_1", "login_id_1");
 		REQUEST_MAP.put("login_id_2", "login_id_2");
 		REQUEST_MAP.put("crawl_date", "連携開始日");
+		REQUEST_MAP.put("other_comment", "その他伝達事項");
+		REQUEST_MAP.put("assign_user_name", "HRS");
+		REQUEST_MAP.put("status", "status");
 	}
 	
 	// restricted constructor
@@ -70,7 +72,13 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 			comment.setOld_value(toJSON(oldRequest));
 			comment.setNew_value(toJSON(newRequest));
 			
-			insertComment(comment, RelationRequest.class);
+			boolean isSendMail = false;
+			
+			if (StringUtils.strip(oldRequest.getStatus()).equals("NEW") && StringUtils.strip(newRequest.getStatus()).equals("ASSIGNED")) {
+				isSendMail = true;
+			} 
+			
+			insertComment(comment, isSendMail, RelationRequest.class);
 			
 			
 		} catch (NullPointerException e) {
@@ -78,14 +86,14 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 		} 
 	}
 	
-	private void insertComment(Comment comment, Class<?> type) throws GenericException {
+	private void insertComment(Comment comment, boolean isSendMail, Class<?> type) throws GenericException {
 		try {
 			openSession();
 			mapper.insert(comment);
 			
 			Comment newComment = mapper.get(comment.getRequest_comment_id());
 
-			if (newComment != null) {
+			if (newComment != null && isSendMail) {
 				getProperties(newComment, type);
 
 				HistorySender.execute(newComment);
@@ -100,7 +108,7 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 	private void getProperties(Comment comment, Class<?> type) throws Exception {
 		Map<String, CommentProperty> properties = new LinkedHashMap<String, CommentProperty>();
 
-		parseProperties(properties, parseJson(comment.getNew_value(), type), false);
+		parseProperties(properties, parseJson(comment.getNew_value(), type));
 
 		List<CommentProperty> propArr = new ArrayList<CommentProperty>();
 
@@ -111,7 +119,7 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 		comment.setProperties(propArr);
 	}
 	
-	private void parseProperties(Map<String, CommentProperty> properties, Object object, boolean old) throws Exception {
+	private void parseProperties(Map<String, CommentProperty> properties, Object object) throws Exception {
 		if (object == null) {
 			return;
 		}
@@ -157,11 +165,7 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 				properties.put(key, new CommentProperty(value));
 			}
 
-			if (old) {
-				properties.get(key).setOldValue(actualValue);
-			} else {
-				properties.get(key).setNewValue(actualValue);
-			}
+			properties.get(key).setValue(actualValue);
 		}
 	}
 	

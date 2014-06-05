@@ -29,7 +29,7 @@ public class HistorySender extends MailSender {
 
 	@Override
 	protected String getMailSubject() {
-		String subject = "Request Email by PTN";
+		String subject = "【リクオプ】媒体連携設定依頼を受け付けました";
 		return subject;
 	}
 }

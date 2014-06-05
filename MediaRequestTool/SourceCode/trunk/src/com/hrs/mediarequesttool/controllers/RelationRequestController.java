@@ -227,12 +227,22 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateRenkeiDate(renkeiDate)) {
+			if (request == null || Validator.isNullOrEmpty(renkeiDate)) {
 				throw new ResourceNotFoundException();
 			}
+			
+			DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
+			
+			DateTime crawlDate = DateTime.parse(renkeiDate, dateFormatter);
+			
+			DateTime tomorrow = DateTime.now().plusDays(1).withTime(0, 0, 0, 0);
+			
+			if (crawlDate.isBefore(tomorrow)) {
+				throw new ResourceNotFoundException();
+			} 
 
 			model.addAttribute("request", request);
-			model.addAttribute("renkeiDate", renkeiDate);
+			model.addAttribute("crawlDate", crawlDate);
 
 			return view(builder);
 		} catch (NumberFormatException e) {
@@ -371,22 +381,6 @@ public class RelationRequestController extends BaseController {
 		}
 
 		return true;
-	}
-	
-	private boolean validateRenkeiDate(String renkeiDate) {
-		if (Validator.isNullOrEmpty(renkeiDate)) {
-			return false;
-		} else {
-			DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-			
-			DateTime crawlDate = DateTime.parse(renkeiDate, dateFormatter);
-			
-			DateTime tomorrow = DateTime.now().plusDays(1).withTime(0, 0, 0, 0);
-			
-			boolean checkCrawlDate = crawlDate.isAfter(tomorrow) || crawlDate.isEqual(tomorrow);
-			
-			return checkCrawlDate;
-		}
 	}
 
 }
