@@ -133,7 +133,7 @@
 					       WHEN status = 'FINISHED' THEN 2
 					       WHEN status = 'DELETED' THEN 1 END 
 					</if>
-					${direction}
+					${direction},relation_request_id ${direction}
 				</if>
 				<if test="sort == null or direction == null">
 				   ORDER BY
@@ -151,14 +151,8 @@
 			        <if test="priority != null and priority != 'status'">
 			              ${priority} DESC,
 			        </if>
-				       created_at DESC,
-				       crawl_date DESC,
-				       relation_request_id DESC,
-				       company_id DESC,
-				       company_name DESC,
-				       media_name DESC,
-				       assign_user_name DESC
-				</if>
+				       relation_request_id DESC
+			        </if>
                     LIMIT #{page.limit} OFFSET #{page.offset}
         </select>
     
