@@ -28,7 +28,7 @@
             <tr>
                 <th class="status">ステータス</th>
                 <th class="time_common">登録日時</th>
-                <th class="time_common_date">希望連携開始日</th>
+                <th class="time_common_date">連携開始日</th>
                 <th class="company_id">企業ID</th>
                 <th class="company_name">社名</th>
                 <th class="media_name">媒体</th>
