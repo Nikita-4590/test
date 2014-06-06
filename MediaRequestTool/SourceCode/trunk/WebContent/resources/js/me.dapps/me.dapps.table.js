@@ -661,8 +661,8 @@ me.dapps.table.prototype.search = function(queries) {
 };
 me.dapps.table.prototype.localSearch = function() {
 	var hasResult = false;
-
-	for ( var rowIndex = 0; rowIndex < this.rowData.length; rowIndex++) {
+	
+	for ( var rowIndex = 0; isSet(this.rowData) && rowIndex < this.rowData.length; rowIndex++) {
 		// get rowdata
 		var rowData = this.rowData[rowIndex];
 		var rowCompareResult = true;
