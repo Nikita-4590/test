@@ -4,9 +4,9 @@ import com.hrs.mediarequesttool.pojos.User;
 
 public class Role {
 	
-	private final static String[] MEDIA_CHECKER = { "NEW", "CONFIRMING", "NG", "OK"};
-	private final static String[] LEADER = { "NEW", "CONFIRMING","NG", "OK", "PROCESSING"};
-	private final static String[] DIRECTOR = { "PROCESSING", "FINISHED"};
+	private final static String[] MEDIA_CHECKER = {"NEW", "CONFIRMING", "NG", "OK"};
+	private final static String[] LEADER = {"NEW", "CONFIRMING", "NG", "OK", "PROCESSING"};
+	private final static String[] DIRECTOR = {"PROCESSING", "FINISHED"};
 	
 	private final static String DIRECTOR_STATUS_PRIORITY = "director";
 	private final static String LEADER_STATUS_PRIORITY = "leader";
