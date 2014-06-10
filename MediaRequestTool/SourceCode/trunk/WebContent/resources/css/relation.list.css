@@ -1,48 +1,31 @@
-.status_combobox {
-	min-width : 40px;
-	text-align: center;
-}
-
-#search_form_control {
-	margin-bottom : 20px;
-	width : 100%;
-	float : left;
-}
-
-#search_form_type {
-	float : left;
-	width : 15%;	
-}
-#search_form_text {
-	width : 85%;
-	float : right ;
-}
-#search_form_input{
-	width : 80%;
-	float : left;
-	margin-left : 5px;
-}
-#search_value {
-	width : 100%;
-}
-.input_search {
-	width : 90%;
-}
-.label_control {
-	width : 20%;
-}
-#search_form_label{
-	width : 8%;
-	float : left;
-	margin-left : 5px;
-}
-#search_form_btn {
-	float: right;
-    width: 75px;
-    text-align: right;
-}
 #company-list-page {
 	width: 1200px;
+}
+#search-form {
+	margin-bottom: 10px;
+}
+#search-relation-request-form {
+    width : 100%;
+    margin:0 20 0 0;
+    display:inline-block;
+}
+
+#label_control {
+	width : 50px;
+	margin-left : 0px;
+	text-align: left;
+	float : left;
+}
+#input_text_search {
+	width : auto;
+	min-width : 80%;
+	margin-left: 50px;
+	float : left;
+}
+#button_search {
+	width : 80px;
+	margin-right: 0px;
+	float: right;
 }
 
 .status {

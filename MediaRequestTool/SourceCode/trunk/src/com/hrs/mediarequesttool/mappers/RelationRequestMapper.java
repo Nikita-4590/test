@@ -16,18 +16,14 @@ public interface RelationRequestMapper {
 			@Param("status") String status);
 	
 	int count ( @Param("requestId") String requestId,
-			@Param("companyParam") String companyParam, 
-			@Param("status") String status,
-			@Param("mediaParam") String mediaParam,
+			@Param("searchParam") String companyParam,
 			@Param("roles") String[] roles);
 	
 	List<RelationRequest> paging(@Param("page") Page page,
 			@Param("sort") String sort, 
 			@Param("direction") String direction,
 			@Param("requestId") String requestId,
-			@Param("status") String status,
-			@Param("companyParam") String companyParam,
-			@Param("mediaParam") String mediaParam,
+			@Param("searchParam") String searchParam,
 			@Param("roles") String[] roles,@Param("priority") String priority);
 	
 	// get Request detail information

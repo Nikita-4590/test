@@ -1,28 +1,13 @@
 <#compress>
 <#escape x as x?html>
 <div id="company-list-page" class="page">
-    <form id="search-relation-request-form">
-        <div id="search_form_control">
-            <div class="search_form_type" id="search_form_type">
-            <label>検索タイプ</label>
-            <select id="select_search" class="form-control">
-                <option value="id">依頼ID</option>
-                <option value="company_id">企業ID,社名</option>
-                <option value="status">ステータス</option>
-                <option value="media_id">その他</option>
-            </select>
-        </div>
-    
-        <div class="search_form_text" id="search_form_text">
-            <div id="search_form_label"></div>
-            <div id="search_form_input"></div>
-            <div id="search_form_btn">
-                <input type="submit" class="button orange" value="検索">
-            </div>
-        </div>
-    </form>
-    
-    </div>  
+    <div id="search-form">
+        <form id="search-relation-request-form">
+            <label id="label_control">検索文字</label>
+            <input type="text" id="input_text_search" placeholder="ここに検索文字を入力してください"/>
+            <input type="submit" id="button_search" class="button orange" value="検索"/>
+        </form>
+    </div>
     <table id="request-ajax-table" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
@@ -33,7 +18,7 @@
                 <th class="company_name">社名</th>
                 <th class="media_name">媒体</th>
                 <th class="request_id">依頼ID</th>
-                <th>HRS担当者</th>
+                <th>担当ディレクタ</th>
             </tr>
         </thead>
     </table>
