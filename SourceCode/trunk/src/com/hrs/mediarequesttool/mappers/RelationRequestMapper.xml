@@ -4,157 +4,121 @@
     <select id="count" parameterType="map" resultType="int">
         SELECT count(relation_request_id) FROM other_media.relation_request_view
         <where>
-            <if test="status == null">
-                status in
-                <foreach collection="roles" index="index" item="item" open="("
+            <if test="requestId != null and searchParam != null">
+	            CAST(relation_request_id AS TEXT) = #{requestId} AND status IN 
+	               <foreach collection="roles" index="index" item="item" open="("
+	                separator="," close=")">
+	                   #{item}
+	               </foreach>
+	            OR company_name ILIKE #{searchParam} AND status IN 
+                   <foreach collection="roles" index="index" item="item" open="("
                     separator="," close=")">
-                    #{item}
-                </foreach>
+                       #{item}
+                   </foreach>
+                OR company_id ILIKE #{searchParam} AND status IN 
+                   <foreach collection="roles" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
+	            OR media_name ILIKE #{searchParam} AND status IN 
+                   <foreach collection="roles" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
+                OR assign_user_name ILIKE #{searchParam} AND status IN 
+                   <foreach collection="roles" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
             </if>
-            <if test="status != null">
-                lower(CAST(status AS TEXT)) LIKE
-                #{status}
-            </if>
-            <if test="requestId != null">
-                AND lower(CAST(relation_request_id AS TEXT)) = #{requestId}
-            </if>
-            <if test="companyParam != null">
-                AND lower(company_id) like #{companyParam}
-                <if test="status == null">
-                    OR status in
-                    <foreach collection="roles" index="index" item="item" open="("
-                        separator="," close=")">
-                        #{item}
-                    </foreach>
-                </if>
-                <if test="status != null">
-                    OR lower(CAST(status AS TEXT)) LIKE #{status}
-                </if>
-                AND lower(company_name) like #{companyParam}
-            </if>
-            <if test="mediaParam != null">
-                AND lower(media_id) like #{mediaParam}
-                <if test="status == null">
-                    OR status in
-                    <foreach collection="roles" index="index" item="item" open="("
-                        separator="," close=")">
-                        #{item}
-                    </foreach>
-                </if>
-                <if test="status != null">
-                    OR lower(CAST(status AS TEXT)) LIKE  #{status}
-                </if>
-                AND lower(media_name) LIKE #{mediaParam}
-                <if test="status == null">
-                    OR status in
-                    <foreach collection="roles" index="index" item="item" open="("
-                        separator="," close=")">
-                        #{item}
-                    </foreach>
-                </if>
-                <if test="status != null">
-                    OR lower(CAST(status AS TEXT)) LIKE #{status}
-                </if>
-                AND lower(assign_user_name) LIKE #{mediaParam}
+            <if test="requestId == null or searchParam == null">
+                status IN 
+	            <foreach collection="roles" index="index" item="item" open="("
+	                separator="," close=")">
+	                #{item}
+	            </foreach>
             </if>
         </where>
     </select>
-
-        <select id="paging" parameterType="map" resultType="com.hrs.mediarequesttool.pojos.RelationRequest">
-	        SELECT * FROM other_media.relation_request_view
-           <where>
-	           <if test="status == null">
-	               status IN
-	               <foreach collection="roles" index="index" item="item" open="("
-	                   separator="," close=")">
-	                   #{item}
-	               </foreach>
-	           </if>
-	           <if test="status != null">
-                    lower(CAST(status AS TEXT)) LIKE #{status}
-                </if>
-                <if test="requestId != null">
-	                AND lower(CAST(relation_request_id AS TEXT)) = #{requestId}
-                </if>
-                <if test="companyParam != null">
-                    AND lower(company_id) like #{companyParam}
-	                <if test="status == null">
-	                    OR status IN
-	                    <foreach collection="roles" index="index" item="item" open="("
-	                        separator="," close=")">
-	                        #{item}
-	                    </foreach>
-	                </if>
-	                <if test="status != null">
-	                    OR lower(CAST(status AS TEXT)) LIKE #{status}
-	                </if>
-	                    AND lower(company_name) like #{companyParam}
-                </if>
-                
-                
-                <if test="mediaParam != null">
-	                AND lower(media_id) like #{mediaParam}
-	                <if test="status == null">
-	                    OR status IN
-	                    <foreach collection="roles" index="index" item="item" open="("
-	                        separator="," close=")">
-	                        #{item}
-	                    </foreach>
-	                </if>
-	                <if test="status != null">
-	                    OR lower(CAST(status AS TEXT)) LIKE #{status}
-	                </if>
-	                AND lower(media_name) LIKE #{mediaParam}
-	                <if test="status == null">
-	                    OR status IN
-	                    <foreach collection="roles" index="index" item="item" open="("
-	                        separator="," close=")">
-	                        #{item}
-	                    </foreach>
-	                </if>
-	                <if test="status != null">
-	                    OR lower(CAST(status AS TEXT)) LIKE #{status}
-	                </if>
-	                AND lower(assign_user_name) LIKE #{mediaParam}
-                </if>
-                </where>
-				<if test="sort != null and direction != null">
-					ORDER BY
-					<if test="sort != 'status'">
-					    ${sort}
-					</if>
-					<if test="sort == 'status'">
-					   CASE
-					       WHEN status = 'NEW' THEN 7
-					       WHEN status = 'ASSIGNED' THEN 6
-					       WHEN status = 'CONFIRMING' THEN 5
-					       WHEN status = 'OK' THEN 4
-					       WHEN status = 'NG' THEN 3
-					       WHEN status = 'FINISHED' THEN 2
-					       WHEN status = 'DELETED' THEN 1 END 
-					</if>
-					${direction},relation_request_id ${direction}
-				</if>
-				<if test="sort == null or direction == null">
-				   ORDER BY
-			        <if test="priority != null and priority == 'status'">
-		              CASE 
-				          WHEN status = 'NEW' THEN 7
-				          WHEN status = 'ASSIGNED' THEN 6
-				          WHEN status = 'CONFIRMING' THEN 5
-				          WHEN status = 'OK' THEN 4
-				          WHEN status = 'NG' THEN 3
-				          WHEN status = 'FINISHED' THEN 2
-				          WHEN status = 'DELETED' THEN 1 END DESC,
-			        </if>
-			        
-			        <if test="priority != null and priority != 'status'">
-			              ${priority} DESC,
-			        </if>
-				       relation_request_id DESC
-			        </if>
-                    LIMIT #{page.limit} OFFSET #{page.offset}
-        </select>
+    <select id="paging" parameterType="map" resultType="com.hrs.mediarequesttool.pojos.RelationRequest">
+     SELECT * FROM other_media.relation_request_view
+       <where>
+           <if test="requestId != null and searchParam != null">
+               CAST(relation_request_id AS TEXT) = #{requestId} AND status IN 
+                  <foreach collection="roles" index="index" item="item" open="("
+                   separator="," close=")">
+                      #{item}
+                  </foreach>
+               OR company_name ILIKE #{searchParam} AND status IN 
+                  <foreach collection="roles" index="index" item="item" open="("
+                   separator="," close=")">
+                      #{item}
+                  </foreach>
+               OR company_id ILIKE #{searchParam} AND status IN 
+                  <foreach collection="roles" index="index" item="item" open="("
+                   separator="," close=")">
+                      #{item}
+                  </foreach>
+               OR media_name ILIKE #{searchParam} AND status IN 
+                  <foreach collection="roles" index="index" item="item" open="("
+                   separator="," close=")">
+                      #{item}
+                  </foreach>
+               OR assign_user_name ILIKE #{searchParam} AND status IN 
+                  <foreach collection="roles" index="index" item="item" open="("
+                   separator="," close=")">
+                      #{item}
+                  </foreach>
+           </if>
+           <if test="requestId == null or searchParam == null">
+               status IN 
+               <foreach collection="roles" index="index" item="item" open="("
+                   separator="," close=")">
+                   #{item}
+               </foreach>
+           </if>
+       </where>
+       ORDER BY
+       <if test="sort != null and direction != null">
+            <if test="sort == 'status'">
+                 CASE 
+                   WHEN status = 'NEW' THEN 6
+                   WHEN status = 'CONFIRMING' THEN 5
+                   WHEN status = 'NG' THEN 4
+                   WHEN status = 'OK' THEN 3
+                   WHEN status = 'PROCESSING' THEN 2
+                   WHEN status = 'FISNISHED' THEN 1 END ${direction},
+            </if>
+            <if test="sort != 'status'">
+                ${sort} ${direction},
+            </if>
+            relation_request_id ${direction}
+       </if>
+       <if test="sort == null or direction == null">
+            <if test="priority != null and priority == 'director'">
+               CASE 
+                   WHEN status = 'PROCESSING' THEN 2
+                   WHEN status = 'FINISHED' THEN 1 END DESC,
+             </if>
+             <if test="priority != null and priority == 'leader'">
+               CASE 
+                   WHEN status = 'OK' THEN 5
+                   WHEN status = 'PROCESSING' THEN 4
+                   WHEN status = 'NEW' THEN 3
+                   WHEN status = 'CONFIRMING' THEN 2
+                   WHEN status = 'NG' THEN 1 END DESC,
+             </if>
+             <if test="priority != null and priority == 'media_checker'">
+               CASE
+                   WHEN status = 'NEW' THEN 4
+                   WHEN status = 'CONFIRMING' THEN 3
+                   WHEN status = 'NG' THEN 2
+                   WHEN status = 'OK' THEN 1 END DESC,
+             </if>
+             relation_request_id DESC
+       </if>
+       LIMIT #{page.limit} OFFSET #{page.offset}
+    </select>
     
     <!-- select to check exist -->
     <select id="get" parameterType="map"
