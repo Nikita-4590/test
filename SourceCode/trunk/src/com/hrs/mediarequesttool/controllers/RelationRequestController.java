@@ -1,6 +1,5 @@
 package com.hrs.mediarequesttool.controllers;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -60,24 +59,20 @@ public class RelationRequestController extends BaseController {
 		viewBuilder.setPageTitle("依頼一覧");
 		return view(viewBuilder);
 	}
-
+	
 	@RequestMapping(value = "/ajax_list/", method = RequestMethod.GET)
 	@ResponseBody
-	public ModelAndView ajaxList(HttpServletRequest httpRequest, ModelMap model, Authentication authentication) throws UnsupportedEncodingException {
+	public ModelAndView ajaxList(HttpServletRequest httpRequest, ModelMap model, Authentication authentication) {
 		try {
 			String pageParam = httpRequest.getParameter("page");
 			String sortParam = httpRequest.getParameter("sort");
-			String requestIdParam = httpRequest.getParameter("id");
-			String statusParam = httpRequest.getParameter("status");
+			String searchParam = httpRequest.getParameter("id");
 			String directionParam = httpRequest.getParameter("sort_direction");
-			String companyParam = httpRequest.getParameter("company_id");
-			String mediaParam = httpRequest.getParameter("media_id");
 			int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
-			
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
 			Role role = new Role(authentication.getPrincipal());
-			PagingResult<RelationRequest> relationRequests = requestDAL.paging(page, directionParam, sortParam, requestIdParam, statusParam, companyParam, mediaParam,
-					role.getRoles(),role.getPriority());
+			PagingResult<RelationRequest> relationRequests = requestDAL.paging(page, directionParam, sortParam, searchParam
+					,role.getRoles(),role.getPriority());
 			model.addAttribute("relationRequests", relationRequests);
 			model.addAttribute("compare_status", Constants.HIGHT_LIGHT_RECORD);
 
