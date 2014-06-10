@@ -9,9 +9,32 @@
 }
 
 #request-detail-page {
-	
+	font-size: 14px;
 }
 
-#request-id, #assign_user_name {
-	margin: 30px;
+#current-status, #new-status {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+#select-new-status {
+	height: 25px;
+	width: 250px;
+	font-size: 14px;
+}
+
+#change-status {
+	margin-left: 60px;
+	font-size: 14px;
+	background-image: url(../img/bg_button_orange.png);
+}
+
+.left-side {
+	margin-right: 70%;
+	margin-left: 65px;
+}
+
+.right-side {
+	float: right;
+	width: 70%;
 }

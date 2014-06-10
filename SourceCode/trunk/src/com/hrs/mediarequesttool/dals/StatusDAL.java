@@ -16,22 +16,11 @@ public class StatusDAL extends AbstractDAL<StatusMapper> {
 	public StatusDAL(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory, StatusMapper.class);
 	}
-
-	public List<Status> getAll(String[] roles) throws GenericException {
-		try {
-			openSession();
-			return mapper.getAll(roles);
-		} catch (Exception e) {
-			throw new GenericException(e, this.getClass());
-		} finally {
-			closeSession();
-		}
-	}
 	
 	public List<Status> getListNextStatus(String[] listNextStatus) throws GenericException {
 		try {
 			openSession();
-			return mapper.getAll(listNextStatus);
+			return mapper.getListNextStatus(listNextStatus);
 		} catch (Exception e) {
 			throw new GenericException(e, this.getClass());
 		} finally {

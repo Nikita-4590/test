@@ -1,12 +1,10 @@
 package com.hrs.mediarequesttool.controllers;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.google.gson.Gson;
 import com.hrs.mediarequesttool.common.exception.BadRequestException;
 import com.hrs.mediarequesttool.common.Constants;
 import com.hrs.mediarequesttool.common.DBConnection;
@@ -38,9 +35,11 @@ import com.hrs.mediarequesttool.dals.DALFactory;
 import com.hrs.mediarequesttool.dals.MediaLabelDAL;
 import com.hrs.mediarequesttool.dals.RelationRequestDAL;
 import com.hrs.mediarequesttool.dals.StatusDAL;
+import com.hrs.mediarequesttool.dals.UserDAL;
 import com.hrs.mediarequesttool.pojos.MediaLabel;
 import com.hrs.mediarequesttool.pojos.RelationRequest;
 import com.hrs.mediarequesttool.pojos.Status;
+import com.hrs.mediarequesttool.pojos.User;
 
 @Controller
 @RequestMapping("/request")
@@ -59,7 +58,7 @@ public class RelationRequestController extends BaseController {
 		viewBuilder.setPageTitle("依頼一覧");
 		return view(viewBuilder);
 	}
-	
+
 	@RequestMapping(value = "/ajax_list/", method = RequestMethod.GET)
 	@ResponseBody
 	public ModelAndView ajaxList(HttpServletRequest httpRequest, ModelMap model, Authentication authentication) {
@@ -71,8 +70,7 @@ public class RelationRequestController extends BaseController {
 			int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
 			Role role = new Role(authentication.getPrincipal());
-			PagingResult<RelationRequest> relationRequests = requestDAL.paging(page, directionParam, sortParam, searchParam
-					,role.getRoles(),role.getPriority());
+			PagingResult<RelationRequest> relationRequests = requestDAL.paging(page, directionParam, sortParam, searchParam, role.getRoles(), role.getPriority());
 			model.addAttribute("relationRequests", relationRequests);
 			model.addAttribute("compare_status", Constants.HIGHT_LIGHT_RECORD);
 
@@ -84,27 +82,9 @@ public class RelationRequestController extends BaseController {
 		return view("request.ajax_list", model);
 	}
 
-	@RequestMapping(value = "/load_status", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-	@ResponseBody
-	public String loadStatus(Authentication authentication, HttpServletResponse response) throws GenericException {
-		String result = null;
-		try {
-			StatusDAL statusDAL = getDAL(StatusDAL.class);
-			Role role = new Role(authentication.getPrincipal());			
-			List<Status> status = statusDAL.getAll(role.getRoles());
-			Gson gson = new Gson();
-			result = gson.toJson(status);
-			return result;
-		} catch (GenericException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
 	@RequestMapping("/view_request/{relation_request_id}/")
-	public ModelAndView viewRequest(HttpServletRequest httpRequest, @PathVariable("relation_request_id") int requestId, ModelMap model, RedirectAttributes redirectAttributes) {
+	public ModelAndView viewRequest(HttpServletRequest httpRequest, Authentication authentication, @PathVariable("relation_request_id") int requestId, ModelMap model,
+			RedirectAttributes redirectAttributes) {
 		ViewBuilder builder = getViewBuilder("request.detail", model);
 
 		try {
@@ -115,42 +95,56 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
-			RelationRequest request = requestDAL.get(requestId);
+			Role role = new Role(authentication.getPrincipal());
+
+			RelationRequest request = requestDAL.get(requestId, role.getRoles());
 
 			if (request == null) {
 				throw new ResourceNotFoundException();
 			}
 
 			StatusDAL statusDAL = DALFactory.getDAL(StatusDAL.class, sqlSessionFactory);
-			String[] listNextStatus = null;
+			String[] listStatus = null;
 
 			if (StringUtils.strip(request.getStatus()).equals("NEW")) {
-				listNextStatus = Constants.NEXT_NEW;
-			} else if (StringUtils.strip(request.getStatus()).equals("ASSIGNED")) {
-				listNextStatus = Constants.NEXT_ASSIGNED;
+				listStatus = Constants.NEXT_NEW;
 			} else if (StringUtils.strip(request.getStatus()).equals("CONFIRMING")) {
-				listNextStatus = Constants.NEXT_CONFIRMING;
-			} else if (StringUtils.strip(request.getStatus()).equals("OK")) {
-				listNextStatus = Constants.NEXT_OK;
+				listStatus = Constants.NEXT_CONFIRMING;
 			} else if (StringUtils.strip(request.getStatus()).equals("NG")) {
-				listNextStatus = Constants.NEXT_NG;
-			} else if (StringUtils.strip(request.getStatus()).equals("FINISHED")) {
-				listNextStatus = Constants.NEXT_FINISHED;
-			} else if (StringUtils.strip(request.getStatus()).equals("DELETED")) {
-				listNextStatus = Constants.NEXT_DELETED;
+				listStatus = Constants.NEXT_NG;
+			} else if (StringUtils.strip(request.getStatus()).equals("OK")) {
+				listStatus = Constants.NEXT_OK;
+			} else if (StringUtils.strip(request.getStatus()).equals("PROCESSING")) {
+				listStatus = Constants.NEXT_PROCESSING;
 			}
 
-			List<Status> listStatus = statusDAL.getListNextStatus(listNextStatus);
+			List<Status> listNextStatus = statusDAL.getListNextStatus(listStatus);
 			
+			if (listNextStatus.size() == 1) {
+				Status nextStatus = new Status();
+				nextStatus = listNextStatus.get(0);
+				model.addAttribute("nextStatus", nextStatus);
+			} else if (listNextStatus.size() > 1) {
+				model.addAttribute("listNextStatus", listNextStatus);
+			}
+			
+			if (StringUtils.strip(request.getStatus()).equals("OK") || StringUtils.strip(request.getStatus()).equals("PROCESSING")) {
+				model.addAttribute("displayListDirectors", "yes");
+				UserDAL userDAL = DALFactory.getDAL(UserDAL.class, sqlSessionFactory);
+				List<User> directors = userDAL.getListDirector();
+				model.addAttribute("directors", directors);
+			} else {
+				model.addAttribute("displayListDirectors", "no");
+			}
+
 			MediaLabelDAL mediaLabelDAL = DALFactory.getDAL(MediaLabelDAL.class, sqlSessionFactory);
-			
+
 			MediaLabel mediaLabel = mediaLabelDAL.get(request.getMedia_id());
-			
+
 			if (mediaLabel == null) {
 				throw new ResourceNotFoundException();
-			} 
+			}
 			
-			model.addAttribute("listStatus", listStatus);
 			model.addAttribute("request", request);
 			model.addAttribute("mediaLabel", mediaLabel);
 
@@ -158,15 +152,16 @@ public class RelationRequestController extends BaseController {
 			builder.setStylesheets("global.form.css", "request.detail.css");
 			builder.setScripts("jquery/jquery.form.min.js", "request.detail.js", "request.change.js", "request.renkei.js");
 
-		} catch (Exception e) {
-			// TODO: handle exception
+		} catch (GenericException e) {
+			e.printStackTrace();
+			return redirect("err/"); // TODO: need check again
 		}
 
 		return view(builder);
 	}
 
 	@RequestMapping(value = "/confirm_change/", method = RequestMethod.POST)
-	public ModelAndView confirmChange(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
+	public ModelAndView confirmChange(HttpServletRequest httpRequest, ModelMap model, Authentication authentication) throws RuntimeException {
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-change", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
@@ -176,7 +171,9 @@ public class RelationRequestController extends BaseController {
 			// get Request detail
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
-			RelationRequest request = requestDAL.get(requestId);
+			Role role = new Role(authentication.getPrincipal());
+
+			RelationRequest request = requestDAL.get(requestId, role.getRoles());
 
 			if (request == null) {
 				throw new ResourceNotFoundException();
@@ -207,9 +204,9 @@ public class RelationRequestController extends BaseController {
 			throw new BadRequestException(e, this.getClass());
 		}
 	}
-	
+
 	@RequestMapping(value = "/confirm_change_renkei_date/", method = RequestMethod.POST)
-	public ModelAndView confirmChangeRenkeiDate(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
+	public ModelAndView confirmChangeRenkeiDate(HttpServletRequest httpRequest, ModelMap model, Authentication authentication) throws RuntimeException {
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-change-renkei-date", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
@@ -220,21 +217,23 @@ public class RelationRequestController extends BaseController {
 			// get Request detail
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
-			RelationRequest request = requestDAL.get(requestId);
+			Role role = new Role(authentication.getPrincipal());
+
+			RelationRequest request = requestDAL.get(requestId, role.getRoles());
 
 			if (request == null || Validator.isNullOrEmpty(renkeiDate)) {
 				throw new ResourceNotFoundException();
 			}
-			
+
 			DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-			
+
 			DateTime crawlDate = DateTime.parse(renkeiDate, dateFormatter);
-			
+
 			DateTime tomorrow = DateTime.now().plusDays(1).withTime(0, 0, 0, 0);
-			
+
 			if (crawlDate.isBefore(tomorrow)) {
 				throw new ResourceNotFoundException();
-			} 
+			}
 
 			model.addAttribute("request", request);
 			model.addAttribute("crawlDate", crawlDate);
@@ -249,7 +248,7 @@ public class RelationRequestController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping(value = "/change/", method = RequestMethod.POST)
-	public String submitChange(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
+	public String submitChange(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
 
 		String messageId = null;
 		boolean success = false;
@@ -265,13 +264,15 @@ public class RelationRequestController extends BaseController {
 			// get Request detail
 			requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
-			RelationRequest request = requestDAL.get(requestId);
+			Role role = new Role(authentication.getPrincipal());
+
+			RelationRequest request = requestDAL.get(requestId, role.getRoles());
 
 			if (request == null) {
 				// inform error message about invalid data
 				messageId = "WRN2";
 			} else {
-				
+
 				String newAssignedPerson = httpRequest.getParameter("assign_user_name");
 				String newStatus = httpRequest.getParameter("new_status");
 
@@ -280,31 +281,31 @@ public class RelationRequestController extends BaseController {
 				if (isValidData) {
 					request.setStatus(newStatus);
 					request.setAssign_user_name(newAssignedPerson);
-					
+
 					// create session
 					session = sqlSessionFactory.openSession();
 
 					requestDAL.setSession(session);
-					
+
 					// get old information before update
-					RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
-					
+					RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id(), role.getRoles());
+
 					// update request
 					requestDAL.updateRequest(request);
-					
+
 					// get new information after update
-					
-					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
-					
+
+					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id(), role.getRoles());
+
 					// open sql session
 					commentDAL = DALFactory.getDAL(CommentDAL.class, sqlSessionFactory);
 					commentDAL.setSession(session);
-					
+
 					// Insert into table comment
 					commentDAL.updateRequest(oldRequest, newRequest);
-					
+
 					session.commit();
-					
+
 					// Display information message when delete successful
 					messageId = "INF1";
 					success = true;
@@ -342,7 +343,7 @@ public class RelationRequestController extends BaseController {
 		if (Validator.isNullOrEmpty(assignedPerson) || Validator.checkExceedLength(Constants.MAX_LENGTH_ASSIGNED_PERSON, assignedPerson)) {
 			return false;
 		}
-
+/*
 		if (StringUtils.strip(currentStatus).equals("NEW")) {
 			if (!Arrays.asList(Constants.NEXT_NEW).contains(StringUtils.strip(newStatus))) {
 				return false;
@@ -374,7 +375,7 @@ public class RelationRequestController extends BaseController {
 		} else {
 			return false;
 		}
-
+*/
 		return true;
 	}
 

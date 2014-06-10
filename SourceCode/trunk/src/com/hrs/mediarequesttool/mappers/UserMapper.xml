@@ -9,6 +9,16 @@
     WHERE
       user_id = #{user_id}
   </select>
+  
+  <select id="getListDirector" parameterType="map"
+    resultType="com.hrs.mediarequesttool.pojos.User">
+    SELECT *
+    FROM
+      other_media.user
+    WHERE
+      user_role = 2
+  </select>
+  
   <update id="countLoginFailure" parameterType="map">
     UPDATE
       other_media.user
@@ -17,6 +27,7 @@
     WHERE
       id = #{id}
   </update>
+  
   <update id="updateLastLoginTime" parameterType="map">
     UPDATE
       other_media.user

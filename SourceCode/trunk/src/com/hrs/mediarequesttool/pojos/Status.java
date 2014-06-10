@@ -2,15 +2,6 @@ package com.hrs.mediarequesttool.pojos;
 
 public class Status {
 	
-	/*
-	 *  status_type character varying(20) NOT NULL,
-  description character varying(30) NOT NULL,
-  created_dt timestamp without time zone NOT NULL DEFAULT now(),
-  updated_dt timestamp without time zone NOT NULL DEFAULT now(),
-  CONSTRAINT pk_status_type PRIMARY KEY (status_type)
-	 * 
-	 * 
-	 */
 	private String status_type;
 	private String description;
 	private String created_dt;

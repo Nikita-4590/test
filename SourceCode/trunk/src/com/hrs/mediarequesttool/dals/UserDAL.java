@@ -1,5 +1,7 @@
 package com.hrs.mediarequesttool.dals;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,17 @@ public class UserDAL extends AbstractDAL<UserMapper> {
 		try {
 			openSession();
 			return mapper.getbyUserID(userID);
+		} catch (Exception e) {
+			throw new GenericException(e, UserDAL.class);
+		} finally {
+			closeSession();
+		}
+	}
+	
+	public List<User> getListDirector() throws GenericException {
+		try {
+			openSession();
+			return mapper.getListDirector();
 		} catch (Exception e) {
 			throw new GenericException(e, UserDAL.class);
 		} finally {
