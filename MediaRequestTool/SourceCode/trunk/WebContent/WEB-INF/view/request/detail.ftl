@@ -3,27 +3,57 @@
 <div class="page" id="request-detail-page">
 	<div id="request-form-top" class="form">
 		<div class="form-line">
-			<label id="request-id">依頼ID:</label>
-			<span>${request.relation_request_id}</span>
-			<label id="status-description">現在のステータス:</label>
-			<span>${request.status_description}</span>
+			<div class="right-side">
+				<label id="request-id">${request.relation_request_id}</label>
+			</div>
+			<div class="left-side">
+				<label>依頼ID</label>
+			</div>
 		</div>
+		
+		<div class="form-line">
+			<div class="right-side">
+				<label id="current-status">${request.status_description}</label>
+			</div>
+			<div class="left-side">
+				<label>現在のステータス</label>
+			</div>
+		</div>
+		
+		<#if displayListDirectors = "yes">
+			<div class="form-line">
+				<div class="right-side">
+					<#if directors?has_content>
+						<#list directors as director>
+							<option value="${director.id}">${director.user_name}</option>
+						</#list>
+					<#else>
+						<option></option>	
+					</#if>	
+				</div>
+				<div class="left-side">
+					<label>担当ディレクター</label>
+				</div>
+			</div>
+		</#if>
 			
 		<div class="form-line">
-			<label id="assign_user_name">HRS担当者</label>
-			<input type="text" id="assign-user-name" name="assign_user_name" maxlength="100" 
-				<#if request?? && request.assign_user_name??>value= "${request.assign_user_name}"</#if>/>
-			</input>
-			<select name="new_status" id="new-status">
-				<#list listStatus as status>
-					<#if status?? && status.status_type == request.status>
-						<option value="${status.status_type}" selected="selected">${status.description}</option>
-					<#else>
-						<option value="${status.status_type}">${status.description}</option>
-					</#if>	
-				</#list>
-			</select>
-			<a href="#" class="button-link" onclick="confirmChange(${request.relation_request_id}); return false;">変更する</a>
+			<div class="right-side">
+				<#if listNextStatus??>
+					<select name="new_status" id="select-new-status">
+						<#list listNextStatus as status>
+							<option value="${status.status_type}">${status.description}</option>	
+						</#list>
+					</select>
+				</#if>
+				<#if nextStatus??>
+					<label id="new-status">${nextStatus.description}</label>
+				</#if>
+				<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">変更する</a>
+			</div>
+			<div class="left-side">
+				<label>次のステータス</label>
+			</div>
 		</div>	
 	</div>	
 	<h3>申込者情報</h3>
@@ -139,7 +169,7 @@
 			</div>	
 		</div>
 		</#if>
-		
+		<#--
 		<div class="form-line">
 			<div class="form-col-right">
 				<input type="text" id="crawl-date" name="crawl_date" <#if request?? && request.crawl_date??>value="${request.crawl_date}"</#if> 
@@ -150,7 +180,7 @@
 				<label for="crawl_date">連携開始日</label>
 			</div>	
 		</div>
-		
+		-->
 	</div> </br>
 	<h3>その他伝達事項</h3>
 	<#-- ------------------------------------------------->
