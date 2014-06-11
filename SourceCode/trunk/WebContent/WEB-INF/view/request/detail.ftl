@@ -25,7 +25,11 @@
 				<div class="right-side">
 					<select name="new_director" id="select-new-director">
 						<#list directors as director>
-							<option value="${director.id}">${director.user_name}</option>
+							<#if director?? && request.assign_user_id == director.id>
+								<option value="${director.id}" selected="selected">${director.user_name}</option>
+							<#else>
+								<option value="${director.id}">${director.user_name}</option>
+							</#if>
 						</#list>
 					</select>
 					<#if view = "PROCESSING">
@@ -207,7 +211,6 @@
 <script type="text/javascript">
 	me.dapps.global['url.context'] = '${formatter.url("")}';
 	me.dapps.global['url.confirm_change'] = '${formatter.url("/request/confirm_change/?ajax")}';
-	me.dapps.global['url.confirm_change_renkei_date'] = '${formatter.url("/request/confirm_change_renkei_date/?ajax")}';
 	me.dapps.global['message.assign_person_warning'] = "WRN1";
 </script>				
 </#escape>
