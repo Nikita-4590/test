@@ -17,6 +17,7 @@ public class RelationRequest {
 	private String crawl_date;
 	private String other_comment;
 	private String status;
+	private int assign_user_id;
 	private String assign_user_name;
 	private int update_user_id;
 	private String created_at;
@@ -153,6 +154,14 @@ public class RelationRequest {
 		this.status = status;
 	}
 	
+	public int getAssign_user_id() {
+		return assign_user_id;
+	}
+
+	public void setAssign_user_id(int assign_user_id) {
+		this.assign_user_id = assign_user_id;
+	}
+
 	public String getAssign_user_name() {
 		return assign_user_name;
 	}

@@ -10,9 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -211,47 +208,6 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("request", request);
 			model.addAttribute("newAssignedPerson", newAssignedPerson);
 			model.addAttribute("changedStatus", changedStatus);
-
-			return view(builder);
-		} catch (NumberFormatException e) {
-			throw new ResourceNotFoundException(e, this.getClass());
-		} catch (GenericException e) {
-			throw new BadRequestException(e, this.getClass());
-		}
-	}
-
-	@RequestMapping(value = "/confirm_change_renkei_date/", method = RequestMethod.POST)
-	public ModelAndView confirmChangeRenkeiDate(HttpServletRequest httpRequest, ModelMap model, Authentication authentication) throws RuntimeException {
-		try {
-			ViewBuilder builder = getViewBuilder("request.confirm-change-renkei-date", model);
-			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
-			String renkeiDate = httpRequest.getParameter("renkei_date");
-
-			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
-
-			// get Request detail
-			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
-
-			Role role = new Role(authentication.getPrincipal());
-
-			RelationRequest request = requestDAL.get(requestId, role.getRoles());
-
-			if (request == null || Validator.isNullOrEmpty(renkeiDate)) {
-				throw new ResourceNotFoundException();
-			}
-
-			DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-
-			DateTime crawlDate = DateTime.parse(renkeiDate, dateFormatter);
-
-			DateTime tomorrow = DateTime.now().plusDays(1).withTime(0, 0, 0, 0);
-
-			if (crawlDate.isBefore(tomorrow)) {
-				throw new ResourceNotFoundException();
-			}
-
-			model.addAttribute("request", request);
-			model.addAttribute("crawlDate", crawlDate);
 
 			return view(builder);
 		} catch (NumberFormatException e) {
