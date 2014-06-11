@@ -12,19 +12,19 @@
 	font-size: 14px;
 }
 
-#current-status, #new-status {
+#current-status, #next-status {
 	font-size: 14px;
 	font-weight: bold;
 }
 
-#select-new-status {
+#select-next-status, #select-new-director, #crawl-date {
 	height: 25px;
-	width: 250px;
+	width: 200px;
 	font-size: 14px;
 }
 
 #change-status {
-	margin-left: 60px;
+	margin-left: 90px;
 	font-size: 14px;
 	background-image: url(../img/bg_button_orange.png);
 }

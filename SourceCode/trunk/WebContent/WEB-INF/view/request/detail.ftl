@@ -20,41 +20,56 @@
 			</div>
 		</div>
 		
-		<#if displayListDirectors = "yes">
+		<#if view = "OK" || view = "PROCESSING">
 			<div class="form-line">
 				<div class="right-side">
-					<#if directors?has_content>
+					<select name="new_director" id="select-new-director">
 						<#list directors as director>
 							<option value="${director.id}">${director.user_name}</option>
 						</#list>
-					<#else>
-						<option></option>	
-					</#if>	
+					</select>
+					<#if view = "PROCESSING">
+						<a href="#" id="change-director">担当ディレクターを変更する</a>
+					</#if>
 				</div>
 				<div class="left-side">
 					<label>担当ディレクター</label>
 				</div>
 			</div>
 		</#if>
-			
-		<div class="form-line">
-			<div class="right-side">
-				<#if listNextStatus??>
-					<select name="new_status" id="select-new-status">
-						<#list listNextStatus as status>
-							<option value="${status.status_type}">${status.description}</option>	
-						</#list>
-					</select>
-				</#if>
-				<#if nextStatus??>
-					<label id="new-status">${nextStatus.description}</label>
-				</#if>
-				<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">変更する</a>
+		
+		<#if view = "PROCESSING" || view = "FINISHED">
+			<div class="form-line">
+				<div class="right-side">
+					<input type="text" id="crawl-date" name="crawl_date" <#if request?? && request.crawl_date??>value="${request.crawl_date}"</#if> 
+						<#if view = "FINISHED">disabled="disabled"</#if>
+						dapps-ui-datepicker="{'input':{'format':'yy-mm-dd'},'output':{'format':'yy年mm月dd日'}}" />
+				</div>
+				<div class="left-side">
+					<label for="crawl_date">連携開始日</label>
+				</div>
 			</div>
-			<div class="left-side">
-				<label>次のステータス</label>
+		</#if>	
+		
+		<#if view != "FINISHED" && view != "DEFAULT">
+			<div class="form-line">
+				<div class="right-side">
+					<#if view = "CONFIRMING_NG">
+						<select name="next_status" id="select-next-status">
+							<#list listNextStatus as status>
+								<option value="${status.status_type}">${status.description}</option>	
+							</#list>
+						</select>
+					<#elseif view = "NEW" || view = "OK" || view = "PROCESSING">
+						<label id="next-status">${nextStatus.description}</label>
+					</#if>
+					<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">変更する</a>
+				</div>
+				<div class="left-side">
+					<label>次のステータス</label>
+				</div>
 			</div>
-		</div>	
+		</#if>	
 	</div>	
 	<h3>申込者情報</h3>
 	<#-- ------------------------------------------------->

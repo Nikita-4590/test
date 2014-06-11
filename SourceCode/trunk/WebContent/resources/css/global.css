@@ -165,6 +165,7 @@ input[type="text"],input[type="password"],select,textarea {
 input[type="text"],input[type="password"] {
 	height: 20px;
 }
+
 input[type="password"] {
 	font-family: 'arial';
 }
