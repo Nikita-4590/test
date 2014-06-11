@@ -1,5 +1,6 @@
 package com.hrs.mediarequesttool.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,39 +103,53 @@ public class RelationRequestController extends BaseController {
 			if (request == null) {
 				throw new ResourceNotFoundException();
 			}
-
+			
 			StatusDAL statusDAL = DALFactory.getDAL(StatusDAL.class, sqlSessionFactory);
+			Status nextStatus = new Status();
 			String[] listStatus = null;
-
+			List<Status> listNextStatus = new ArrayList<Status>();
+			
 			if (StringUtils.strip(request.getStatus()).equals("NEW")) {
-				listStatus = Constants.NEXT_NEW;
-			} else if (StringUtils.strip(request.getStatus()).equals("CONFIRMING")) {
-				listStatus = Constants.NEXT_CONFIRMING;
-			} else if (StringUtils.strip(request.getStatus()).equals("NG")) {
-				listStatus = Constants.NEXT_NG;
-			} else if (StringUtils.strip(request.getStatus()).equals("OK")) {
-				listStatus = Constants.NEXT_OK;
-			} else if (StringUtils.strip(request.getStatus()).equals("PROCESSING")) {
-				listStatus = Constants.NEXT_PROCESSING;
-			}
-
-			List<Status> listNextStatus = statusDAL.getListNextStatus(listStatus);
-			
-			if (listNextStatus.size() == 1) {
-				Status nextStatus = new Status();
-				nextStatus = listNextStatus.get(0);
-				model.addAttribute("nextStatus", nextStatus);
-			} else if (listNextStatus.size() > 1) {
+				
+				model.addAttribute("view", "NEW");
+				
+				nextStatus = statusDAL.get("CONFIRMING");
+				
+			} else if (StringUtils.strip(request.getStatus()).equals("CONFIRMING") || StringUtils.strip(request.getStatus()).equals("NG")) {
+				
+				model.addAttribute("view", "CONFIRMING_NG");
+				
+				if (StringUtils.strip(request.getStatus()).equals("CONFIRMING")) {
+					listStatus = Constants.NEXT_CONFIRMING;
+				} else {
+					listStatus = Constants.NEXT_NG;
+				}
+				listNextStatus = statusDAL.getListNextStatus(listStatus);
+				
 				model.addAttribute("listNextStatus", listNextStatus);
-			}
-			
-			if (StringUtils.strip(request.getStatus()).equals("OK") || StringUtils.strip(request.getStatus()).equals("PROCESSING")) {
-				model.addAttribute("displayListDirectors", "yes");
+				
+			} else if (StringUtils.strip(request.getStatus()).equals("OK") || StringUtils.strip(request.getStatus()).equals("PROCESSING")) {
+				
+				if (StringUtils.strip(request.getStatus()).equals("OK")) {
+					model.addAttribute("view", "OK");
+					nextStatus = statusDAL.get("PROCESSING");
+				} else {
+					model.addAttribute("view", "PROCESSING");
+					nextStatus = statusDAL.get("FINISHED");
+				}
+				
 				UserDAL userDAL = DALFactory.getDAL(UserDAL.class, sqlSessionFactory);
 				List<User> directors = userDAL.getListDirector();
 				model.addAttribute("directors", directors);
+				
+			} else if (StringUtils.strip(request.getStatus()).equals("FINISHED")) {
+				model.addAttribute("view", "FINISHED");
 			} else {
-				model.addAttribute("displayListDirectors", "no");
+				model.addAttribute("view", "DEFAULT");
+			}
+			
+			if (nextStatus != null) {
+				model.addAttribute("nextStatus", nextStatus);
 			}
 
 			MediaLabelDAL mediaLabelDAL = DALFactory.getDAL(MediaLabelDAL.class, sqlSessionFactory);
