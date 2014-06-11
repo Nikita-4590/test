@@ -49,14 +49,8 @@ public class Constants {
 	public final static int OLD_TABLE_TYPE = 1;
 	public final static int DATA_DIFFERENT_TYPE = 2;
 	
-	// define for media checker
-	public final static String[] NEXT_NEW = {"CONFIRMING"};
 	public final static String[] NEXT_CONFIRMING = {"OK", "NG"};
 	public final static String[] NEXT_NG = {"CONFIRMING", "DELETED"};
-	// define for leader
-	public final static String[] NEXT_OK = {"PROCESSING"};
-	// define for tantou director
-	public final static String[] NEXT_PROCESSING = {"FINISHED"};
 	
 	public final static int MAX_LENGTH_ASSIGNED_PERSON = 100;
 	public final static String HIGHT_LIGHT_RECORD = "NEW";
