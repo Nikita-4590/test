@@ -3,6 +3,10 @@
 	margin-top: 15px;
 }
 
+#request-form-top {
+	border: 1px solid rgb(27, 27, 240);
+}
+
 #request-form-footer {
 	text-align: right;
 	line-height: 22px;
@@ -24,17 +28,27 @@
 }
 
 #change-status {
-	margin-left: 90px;
+	margin-left: 60px;
 	font-size: 14px;
 	background-image: url(../img/bg_button_orange.png);
 }
 
+#change-director {
+	margin-left: 20px;
+}
+
+#message {
+	margin: 20px 60px;
+	font-size: 18px;
+	color: red;
+}
+
 .left-side {
-	margin-right: 70%;
-	margin-left: 65px;
+	margin-right: 75%;
+	margin-left: 45px;
 }
 
 .right-side {
 	float: right;
-	width: 70%;
+	width: 75%;
 }
