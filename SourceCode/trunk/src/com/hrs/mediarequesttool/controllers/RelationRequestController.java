@@ -81,7 +81,7 @@ public class RelationRequestController extends BaseController {
 	}
 
 	@RequestMapping("/view_request/{relation_request_id}/")
-	public ModelAndView viewRequest(HttpServletRequest httpRequest, Authentication authentication, @PathVariable("relation_request_id") int requestId, ModelMap model,
+	public ModelAndView viewRequest(HttpServletRequest httpRequest, @PathVariable("relation_request_id") int requestId, ModelMap model,
 			RedirectAttributes redirectAttributes) {
 		ViewBuilder builder = getViewBuilder("request.detail", model);
 
@@ -93,9 +93,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
-			Role role = new Role(authentication.getPrincipal());
-
-			RelationRequest request = requestDAL.get(requestId, role.getRoles());
+			RelationRequest request = requestDAL.get(requestId);
 
 			if (request == null) {
 				throw new ResourceNotFoundException();
@@ -114,11 +112,11 @@ public class RelationRequestController extends BaseController {
 				
 			} else if (StringUtils.strip(request.getStatus()).equals("CONFIRMING") || StringUtils.strip(request.getStatus()).equals("NG")) {
 				
-				model.addAttribute("view", "CONFIRMING_NG");
-				
 				if (StringUtils.strip(request.getStatus()).equals("CONFIRMING")) {
+					model.addAttribute("view", "CONFIRMING");
 					listStatus = Constants.NEXT_CONFIRMING;
 				} else {
+					model.addAttribute("view", "NG");
 					listStatus = Constants.NEXT_NG;
 				}
 				listNextStatus = statusDAL.getListNextStatus(listStatus);
@@ -173,7 +171,7 @@ public class RelationRequestController extends BaseController {
 	}
 
 	@RequestMapping(value = "/confirm_change/", method = RequestMethod.POST)
-	public ModelAndView confirmChange(HttpServletRequest httpRequest, ModelMap model, Authentication authentication) throws RuntimeException {
+	public ModelAndView confirmChange(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-change", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
@@ -183,9 +181,7 @@ public class RelationRequestController extends BaseController {
 			// get Request detail
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
-			Role role = new Role(authentication.getPrincipal());
-
-			RelationRequest request = requestDAL.get(requestId, role.getRoles());
+			RelationRequest request = requestDAL.get(requestId);
 
 			if (request == null) {
 				throw new ResourceNotFoundException();
@@ -219,7 +215,7 @@ public class RelationRequestController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping(value = "/change/", method = RequestMethod.POST)
-	public String submitChange(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
+	public String submitChange(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
 
 		String messageId = null;
 		boolean success = false;
@@ -235,9 +231,7 @@ public class RelationRequestController extends BaseController {
 			// get Request detail
 			requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
-			Role role = new Role(authentication.getPrincipal());
-
-			RelationRequest request = requestDAL.get(requestId, role.getRoles());
+			RelationRequest request = requestDAL.get(requestId);
 
 			if (request == null) {
 				// inform error message about invalid data
@@ -259,14 +253,14 @@ public class RelationRequestController extends BaseController {
 					requestDAL.setSession(session);
 
 					// get old information before update
-					RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id(), role.getRoles());
+					RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
 
 					// update request
 					requestDAL.updateRequest(request);
 
 					// get new information after update
 
-					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id(), role.getRoles());
+					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
 
 					// open sql session
 					commentDAL = DALFactory.getDAL(CommentDAL.class, sqlSessionFactory);

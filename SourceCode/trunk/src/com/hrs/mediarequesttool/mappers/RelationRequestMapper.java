@@ -27,7 +27,7 @@ public interface RelationRequestMapper {
 			@Param("roles") String[] roles,@Param("priority") String priority);
 	
 	// get Request detail information
-	RelationRequest get(@Param("request_id") int requestId, @Param("roles") String[] roles, @Param("pgcrypto") String pgcrypto);
+	RelationRequest get(@Param("request_id") int requestId, @Param("pgcrypto") String pgcrypto);
 	
 	void updateRequest(RelationRequest request);
 }	

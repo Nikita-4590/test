@@ -159,13 +159,7 @@
         INNER JOIN
         	other_media.user AS u ON request.assign_user_id = u.id
         WHERE
-        	request.relation_request_id = #{request_id}
-        AND 
-        	status in
-                <foreach collection="roles" index="index" item="item" open="("
-                    separator="," close=")">
-                    #{item}
-                </foreach>	
+        	request.relation_request_id = #{request_id}	
     </select>
     
     <!-- update data -->
