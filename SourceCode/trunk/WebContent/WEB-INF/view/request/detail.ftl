@@ -23,17 +23,16 @@
 		<#if view = "OK" || view = "PROCESSING">
 			<div class="form-line">
 				<div class="right-side">
-					<select name="new_director" id="select-new-director">
-						<#list directors as director>
-							<#if director?? && request.assign_user_id == director.id>
-								<option value="${director.id}" selected="selected">${director.user_name}</option>
-							<#else>
+					<#if view = "OK">
+						<select name="new_director" id="select-new-director">
+							<#list directors as director>
 								<option value="${director.id}">${director.user_name}</option>
-							</#if>
-						</#list>
-					</select>
-					<#if view = "PROCESSING">
-						<a href="#" id="change-director">担当ディレクターを変更する</a>
+							</#list>
+						</select>
+						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">担当ディレクターを依頼</a>
+					<#else>
+						<label name="current_director" id="current-director"><b>${request.assign_user_name!""}</b></label>
+						<a href="#" id="change-director" >担当ディレクターを変更する</a>
 					</#if>
 				</div>
 				<div class="left-side">
@@ -42,39 +41,55 @@
 			</div>
 		</#if>
 		
-		<#if view = "PROCESSING" || view = "FINISHED">
-			<div class="form-line">
-				<div class="right-side">
+		<div class="form-line">
+			<div class="right-side">
+				<#if view = "PROCESSING" || view = "FINISHED">
 					<input type="text" id="crawl-date" name="crawl_date" <#if request?? && request.crawl_date??>value="${request.crawl_date}"</#if> 
-						<#if view = "FINISHED">disabled="disabled"</#if>
-						dapps-ui-datepicker="{'input':{'format':'yy-mm-dd'},'output':{'format':'yy年mm月dd日'}}" />
-				</div>
-				<div class="left-side">
-					<label for="crawl_date">連携開始日</label>
-				</div>
+					<#if view = "FINISHED">disabled="disabled"</#if>dapps-ui-datepicker="{'input':{'format':'yy-mm-dd'},'output':{'format':'yy年mm月dd日'}}" />
+				<#else> <label><b>未確定</b></label>		
+				</#if>
+				<#if view = "PROCESSING">
+					<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">連携開始日を登録</a>
+				</#if>
 			</div>
-		</#if>	
+			<div class="left-side">
+				<label for="crawl_date">連携開始日</label>
+			</div>
+		</div>	
 		
 		<#if view != "FINISHED" && view != "DEFAULT">
 			<div class="form-line">
 				<div class="right-side">
-					<#if view = "CONFIRMING_NG">
+					<#if view = "CONFIRMING" || view= "NG">
 						<select name="next_status" id="select-next-status">
 							<#list listNextStatus as status>
-								<option value="${status.status_type}">${status.description}</option>	
+								<#if view = "NG"><option value="${status.status_type}">${status.description}</option>
+								<#else><option value="${status.status_type}"<#if status.status_type = "OK">selected="selected">ログイン成功<#else>>ログイン失敗</#if></option>
+								</#if>
 							</#list>
 						</select>
 					<#elseif view = "NEW" || view = "OK" || view = "PROCESSING">
 						<label id="next-status">${nextStatus.description}</label>
 					</#if>
-					<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">変更する</a>
+					<#if view = "NEW" || view = "CONFIRMING" || view = "NG">
+						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;"><#if view = "NEW">依頼を受け付ける<#else>変更する</#if></a>
+					</#if>	
 				</div>
 				<div class="left-side">
-					<label>次のステータス</label>
+					<label><#if view = "CONFIRMING">接続確認の結果<#else>次のステータス</#if></label>
 				</div>
 			</div>
 		</#if>	
-	</div>	
+	</div>
+	
+	<#if view = "CONFIRMING" || view = "OK" || view = "PROCESSING">
+		<div id="message">
+			<#if view = "CONFIRMING">※ログイン確認を実施してください。
+			<#elseif view = "OK">※担当ディレクターを設定してください。
+			<#else>※連携開始日を設定してください。
+			</#if>
+		</div>
+	</#if>	
 	<h3>申込者情報</h3>
 	<#-- ------------------------------------------------->
 	<div id="request-form-center" class="form">
@@ -188,22 +203,10 @@
 			</div>	
 		</div>
 		</#if>
-		<#--
-		<div class="form-line">
-			<div class="form-col-right">
-				<input type="text" id="crawl-date" name="crawl_date" <#if request?? && request.crawl_date??>value="${request.crawl_date}"</#if> 
-					dapps-ui-datepicker="{'input':{'format':'yy-mm-dd'},'output':{'format':'yy年mm月dd日'}}" />	
-				<a href="#" class="button-link" onclick="confirmChangeRenkeiDate(${request.relation_request_id}); return false;">変更する</a>
-			</div>
-			<div class="form-col-left">
-				<label for="crawl_date">連携開始日</label>
-			</div>	
-		</div>
-		-->
 	</div> </br>
 	<h3>その他伝達事項</h3>
 	<#-- ------------------------------------------------->
-	<div id="request-form-comment" class="form">
+	<div id="request-form-comment">
 		<span>${request.other_comment!""}</span></br></br></br>
 	</div>	
 </div>
