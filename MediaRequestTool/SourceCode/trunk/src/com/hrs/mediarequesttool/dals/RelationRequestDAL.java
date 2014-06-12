@@ -43,11 +43,11 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 		}
 	}
 
-	public RelationRequest get(int requestId, String[] role) throws GenericException {
+	public RelationRequest get(int requestId) throws GenericException {
 		try {
 			openSession();
 			String pgcrypto = PropertiesLoader.instance.getPgcryptoPasswd();
-			return mapper.get(requestId, role, pgcrypto);
+			return mapper.get(requestId, pgcrypto);
 		} catch (Exception e) {
 			throw new GenericException(e);
 		} finally {
