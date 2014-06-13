@@ -39,10 +39,10 @@ public class StatusDAL extends AbstractDAL<StatusMapper> {
 		}
 	}
 	
-	public List<Status> getAll() throws GenericException {
+	public List<Status> getAll(String[] noneStatus) throws GenericException {
 		try {
 			openSession();
-			return mapper.getAll();
+			return mapper.getAll(noneStatus);
 		} catch(Exception e) {
 			throw new GenericException(e, this.getClass());
 		} finally {
