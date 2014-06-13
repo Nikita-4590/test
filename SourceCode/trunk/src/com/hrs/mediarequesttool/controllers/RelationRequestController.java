@@ -35,6 +35,7 @@ import com.hrs.mediarequesttool.dals.StatusDAL;
 import com.hrs.mediarequesttool.dals.UserDAL;
 import com.hrs.mediarequesttool.pojos.MediaLabel;
 import com.hrs.mediarequesttool.pojos.RelationRequest;
+import com.hrs.mediarequesttool.pojos.RequestChangeInfo;
 import com.hrs.mediarequesttool.pojos.Status;
 import com.hrs.mediarequesttool.pojos.User;
 
@@ -287,19 +288,34 @@ public class RelationRequestController extends BaseController {
 
 					// get old information before update
 					RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
+					
+					RequestChangeInfo oldInfo = new RequestChangeInfo();
+					oldInfo.setRelation_request_id(oldRequest.getRelation_request_id());
+					oldInfo.setStatus(oldRequest.getStatus());
+					oldInfo.setStatus_description(oldRequest.getStatus_description());
+					oldInfo.setDirector_id(oldRequest.getAssign_user_id());
+					oldInfo.setDirector_name(oldRequest.getAssign_user_name());
+					oldInfo.setRenkei_date(oldRequest.getCrawl_date());
 
 					// update request
 					requestDAL.updateRequest(request);
 
 					// get new information after update
 					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
+					RequestChangeInfo newInfo = new RequestChangeInfo();
+					newInfo.setRelation_request_id(newRequest.getRelation_request_id());
+					newInfo.setStatus(newRequest.getStatus());
+					newInfo.setStatus_description(newRequest.getStatus_description());
+					newInfo.setDirector_id(newRequest.getAssign_user_id());
+					newInfo.setDirector_name(newRequest.getAssign_user_name());
+					newInfo.setRenkei_date(newRequest.getCrawl_date());
 
 					// open sql session
 					commentDAL = DALFactory.getDAL(CommentDAL.class, sqlSessionFactory);
 					commentDAL.setSession(session);
 
 					// Insert into table comment
-					commentDAL.updateRequest(oldRequest, newRequest);
+					commentDAL.updateRequest(oldInfo, newInfo);
 
 					session.commit();
 
@@ -449,7 +465,7 @@ public class RelationRequestController extends BaseController {
 				commentDAL.setSession(session);
 
 				// Insert into table comment
-				commentDAL.updateRequest(oldRequest, newRequest);
+				//commentDAL.updateRequest(oldRequest, newRequest);
 
 				session.commit();
 
