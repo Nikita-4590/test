@@ -451,7 +451,7 @@ public class RelationRequestController extends BaseController {
 				requestDAL.setSession(session);
 
 				// get old information before update
-				RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
+				//RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
 
 				// update request
 				requestDAL.updateOnlyDirectorOfRequest(request);
