@@ -50,10 +50,20 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping("/list/")
 	public ModelAndView getAllRequest(ModelMap model) throws GenericException {
-		ViewBuilder viewBuilder = getViewBuilder("request.list", model);
-		viewBuilder.setScripts("request.list.js");
-		viewBuilder.setStylesheets("relation.list.css", "global.css");
-		viewBuilder.setPageTitle("依頼一覧");
+		ViewBuilder viewBuilder = null;
+		try {
+			StatusDAL statusDAL = getDAL(StatusDAL.class);
+			List<Status> lstStatus = statusDAL.getAll();
+			model.addAttribute("lstStatus", lstStatus);
+			viewBuilder = getViewBuilder("request.list", model);
+			viewBuilder.setScripts("request.list.js");
+			viewBuilder.setStylesheets("relation.list.css", "global.css");
+			viewBuilder.setPageTitle("依頼一覧");
+		} catch(GenericException e) {
+			e.printStackTrace();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		return view(viewBuilder);
 	}
 
@@ -64,14 +74,21 @@ public class RelationRequestController extends BaseController {
 			String pageParam = httpRequest.getParameter("page");
 			String sortParam = httpRequest.getParameter("sort");
 			String searchParam = httpRequest.getParameter("id");
+			String statusParam = httpRequest.getParameter("status");
 			String directionParam = httpRequest.getParameter("sort_direction");
 			int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
 			Role role = new Role(authentication.getPrincipal());
-			PagingResult<RelationRequest> relationRequests = requestDAL.paging(page, directionParam, sortParam, searchParam, role.getRoles(), role.getPriority());
+			PagingResult<RelationRequest> relationRequests = null;
+			if(statusParam != null || searchParam != null) {
+				relationRequests = requestDAL.getAllRecord(page, directionParam, sortParam, searchParam, statusParam, 
+						role.getPriority(), role.getNoneStatus());
+			} else {
+				relationRequests = requestDAL.paging(page, directionParam, sortParam,  role.getRoles(), role.getPriority());
+			}
+			
 			model.addAttribute("relationRequests", relationRequests);
-			model.addAttribute("compare_status", Constants.HIGHT_LIGHT_RECORD);
-
+			model.addAttribute("compare_status", role.getHightLight());
 		} catch (GenericException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -343,5 +360,15 @@ public class RelationRequestController extends BaseController {
 */
 		return true;
 	}
-
+	
+	public List<Status> getListStatus() throws GenericException {
+		List<Status> lstStatus = null;
+		try {
+			StatusDAL statusDAL = getDAL(StatusDAL.class);
+			lstStatus = statusDAL.getAll();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lstStatus;
+	}
 }
