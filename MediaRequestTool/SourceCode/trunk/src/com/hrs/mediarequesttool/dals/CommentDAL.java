@@ -5,42 +5,34 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
+
 import com.google.gson.Gson;
-import com.hrs.mediarequesttool.dals.DALFactory;
-import com.hrs.mediarequesttool.dals.MediaLabelDAL;
-import com.hrs.mediarequesttool.pojos.MediaLabel;
 import com.hrs.mediarequesttool.pojos.CommentProperty;
+import com.hrs.mediarequesttool.pojos.RequestChangeInfo;
 import com.hrs.mediarequesttool.mail.HistorySender;
 import com.hrs.mediarequesttool.auth.AuthProvider;
 import com.hrs.mediarequesttool.pojos.User;
 import com.hrs.mediarequesttool.common.exception.GenericException;
 import com.hrs.mediarequesttool.mappers.CommentMapper;
 import com.hrs.mediarequesttool.pojos.Comment;
-import com.hrs.mediarequesttool.pojos.RelationRequest;
 
 @Service
 public class CommentDAL extends AbstractDAL<CommentMapper> {
 
 	private Gson gson;
-	private static LinkedHashMap<String, String> REQUEST_MAP;
+	private static LinkedHashMap<String, String> REQUEST_CHANGE_INFO;
 	
 	static {
-		REQUEST_MAP = new LinkedHashMap<String, String>();
-		REQUEST_MAP.put("relation_request_id", "依頼ID");
-		REQUEST_MAP.put("company_name", "御社名");
-		REQUEST_MAP.put("requester_name", "ご担当者名");
-		REQUEST_MAP.put("requester_mail", "ご連絡先メールアドレス");
-		REQUEST_MAP.put("requester_phone", "ご連絡先電話番号");
-		REQUEST_MAP.put("media_name", "媒体名");
-		REQUEST_MAP.put("url", "管理画面URL");
-		REQUEST_MAP.put("login_id_1", "login_id_1");
-		REQUEST_MAP.put("login_id_2", "login_id_2");
-		REQUEST_MAP.put("crawl_date", "連携開始日");
-		REQUEST_MAP.put("other_comment", "その他伝達事項");
-		REQUEST_MAP.put("assign_user_name", "HRS");
-		REQUEST_MAP.put("status", "status");
+		REQUEST_CHANGE_INFO = new LinkedHashMap<String, String>();
+		REQUEST_CHANGE_INFO.put("relation_request_id", "依頼ID");
+		REQUEST_CHANGE_INFO.put("status", "status");
+		REQUEST_CHANGE_INFO.put("status_description", "status des");
+		REQUEST_CHANGE_INFO.put("renkei_date", "renkei date");
+		REQUEST_CHANGE_INFO.put("director_id", "director id");
+		REQUEST_CHANGE_INFO.put("director_name", "director name");
 	}
 	
 	// restricted constructor
@@ -53,7 +45,7 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 		gson = new Gson();
 	}
 	
-	public void updateRequest(RelationRequest oldRequest, RelationRequest newRequest) throws GenericException {
+	public void updateRequest(RequestChangeInfo oldInfo, RequestChangeInfo newInfo) throws GenericException {
 		User user = AuthProvider.getUser();
 
 		if (user == null) {
@@ -63,12 +55,12 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 		try {
 			Comment comment = new Comment();
 			
-			comment.setRequest_id(newRequest.getRelation_request_id());
+			comment.setRequest_id(oldInfo.getRelation_request_id());
 			comment.setUser_id(user.getId());
-			comment.setOld_value(toJSON(oldRequest));
-			comment.setNew_value(toJSON(newRequest));
+			comment.setOld_value(toJSON(oldInfo));
+			comment.setNew_value(toJSON(newInfo));
 			
-			insertComment(comment, RelationRequest.class);
+			insertComment(comment, RequestChangeInfo.class);
 		} catch (NullPointerException e) {
 			throw new GenericException(e, CommentDAL.class);
 		} 
@@ -114,19 +106,9 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 		LinkedHashMap<String, String> propertyMap;
 		Class<?> type;
 		
-		if (object instanceof RelationRequest) {
-			propertyMap = REQUEST_MAP;
-			type = RelationRequest.class;
-			try {
-				RelationRequest request = RelationRequest.class.cast(object);
-				MediaLabelDAL mediaLabelDAL = DALFactory.getDAL(MediaLabelDAL.class, this.sessionFactory);
-				MediaLabel label = mediaLabelDAL.get(request.getMedia_id());
-
-				propertyMap.put("login_id_1", label.getLogin_id_1());
-				propertyMap.put("login_id_2", label.getLogin_id_2());
-			} catch (Exception e) {
-				throw new Exception(e);
-			}
+		if (object instanceof RequestChangeInfo) {
+			propertyMap = REQUEST_CHANGE_INFO;
+			type = RequestChangeInfo.class;
 		} else {
 			throw new Exception();
 		}
