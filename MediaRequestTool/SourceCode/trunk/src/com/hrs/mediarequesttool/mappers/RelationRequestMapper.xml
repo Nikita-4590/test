@@ -183,7 +183,7 @@
 	                WHEN status = 'NG' THEN 4
 	                WHEN status = 'OK' THEN 3
 	                WHEN status = 'PROCESSING' THEN 2
-	                WHEN status = 'FISNISHED' THEN 1 END ${direction},
+	                WHEN status = 'FINISHED' THEN 1 END ${direction},
 	            </if>
 	            created_at ${direction},
 	            relation_request_id ${direction},
