@@ -7,7 +7,6 @@ import javax.servlet.ServletContext;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 
-
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,17 +36,6 @@ public class AuthProvider implements AuthenticationProvider {
 			String userID = authentication.getName();
 			String userPwd = authentication.getCredentials().toString();
 
-			/*
-			 * process when accept user login with japannes
-			 *
-			 try {
-				byte decodeUser[] = userID.getBytes("ISO-8859-1"); 
-				userID = new String(decodeUser, "UTF-8");
-			} catch(Exception e) {
-				e.printStackTrace();
-				userID = authentication.getName();
-			}
-			 */
 			// Create SQL connection
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 
@@ -116,7 +104,7 @@ public class AuthProvider implements AuthenticationProvider {
 			if (principal instanceof User) {
 				return User.class.cast(principal);
 			}
-			if(authenDetail != null && authenDetail instanceof User) {
+			if (authenDetail != null && authenDetail instanceof User) {
 				return User.class.cast(authenDetail);
 			}
 		}
