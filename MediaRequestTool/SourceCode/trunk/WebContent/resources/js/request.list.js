@@ -1,7 +1,11 @@
+var table = undefined;
+var searchParam = undefined;
+var status = undefined;
 $(me.dapps).bind(
 'load',
 function() {
-	var table = $('#request-ajax-table').table({
+	
+	table = $('#request-ajax-table').table({
 		width : '100%',
 		select_row : false,
 		sortable : true,
@@ -81,7 +85,8 @@ function() {
 	
 	$('#search-relation-request-form').submit(function(e) {
 		e.preventDefault();
-		var searchParam = $('#input_text_search').val();
+		status = $("#status_select_option option:selected").val();
+		searchParam = $('#input_text_search').val();
 		table.search([ {
 			query_type : 'all',
 			query_name : 'id',
@@ -89,7 +94,24 @@ function() {
 		} , {
 			query_type : 'all',
 			query_name : 'status',
-			query_value : $("#status_select_option option:selected").val()
+			query_value : status
 		}]);
 	});
 });
+document.onkeydown = function(event) {	
+	if(event.keyCode == 116) {
+		if( typeof status === 'undefined' && typeof searchParam === 'undefined') {
+		} else {
+			event.preventDefault();
+			table.search([ {
+				query_type : 'all',
+				query_name : 'id',
+				query_value : searchParam
+			} , {
+				query_type : 'all',
+				query_name : 'status',
+				query_value : status
+			}]);
+		}
+	}
+};
