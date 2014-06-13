@@ -11,4 +11,6 @@ public interface StatusMapper {
 	List<Status> getListNextStatus(@Param("listNextStatus") String[] listNextStatus);
 	
 	Status get(@Param("type") String statusType);
+	
+	List<Status> getAll();
 }

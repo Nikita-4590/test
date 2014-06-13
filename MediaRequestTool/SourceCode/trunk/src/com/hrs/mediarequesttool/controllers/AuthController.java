@@ -25,7 +25,8 @@ public class AuthController extends BaseController {
 	public ModelAndView fail(HttpServletRequest httpRequest, ModelMap model) {
 	
 		model.addAttribute("message", httpRequest.getParameter("message"));
-
+		String x = httpRequest.getParameter("message");
+		System.out.print(x);
 		ViewBuilder viewBuilder = getViewBuilder("auth.login", model);
 		viewBuilder.setStylesheets("auth.login.css", "global.form.css");
 		viewBuilder.setPageTitle("ログイン");

@@ -20,18 +20,17 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 	}
 	
 	public PagingResult<RelationRequest> paging(int page, String direction,
-			String sort, String searchParam, String[] role,String priority) throws GenericException {
+			String sort, String[] role,String priority) throws GenericException {
 
 		try {
 			openSession();
 			PagingResult<RelationRequest> result = new PagingResult<RelationRequest>();
 			Page pagingSetting = new Page(page);
-			int total = mapper.count(parseIdSearch(searchParam), parseTextSearch(searchParam), role);
+			int total = mapper.count(role);
 			result.setPage(page, total, pagingSetting.getLimit());
 			if (!result.isExceed() && total != 0) {
 				List<RelationRequest> relationRequests = mapper.paging(
-						pagingSetting, sort, direction, parseIdSearch(searchParam),
-						parseTextSearch(searchParam), role, priority);
+						pagingSetting, sort, direction, role, priority);
 				result.setList(relationRequests);
 			}
 			return result;
@@ -42,7 +41,26 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			closeSession();
 		}
 	}
-
+	public PagingResult<RelationRequest> getAllRecord(int page, String direction, String sort, String searchParam, String status, String priority, String[] noneStatus)  throws GenericException{		
+		try {
+			openSession();
+			PagingResult<RelationRequest> result = new PagingResult<RelationRequest>();
+			int total = mapper.getCountSearch(status, parseTextSearch(searchParam), noneStatus);
+			Page pagingSetting = new Page(page);
+			result.setPage(page, total, pagingSetting.getLimit());
+			if(!result.isExceed() && total != 0) {
+				List<RelationRequest> relationRequests = mapper.getAllRecord(pagingSetting, sort, direction, parseTextSearch(searchParam), status, priority,noneStatus);
+				result.setList(relationRequests);
+			}
+			return result;
+		} catch(Exception e) {
+			throw new GenericException(e, this.getClass());
+		} finally {
+			closeSession();
+		}
+		
+	}
+	
 	public RelationRequest get(int requestId) throws GenericException {
 		try {
 			openSession();
