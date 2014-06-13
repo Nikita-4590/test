@@ -13,7 +13,7 @@
 		
 		<div class="form-line">
 			<div class="right-side">
-				<label id="current-status">${request.status_description}</label>
+				<label id="label-current-status">${request.status_description}</label>
 			</div>
 			<div class="left-side">
 				<label>現在のステータス</label>
@@ -32,13 +32,30 @@
 						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">担当ディレクターを依頼</a>
 					<#else>
 						<label name="current_director" id="current-director"><b>${request.assign_user_name!""}</b></label>
-						<a href="#" id="change-director" >担当ディレクターを変更する</a>
+						<a href="#"　id="enable-change-director" >担当ディレクターを変更</a>
+						<a href="#"　id="cancel-change-director" style="display: none;">担当ディレクターを変更しない</a>
 					</#if>
 				</div>
 				<div class="left-side">
 					<label>担当ディレクター</label>
 				</div>
 			</div>
+			
+			<#if view = "PROCESSING">
+				<div class="form-line" id="show-more" style="display: none;">
+					<div class="right-side">
+						<select name="update_director" id="select-update-director">
+							<#list directors as director>
+								<option value="${director.id}">${director.user_name}</option>
+							</#list>
+						</select>
+						<a href="#" class="button-link" id="update-director" onclick="confirmUpdateDirector(${request.relation_request_id}); return false;">変更する</a>
+					</div>
+					<div class="left-side">
+						<label>新規担当ディレクター</label>
+					</div>
+				</div>
+			</#if>
 		</#if>
 		
 		<div class="form-line">
@@ -61,7 +78,7 @@
 			<div class="form-line">
 				<div class="right-side">
 					<#if view = "CONFIRMING" || view= "NG">
-						<select name="next_status" id="select-next-status">
+						<select name="select_next_status" id="select-next-status">
 							<#list listNextStatus as status>
 								<#if view = "NG"><option value="${status.status_type}">${status.description}</option>
 								<#else><option value="${status.status_type}"<#if status.status_type = "OK">selected="selected">ログイン成功<#else>>ログイン失敗</#if></option>
@@ -69,7 +86,7 @@
 							</#list>
 						</select>
 					<#elseif view = "NEW" || view = "OK" || view = "PROCESSING">
-						<label id="next-status">${nextStatus.description}</label>
+						<label id="label-next-status">${nextStatus.description}</label>
 					</#if>
 					<#if view = "NEW" || view = "CONFIRMING" || view = "NG">
 						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;"><#if view = "NEW">依頼を受け付ける<#else>変更する</#if></a>
@@ -79,7 +96,9 @@
 					<label><#if view = "CONFIRMING">接続確認の結果<#else>次のステータス</#if></label>
 				</div>
 			</div>
-		</#if>	
+		</#if>
+		
+		<input type="hidden" id="view" value="${view}" />
 	</div>
 	
 	<#if view = "CONFIRMING" || view = "OK" || view = "PROCESSING">
@@ -214,7 +233,8 @@
 <script type="text/javascript">
 	me.dapps.global['url.context'] = '${formatter.url("")}';
 	me.dapps.global['url.confirm_change'] = '${formatter.url("/request/confirm_change/?ajax")}';
-	me.dapps.global['message.assign_person_warning'] = "WRN1";
+	me.dapps.global['url.confirm_update_director'] = '${formatter.url("/request/confirm_update_director/?ajax")}';
+	me.dapps.global['message.assign_director_warning'] = "WRN1";
 </script>				
 </#escape>
 </#compress>

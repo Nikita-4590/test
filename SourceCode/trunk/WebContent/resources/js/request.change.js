@@ -1,11 +1,12 @@
 
 function confirmChange(requestId) {
 	
-	var assign_user_name = $('#assign-user-name').val();
+	var view = $('view').val();
+	var select_new_director = $('#select-new-director').val();
 	
-	if ($.trim(assign_user_name) == '') {
-		if (isUnset(me.dapps.global['request.assign_person_warning_box'])) {
-			me.dapps.global['request.assign_person_warning_box'] = new me.dapps.box({
+	if ($.trim(view) == 'OK' && $.trim(select_new_director) == '') {
+		if (isUnset(me.dapps.global['request.assign_director_warning_box'])) {
+			me.dapps.global['request.assign_director_warning_box'] = new me.dapps.box({
 				auto_hide : true,
 				close_button : false,
 				button : {
@@ -20,11 +21,11 @@ function confirmChange(requestId) {
 				}
 			});
 		}
-		var messageId = me.dapps.global['message.assign_person_warning'];
+		var messageId = me.dapps.global['message.assign_director_warning'];
 
 		var localMessage = me.dapps.ui.enhanced.locale.text(messageId);
 
-		me.dapps.global['request.assign_person_warning_box'].show(localMessage);
+		me.dapps.global['request.assign_director_warning_box'].show(localMessage);
 	} else {
 		if (isUnset(me.dapps.global['request.change_confirm_box'])) {
 			
@@ -127,8 +128,9 @@ function confirmChange(requestId) {
 			method : 'post',
 			data : {
 				relation_request_id : requestId,
-				assign_user_name : $('#assign-user-name').val(),
-				new_status: $('#new-status').val()
+				selected_next_status : $('#select-next-status').val(),
+				selected_new_director : $('#select-new-director').val(),
+				renkei_date: $('#crawl-date').val()
 			},
 			callback : function(targetBox) {
 				targetBox.main.find('#change-request-form').validator();
