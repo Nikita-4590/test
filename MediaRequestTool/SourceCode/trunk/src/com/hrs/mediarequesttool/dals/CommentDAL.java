@@ -5,11 +5,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
-
 import com.google.gson.Gson;
 import com.hrs.mediarequesttool.dals.DALFactory;
 import com.hrs.mediarequesttool.dals.MediaLabelDAL;
@@ -67,33 +64,24 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 			Comment comment = new Comment();
 			
 			comment.setRequest_id(newRequest.getRelation_request_id());
-			
 			comment.setUser_id(user.getId());
 			comment.setOld_value(toJSON(oldRequest));
 			comment.setNew_value(toJSON(newRequest));
 			
-			boolean isSendMail = false;
-			
-			if (StringUtils.strip(oldRequest.getStatus()).equals("NEW") && StringUtils.strip(newRequest.getStatus()).equals("ASSIGNED")) {
-				isSendMail = true;
-			} 
-			
-			insertComment(comment, isSendMail, RelationRequest.class);
-			
-			
+			insertComment(comment, RelationRequest.class);
 		} catch (NullPointerException e) {
 			throw new GenericException(e, CommentDAL.class);
 		} 
 	}
 	
-	private void insertComment(Comment comment, boolean isSendMail, Class<?> type) throws GenericException {
+	private void insertComment(Comment comment, Class<?> type) throws GenericException {
 		try {
 			openSession();
 			mapper.insert(comment);
 			
 			Comment newComment = mapper.get(comment.getRequest_comment_id());
 
-			if (newComment != null && isSendMail) {
+			if (newComment != null) {
 				getProperties(newComment, type);
 
 				HistorySender.execute(newComment);
