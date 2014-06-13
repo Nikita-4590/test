@@ -49,11 +49,12 @@ public class RelationRequestController extends BaseController {
 	}
 
 	@RequestMapping("/list/")
-	public ModelAndView getAllRequest(ModelMap model) throws GenericException {
+	public ModelAndView getAllRequest(ModelMap model, Authentication authentication) throws GenericException {
 		ViewBuilder viewBuilder = null;
 		try {
 			StatusDAL statusDAL = getDAL(StatusDAL.class);
-			List<Status> lstStatus = statusDAL.getAll();
+			Role role = new Role(authentication.getPrincipal());
+			List<Status> lstStatus = statusDAL.getAll(role.getNoneStatus());
 			model.addAttribute("lstStatus", lstStatus);
 			viewBuilder = getViewBuilder("request.list", model);
 			viewBuilder.setScripts("request.list.js");
@@ -359,16 +360,5 @@ public class RelationRequestController extends BaseController {
 		}
 */
 		return true;
-	}
-	
-	public List<Status> getListStatus() throws GenericException {
-		List<Status> lstStatus = null;
-		try {
-			StatusDAL statusDAL = getDAL(StatusDAL.class);
-			lstStatus = statusDAL.getAll();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return lstStatus;
 	}
 }

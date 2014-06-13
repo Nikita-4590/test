@@ -12,5 +12,5 @@ public interface StatusMapper {
 	
 	Status get(@Param("type") String statusType);
 	
-	List<Status> getAll();
+	List<Status> getAll(@Param("noneStatus") String[] noneStatus);
 }
