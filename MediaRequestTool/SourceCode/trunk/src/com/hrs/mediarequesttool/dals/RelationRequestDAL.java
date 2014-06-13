@@ -67,6 +67,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			String pgcrypto = PropertiesLoader.instance.getPgcryptoPasswd();
 			return mapper.get(requestId, pgcrypto);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new GenericException(e);
 		} finally {
 			closeSession();
@@ -77,6 +78,17 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 		try {
 			openSession();
 			mapper.updateRequest(request);
+		} catch (Exception e) {
+			throw new GenericException(e);
+		} finally {
+			closeSession();
+		}
+	}
+	
+	public void updateOnlyDirectorOfRequest(RelationRequest request) throws GenericException {
+		try {
+			openSession();
+			mapper.updateOnlyDirectorOfRequest(request);
 		} catch (Exception e) {
 			throw new GenericException(e);
 		} finally {

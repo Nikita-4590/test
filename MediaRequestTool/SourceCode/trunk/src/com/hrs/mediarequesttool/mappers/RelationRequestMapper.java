@@ -38,4 +38,6 @@ public interface RelationRequestMapper {
 			@Param("status") String status,@Param("priority") String priority,
 			@Param("noneStatus") String[] noneStatus);
 	void updateRequest(RelationRequest request);
+	
+	void updateOnlyDirectorOfRequest(RelationRequest request);
 }	

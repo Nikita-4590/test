@@ -10,6 +10,17 @@
       user_id = #{user_id}
   </select>
   
+  <select id="get" parameterType="map"
+    resultType="com.hrs.mediarequesttool.pojos.User">
+    SELECT *
+    FROM
+      other_media.user
+    WHERE
+      id = #{id}
+    AND 
+      user_role = 2
+  </select>
+  
   <select id="getListDirector" parameterType="map"
     resultType="com.hrs.mediarequesttool.pojos.User">
     SELECT *
@@ -17,6 +28,9 @@
       other_media.user
     WHERE
       user_role = 2
+    <if test="current_user_id != 0">
+		AND	id != #{current_user_id}
+	</if>
   </select>
   
   <update id="countLoginFailure" parameterType="map">

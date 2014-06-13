@@ -12,7 +12,9 @@ public interface UserMapper {
 	
 	User getbyUserID (@Param("user_id") String userId);
 	
-	List<User> getListDirector();
+	User get (@Param("id") int userAutoId);
+	
+	List<User> getListDirector(@Param("current_user_id") int currentUserId);
 	
 	void countLoginFailure(@Param("id") int id);
 	

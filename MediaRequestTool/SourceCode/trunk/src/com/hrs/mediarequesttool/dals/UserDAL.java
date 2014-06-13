@@ -31,10 +31,21 @@ public class UserDAL extends AbstractDAL<UserMapper> {
 		}
 	}
 	
-	public List<User> getListDirector() throws GenericException {
+	public User get(int newDirectorId) throws GenericException {
 		try {
 			openSession();
-			return mapper.getListDirector();
+			return mapper.get(newDirectorId);
+		} catch (Exception e) {
+			throw new GenericException(e, UserDAL.class);
+		} finally {
+			closeSession();
+		}
+	}
+	
+	public List<User> getListDirector(int currentUserId) throws GenericException {
+		try {
+			openSession();
+			return mapper.getListDirector(currentUserId);
 		} catch (Exception e) {
 			throw new GenericException(e, UserDAL.class);
 		} finally {
