@@ -21,6 +21,10 @@ function() {
 			name : 'id',
 			type : 'text',
 			comparison : 'ilike',
+		},{
+			name : 'status',
+			type : 'text',
+			comparison : 'ilike',
 		}],
 		row_selected : function(row) {
 			var requestId = $(row).attr('row-id');
@@ -77,10 +81,15 @@ function() {
 	
 	$('#search-relation-request-form').submit(function(e) {
 		e.preventDefault();
+		var searchParam = $('#input_text_search').val();
 		table.search([ {
 			query_type : 'all',
 			query_name : 'id',
-			query_value : $('#input_text_search').val()
-		} ]);
+			query_value : searchParam
+		} , {
+			query_type : 'all',
+			query_name : 'status',
+			query_value : $("#status_select_option option:selected").val()
+		}]);
 	});
 });

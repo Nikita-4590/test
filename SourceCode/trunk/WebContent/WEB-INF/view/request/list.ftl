@@ -3,9 +3,20 @@
 <div id="company-list-page" class="page">
     <div id="search-form">
         <form id="search-relation-request-form">
-            <label id="label_control">検索文字</label>
-            <input type="text" id="input_text_search" placeholder="ここに検索文字を入力してください"/>
-            <input type="submit" id="button_search" class="button orange" value="検索"/>
+            <div id="status_search_form">
+                <label class="label_control">ステータス検索</label>
+                <select id="status_select_option" class="input_text_search">
+                    <option value=""></option>
+                 <#list lstStatus as status>
+                    <option value="${status.status_type}">${status.description}</option>
+                 </#list>
+                </select>
+            </div>
+            <div class="free_text_search_form">
+                <label class="label_control">フリーワード検索</label>
+                <input type="text" id="input_text_search" placeholder="ここに検索文字を入力してください"/>
+                <input type="submit" id="button_search" class="button orange" value="検索"/>
+            </div>
         </form>
     </div>
     <table id="request-ajax-table" cellpadding="0" cellspacing="0">

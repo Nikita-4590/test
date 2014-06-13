@@ -14,4 +14,8 @@
 		resultType="com.hrs.mediarequesttool.pojos.Status">
 		SELECT * FROM other_media.relation_request_status WHERE status_type = #{type}
 	</select>
+	<select id="getAll"
+	   resultType="com.hrs.mediarequesttool.pojos.Status">
+	   SELECT * FROM other_media.relation_request_status WHERE status_type NOT IN ('DESTROYED','DELETED')
+	</select>
 </mapper>

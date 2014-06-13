@@ -37,6 +37,17 @@ public class AuthProvider implements AuthenticationProvider {
 			String userID = authentication.getName();
 			String userPwd = authentication.getCredentials().toString();
 
+			/*
+			 * process when accept user login with japannes
+			 *
+			 try {
+				byte decodeUser[] = userID.getBytes("ISO-8859-1"); 
+				userID = new String(decodeUser, "UTF-8");
+			} catch(Exception e) {
+				e.printStackTrace();
+				userID = authentication.getName();
+			}
+			 */
 			// Create SQL connection
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 
