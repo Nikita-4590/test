@@ -232,7 +232,7 @@
             other_media.contract_company AS company ON request.company_id = company.id
         INNER JOIN
             other_media.media AS media ON request.media_id = media.id
-        INNER JOIN
+        LEFT JOIN
         	other_media.user AS u ON request.assign_user_id = u.id
         WHERE
         	request.relation_request_id = #{request_id}	
@@ -243,8 +243,17 @@
         UPDATE
             other_media.relation_request
         SET
-            status = #{status},
-            assign_user_name = #{assign_user_name}
+            status = #{status}
+        WHERE
+            relation_request_id = #{relation_request_id}    
+    </update>
+    
+    <!-- update only director -->
+    <update id="updateOnlyDirectorOfRequest" parameterType="com.hrs.mediarequesttool.pojos.RelationRequest">
+        UPDATE
+            other_media.relation_request
+        SET
+            assign_user_id = #{assign_user_id}
         WHERE
             relation_request_id = #{relation_request_id}    
     </update>
