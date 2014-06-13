@@ -292,7 +292,6 @@ public class RelationRequestController extends BaseController {
 					requestDAL.updateRequest(request);
 
 					// get new information after update
-
 					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
 
 					// open sql session
