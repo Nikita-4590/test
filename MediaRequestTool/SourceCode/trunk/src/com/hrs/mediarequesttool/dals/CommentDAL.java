@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.hrs.mediarequesttool.pojos.CommentProperty;
+import com.hrs.mediarequesttool.pojos.RelationRequest;
 import com.hrs.mediarequesttool.pojos.RequestChangeInfo;
 import com.hrs.mediarequesttool.mail.HistorySender;
 import com.hrs.mediarequesttool.auth.AuthProvider;
@@ -28,11 +29,11 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 	static {
 		REQUEST_CHANGE_INFO = new LinkedHashMap<String, String>();
 		REQUEST_CHANGE_INFO.put("relation_request_id", "依頼ID");
-		REQUEST_CHANGE_INFO.put("status", "status");
-		REQUEST_CHANGE_INFO.put("status_description", "status des");
-		REQUEST_CHANGE_INFO.put("renkei_date", "renkei date");
-		REQUEST_CHANGE_INFO.put("director_id", "director id");
-		REQUEST_CHANGE_INFO.put("director_name", "director name");
+		REQUEST_CHANGE_INFO.put("status", "ステータス　EN");
+		REQUEST_CHANGE_INFO.put("status_description", "ステータス　JP");
+		REQUEST_CHANGE_INFO.put("renkei_date", "連携開始日");
+		REQUEST_CHANGE_INFO.put("director_id", "担当ディレクター　ID");
+		REQUEST_CHANGE_INFO.put("director_name", "担当ディレクター");
 	}
 	
 	// restricted constructor
@@ -45,7 +46,21 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 		gson = new Gson();
 	}
 	
-	public void updateRequest(RequestChangeInfo oldInfo, RequestChangeInfo newInfo) throws GenericException {
+	public void updateRequest(RequestChangeInfo oldInfo, RequestChangeInfo newInfo, RelationRequest newRequest) throws GenericException {
+		try {
+			Comment comment = new Comment();
+			
+			comment.setRequest_id(oldInfo.getRelation_request_id());
+			comment.setOld_value(toJSON(oldInfo));
+			comment.setNew_value(toJSON(newInfo));
+			
+			insertComment(comment, RequestChangeInfo.class, newRequest);
+		} catch (NullPointerException e) {
+			throw new GenericException(e, CommentDAL.class);
+		} 
+	}
+	
+	private void insertComment(Comment comment, Class<?> type, RelationRequest newRequest) throws GenericException {
 		User user = AuthProvider.getUser();
 
 		if (user == null) {
@@ -53,22 +68,9 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 		}
 		
 		try {
-			Comment comment = new Comment();
-			
-			comment.setRequest_id(oldInfo.getRelation_request_id());
-			comment.setUser_id(user.getId());
-			comment.setOld_value(toJSON(oldInfo));
-			comment.setNew_value(toJSON(newInfo));
-			
-			insertComment(comment, RequestChangeInfo.class);
-		} catch (NullPointerException e) {
-			throw new GenericException(e, CommentDAL.class);
-		} 
-	}
-	
-	private void insertComment(Comment comment, Class<?> type) throws GenericException {
-		try {
 			openSession();
+			comment.setUser_id(user.getId());
+			
 			mapper.insert(comment);
 			
 			Comment newComment = mapper.get(comment.getRequest_comment_id());
@@ -76,7 +78,7 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 			if (newComment != null) {
 				getProperties(newComment, type);
 
-				HistorySender.execute(newComment);
+				HistorySender.execute(newComment, newRequest);
 			}
 		} catch (Exception e) {
 			throw new GenericException(e);
@@ -88,7 +90,8 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 	private void getProperties(Comment comment, Class<?> type) throws Exception {
 		Map<String, CommentProperty> properties = new LinkedHashMap<String, CommentProperty>();
 
-		parseProperties(properties, parseJson(comment.getNew_value(), type));
+		parseProperties(properties, parseJson(comment.getOld_value(), type), true);
+		parseProperties(properties, parseJson(comment.getNew_value(), type), false);
 
 		List<CommentProperty> propArr = new ArrayList<CommentProperty>();
 
@@ -99,7 +102,7 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 		comment.setProperties(propArr);
 	}
 	
-	private void parseProperties(Map<String, CommentProperty> properties, Object object) throws Exception {
+	private void parseProperties(Map<String, CommentProperty> properties, Object object, boolean old) throws Exception {
 		if (object == null) {
 			return;
 		}
@@ -135,7 +138,11 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 				properties.put(key, new CommentProperty(value));
 			}
 
-			properties.get(key).setValue(actualValue);
+			if (old) {
+				properties.get(key).setOldValue(actualValue);
+			} else {
+				properties.get(key).setNewValue(actualValue);
+			}
 		}
 	}
 	
