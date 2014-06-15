@@ -1,6 +1,7 @@
 package com.hrs.mediarequesttool.pojos;
 
 import java.util.List;
+
 import com.hrs.mediarequesttool.pojos.CommentProperty;
 
 public class Comment {
@@ -11,6 +12,8 @@ public class Comment {
 	private String old_value;
 	private String new_value;
 	private String created_at;
+	private String user_login_id;
+	private String user_name;
 	
 	private List<CommentProperty> properties;
 	
@@ -76,6 +79,22 @@ public class Comment {
 
 	public void setCreated_at(String created_at) {
 		this.created_at = created_at;
+	}
+
+	public String getUser_login_id() {
+		return user_login_id;
+	}
+
+	public void setUser_login_id(String user_login_id) {
+		this.user_login_id = user_login_id;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
 	}
 	
 }

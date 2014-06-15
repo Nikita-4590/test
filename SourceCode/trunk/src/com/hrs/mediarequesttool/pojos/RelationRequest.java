@@ -25,6 +25,8 @@ public class RelationRequest {
 	private String company_name;
 	private String media_name;
 	private String status_description;
+	private String label_login_id_1;
+	private String label_login_id_2;
 	
 	public int getRelation_request_id() {
 		return relation_request_id;
@@ -216,6 +218,22 @@ public class RelationRequest {
 	
 	public void setStatus_description(String status_description) {
 		this.status_description = status_description;
+	}
+
+	public String getLabel_login_id_1() {
+		return label_login_id_1;
+	}
+
+	public void setLabel_login_id_1(String label_login_id_1) {
+		this.label_login_id_1 = label_login_id_1;
+	}
+
+	public String getLabel_login_id_2() {
+		return label_login_id_2;
+	}
+
+	public void setLabel_login_id_2(String label_login_id_2) {
+		this.label_login_id_2 = label_login_id_2;
 	}
 	
 }

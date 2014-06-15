@@ -288,34 +288,21 @@ public class RelationRequestController extends BaseController {
 
 					// get old information before update
 					RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
-					
-					RequestChangeInfo oldInfo = new RequestChangeInfo();
-					oldInfo.setRelation_request_id(oldRequest.getRelation_request_id());
-					oldInfo.setStatus(oldRequest.getStatus());
-					oldInfo.setStatus_description(oldRequest.getStatus_description());
-					oldInfo.setDirector_id(oldRequest.getAssign_user_id());
-					oldInfo.setDirector_name(oldRequest.getAssign_user_name());
-					oldInfo.setRenkei_date(oldRequest.getCrawl_date());
+					RequestChangeInfo oldInfo = setInfo(oldRequest);
 
 					// update request
 					requestDAL.updateRequest(request);
 
 					// get new information after update
 					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
-					RequestChangeInfo newInfo = new RequestChangeInfo();
-					newInfo.setRelation_request_id(newRequest.getRelation_request_id());
-					newInfo.setStatus(newRequest.getStatus());
-					newInfo.setStatus_description(newRequest.getStatus_description());
-					newInfo.setDirector_id(newRequest.getAssign_user_id());
-					newInfo.setDirector_name(newRequest.getAssign_user_name());
-					newInfo.setRenkei_date(newRequest.getCrawl_date());
+					RequestChangeInfo newInfo = setInfo(newRequest);
 
 					// open sql session
 					commentDAL = DALFactory.getDAL(CommentDAL.class, sqlSessionFactory);
 					commentDAL.setSession(session);
 
 					// Insert into table comment
-					commentDAL.updateRequest(oldInfo, newInfo);
+					commentDAL.updateRequest(oldInfo, newInfo, newRequest);
 
 					session.commit();
 
@@ -347,6 +334,18 @@ public class RelationRequestController extends BaseController {
 		}
 
 		return GSON.toJson(map);
+	}
+	
+	private RequestChangeInfo setInfo(RelationRequest request) {
+		RequestChangeInfo requestChangeInfo = new RequestChangeInfo();
+		requestChangeInfo.setRelation_request_id(request.getRelation_request_id());
+		requestChangeInfo.setStatus(request.getStatus());
+		requestChangeInfo.setStatus_description(request.getStatus_description());
+		requestChangeInfo.setDirector_id(request.getAssign_user_id());
+		requestChangeInfo.setDirector_name(request.getAssign_user_name());
+		requestChangeInfo.setRenkei_date(request.getCrawl_date());
+		
+		return requestChangeInfo;
 	}
 
 	private boolean checkCaseStatusIsConfirming(String currentStatus, String nextStatus) {
@@ -451,21 +450,22 @@ public class RelationRequestController extends BaseController {
 				requestDAL.setSession(session);
 
 				// get old information before update
-				//RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
-
+				RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
+				RequestChangeInfo oldInfo = setInfo(oldRequest);
+				
 				// update request
 				requestDAL.updateOnlyDirectorOfRequest(request);
 
 				// get new information after update
-
 				RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
+				RequestChangeInfo newInfo = setInfo(newRequest);
 
 				// open sql session
 				commentDAL = DALFactory.getDAL(CommentDAL.class, sqlSessionFactory);
 				commentDAL.setSession(session);
 
 				// Insert into table comment
-				//commentDAL.updateRequest(oldRequest, newRequest);
+				commentDAL.updateRequest(oldInfo, newInfo, newRequest);
 
 				session.commit();
 

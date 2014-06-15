@@ -15,10 +15,14 @@
 	</insert>
 	<select id="get" parameterType="map"
 		resultType="com.hrs.mediarequesttool.pojos.Comment">
-		SELECT *
+		SELECT c.*,
+			u.user_id as user_login_id,
+			u.user_name
 		FROM 
-			other_media.relation_request_comment
+			other_media.relation_request_comment c
+		LEFT JOIN other_media.user u
+			ON c.user_id = u.id
 		WHERE 
-			request_comment_id = #{comment_id}
+			c.request_comment_id = #{comment_id}	
 	</select>
 </mapper>
