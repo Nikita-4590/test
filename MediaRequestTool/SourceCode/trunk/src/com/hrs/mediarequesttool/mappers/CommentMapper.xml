@@ -6,10 +6,11 @@
 			SELECT currval('other_media.relation_request_comment_sequence')
 		</selectKey>
 		INSERT INTO
-			other_media.relation_request_comment(request_id, user_id, old_value, new_value)
+			other_media.relation_request_comment(request_id, user_id, comment_reason, old_value, new_value)
 		VALUES(
 			#{request_id},
 			#{user_id},
+			#{comment_reason},
 			#{old_value},
 			#{new_value});
 	</insert>

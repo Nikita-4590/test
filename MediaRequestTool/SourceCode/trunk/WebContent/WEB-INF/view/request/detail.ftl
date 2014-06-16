@@ -60,9 +60,9 @@
 		
 		<div class="form-line">
 			<div class="right-side">
-				<#if view = "PROCESSING" || view = "FINISHED">
-					<input type="text" id="crawl-date" name="crawl_date" <#if request?? && request.crawl_date??>value="${request.crawl_date}"</#if> 
-					<#if view = "FINISHED">disabled="disabled"</#if>dapps-ui-datepicker="{'input':{'format':'yy-mm-dd'},'output':{'format':'yy年mm月dd日'}}" />
+				<#if view = "PROCESSING">
+					<input type="text" id="crawl-date" name="crawl_date" dapps-ui-datepicker="{'input':{'format':'yy-mm-dd'},'output':{'format':'yy年mm月dd日'}}" />
+				<#elseif view = "FINISHED"> <label><b>${request.crawl_date_to_display!""}</b></label>
 				<#else> <label><b>未確定</b></label>		
 				</#if>
 				<#if view = "PROCESSING">
@@ -97,6 +97,10 @@
 				</div>
 			</div>
 		</#if>
+		
+		<div class="form-line-bottom">
+			<a href="#"　id="button-destroy" onclick="confirmDestroy(${request.relation_request_id}); return false;" >ｘこの依頼を取消す</a>
+		</div>
 		
 		<input type="hidden" id="view" value="${view}" />
 	</div>
@@ -141,7 +145,7 @@
 		
 		<div class="form-line">
 			<div class="form-col-right">
-				<label>${request.requester_mail!""}</label>
+				<a href="mailto:${request.requester_mail!""}">${request.requester_mail!""}</a>
 			</div>
 			<div class="form-col-left">
 				<label for="request_mail">ご連絡先メールアドレス</label>
@@ -172,7 +176,7 @@
 		
 		<div class="form-line">
 			<div class="form-col-right">
-				<label>${request.url!""}</label>
+				<a href="${request.url!""}" target="_blank">${request.url!""}</a>
 			</div>
 			<div class="form-col-left">
 				<label for="url">管理画面URL</label>
@@ -234,6 +238,7 @@
 	me.dapps.global['url.context'] = '${formatter.url("")}';
 	me.dapps.global['url.confirm_change'] = '${formatter.url("/request/confirm_change/?ajax")}';
 	me.dapps.global['url.confirm_update_director'] = '${formatter.url("/request/confirm_update_director/?ajax")}';
+	me.dapps.global['url.confirm_destroy'] = '${formatter.url("/request/confirm_destroy/?ajax")}';
 	me.dapps.global['message.assign_director_warning'] = "WRN1";
 </script>				
 </#escape>

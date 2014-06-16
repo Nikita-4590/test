@@ -31,7 +31,7 @@ function confirmChange(requestId) {
 			
 			me.dapps.global['request.change_confirm_box'] = new me.dapps.box({
 				auto_hide : false,
-				title : '変更しますか？',
+				title : '同意しますか？',
 				close_button : false,
 				loading_text : '読み込み中。。。',
 				button : {
@@ -129,8 +129,8 @@ function confirmChange(requestId) {
 			data : {
 				relation_request_id : requestId,
 				selected_next_status : $('#select-next-status').val(),
-				selected_new_director : $('#select-new-director').val(),
-				renkei_date: $('#crawl-date').val()
+				new_director_id : $('#select-new-director').val(),
+				crawl_date: $('#crawl-date-dapps-value').val()
 			},
 			callback : function(targetBox) {
 				targetBox.main.find('#change-request-form').validator();

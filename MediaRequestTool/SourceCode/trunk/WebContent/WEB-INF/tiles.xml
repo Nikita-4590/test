@@ -373,4 +373,9 @@
 			value="/WEB-INF/view/request/confirm_update_director.ftl" type="freemarker" />
 	</definition>
 	
+	<definition name="request.confirm-destroy" extends="ajax.definition">
+		<put-attribute name="body"
+			value="/WEB-INF/view/request/confirm_destroy.ftl" type="freemarker" />
+	</definition>
+	
 </tiles-definitions>
