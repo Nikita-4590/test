@@ -20,5 +20,13 @@
 	   <foreach collection="noneStatus" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+       ORDER BY 
+       CASE 
+	        WHEN status_type = 'NEW' THEN 6
+	        WHEN status_type = 'CONFIRMING' THEN 5
+	        WHEN status_type = 'NG' THEN 4
+	        WHEN status_type = 'OK' THEN 3
+	        WHEN status_type = 'PROCESSING' THEN 2
+	        WHEN status_type = 'FINISHED' THEN 1 END DESC
 	</select>
 </mapper>

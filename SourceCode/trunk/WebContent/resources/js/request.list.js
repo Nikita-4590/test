@@ -100,8 +100,7 @@ function() {
 });
 document.onkeydown = function(event) {	
 	if(event.keyCode == 116) {
-		if( typeof status === 'undefined' && typeof searchParam === 'undefined') {
-		} else {
+		if(isSet(status) && isSet(searchParam)) {
 			event.preventDefault();
 			table.search([ {
 				query_type : 'all',
