@@ -46,11 +46,12 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 		gson = new Gson();
 	}
 	
-	public void updateRequest(RequestChangeInfo oldInfo, RequestChangeInfo newInfo, RelationRequest newRequest) throws GenericException {
+	public void updateRequest(String reason, RequestChangeInfo oldInfo, RequestChangeInfo newInfo, RelationRequest newRequest) throws GenericException {
 		try {
 			Comment comment = new Comment();
 			
 			comment.setRequest_id(oldInfo.getRelation_request_id());
+			comment.setComment_reason(reason);
 			comment.setOld_value(toJSON(oldInfo));
 			comment.setNew_value(toJSON(newInfo));
 			

@@ -8,6 +8,7 @@ me.dapps.ui.enhanced.locale['INF100'] = '該当データが存在しません。
 me.dapps.ui.enhanced.locale['WRN1'] = 'HRS担当者を入力してください。';
 me.dapps.ui.enhanced.locale['WRN2'] = 'データを入力した際に、不具合が発生しました。';
 me.dapps.ui.enhanced.locale['INF1'] = '変更が正常に完了しました。';
+me.dapps.ui.enhanced.locale['WRN100'] = 'コメントを入力してください。';
 me.dapps.ui.enhanced.locale['ERR050'] = 'メールアドレスが登録されていないかパスワードが間違っているためログインできませんでした。';
 me.dapps.ui.enhanced.locale['INF000'] = '読み込み中。。。';
 me.dapps.ui.enhanced.locale['INF001'] = '現在、使用不可です。';

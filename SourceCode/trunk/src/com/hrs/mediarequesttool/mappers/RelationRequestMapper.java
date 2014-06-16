@@ -40,4 +40,6 @@ public interface RelationRequestMapper {
 	void updateRequest(RelationRequest request);
 	
 	void updateOnlyDirectorOfRequest(RelationRequest request);
+	
+	void updateRequestToDestroy(RelationRequest request);
 }	

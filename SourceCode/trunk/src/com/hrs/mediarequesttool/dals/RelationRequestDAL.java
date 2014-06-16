@@ -95,4 +95,15 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			closeSession();
 		}
 	}
+	
+	public void updateRequestToDestroy(RelationRequest request) throws GenericException {
+		try {
+			openSession();
+			mapper.updateRequestToDestroy(request);
+		} catch (Exception e) {
+			throw new GenericException(e);
+		} finally {
+			closeSession();
+		}
+	}
 }

@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -178,7 +181,7 @@ public class RelationRequestController extends BaseController {
 
 			builder.setPageTitle("依頼詳細");
 			builder.setStylesheets("global.form.css", "request.detail.css");
-			builder.setScripts("jquery/jquery.form.min.js", "request.detail.js", "request.change.js", "request.update.director.js");
+			builder.setScripts("jquery/jquery.form.min.js", "request.detail.js", "request.change.js", "request.update.director.js", "request.destroy.js");
 
 		} catch (GenericException e) {
 			e.printStackTrace();
@@ -222,7 +225,23 @@ public class RelationRequestController extends BaseController {
 					} else {
 						throw new ResourceNotFoundException();
 					}
+				}
+			} else if (currentStatus.equals(Constants.STATUS_OK)) {
+				String directorId = httpRequest.getParameter("new_director_id");
+				if (!validateDirectorId(directorId)) {
+					// TODO: trong truong hop ko co thi client phai show message
+					throw new ResourceNotFoundException();
+				} else {
+					int newDirectorId = Integer.parseInt(directorId);
 
+					model.addAttribute("newDirectorId", newDirectorId);
+				}
+			} else if (currentStatus.equals(Constants.STATUS_PROCESSING)) {
+				String crawlDate = httpRequest.getParameter("crawl_date");
+				if (!validateCrawlDate(crawlDate)) {
+					throw new ResourceNotFoundException();
+				} else {
+					model.addAttribute("crawlDate", crawlDate);
 				}
 			}
 
@@ -260,13 +279,21 @@ public class RelationRequestController extends BaseController {
 				// inform error message about invalid data
 				messageId = "WRN2";
 			} else {
-
 				String currentStatus = request.getStatus();
 				String nextStatus = httpRequest.getParameter("selected_next_status");
+				String directorId = httpRequest.getParameter("new_director_id");
+				String crawlDate = httpRequest.getParameter("crawl_date");
+				String comment = httpRequest.getParameter("destroy-comment");
 
 				if (currentStatus.equals(Constants.STATUS_CONFIRMING) && !checkCaseStatusIsConfirming(currentStatus, nextStatus)) {
 					messageId = "WRN2";
 				} else if (currentStatus.equals(Constants.STATUS_NG) && !checkCaseStatusIsNg(currentStatus, nextStatus)) {
+					messageId = "WRN2";
+				} else if (currentStatus.equals(Constants.STATUS_NG) && nextStatus.equals(Constants.STATUS_CONFIRMING) && !validateComment(comment)) {
+					messageId = "WRN2";
+				} else if (currentStatus.equals(Constants.STATUS_OK) && !validateDirectorId(directorId)) {
+					messageId = "WRN2";
+				} else if (currentStatus.equals(Constants.STATUS_PROCESSING) && !validateCrawlDate(crawlDate)) {
 					messageId = "WRN2";
 				} else {
 					if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
@@ -274,8 +301,11 @@ public class RelationRequestController extends BaseController {
 					} else if (currentStatus.equals(Constants.STATUS_NEW)) {
 						request.setStatus(Constants.STATUS_CONFIRMING);
 					} else if (currentStatus.equals(Constants.STATUS_OK)) {
+						int newDirectorId = Integer.parseInt(directorId);
+						request.setAssign_user_id(newDirectorId);
 						request.setStatus(Constants.STATUS_PROCESSING);
 					} else if (currentStatus.equals(Constants.STATUS_PROCESSING)) {
+						request.setCrawl_date(crawlDate);
 						request.setStatus(Constants.STATUS_FINISHED);
 					} else {
 						// show message
@@ -302,7 +332,12 @@ public class RelationRequestController extends BaseController {
 					commentDAL.setSession(session);
 
 					// Insert into table comment
-					commentDAL.updateRequest(oldInfo, newInfo, newRequest);
+
+					if (currentStatus.equals(Constants.STATUS_NG) && nextStatus.equals(Constants.STATUS_CONFIRMING)) {
+						commentDAL.updateRequest(comment, oldInfo, newInfo, newRequest);
+					} else {
+						commentDAL.updateRequest(null, oldInfo, newInfo, newRequest);
+					}
 
 					session.commit();
 
@@ -312,6 +347,9 @@ public class RelationRequestController extends BaseController {
 				}
 			}
 
+		} catch (NumberFormatException e) {
+			// inform error message about invalid data
+			messageId = "WRN2";
 		} catch (GenericException e) {
 			// inform error message about invalid data
 			messageId = "WRN2";
@@ -335,7 +373,7 @@ public class RelationRequestController extends BaseController {
 
 		return GSON.toJson(map);
 	}
-	
+
 	private RequestChangeInfo setInfo(RelationRequest request) {
 		RequestChangeInfo requestChangeInfo = new RequestChangeInfo();
 		requestChangeInfo.setRelation_request_id(request.getRelation_request_id());
@@ -344,7 +382,7 @@ public class RelationRequestController extends BaseController {
 		requestChangeInfo.setDirector_id(request.getAssign_user_id());
 		requestChangeInfo.setDirector_name(request.getAssign_user_name());
 		requestChangeInfo.setRenkei_date(request.getCrawl_date());
-		
+
 		return requestChangeInfo;
 	}
 
@@ -372,6 +410,46 @@ public class RelationRequestController extends BaseController {
 		}
 	}
 
+	private boolean validateDirectorId(String directorId) {
+		if (Validator.isNullOrEmpty(directorId)) {
+			return false;
+		} else {
+			try {
+				int newDirectorId = Integer.parseInt(directorId);
+
+				SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
+
+				// get User detail
+				UserDAL userDAL = DALFactory.getDAL(UserDAL.class, sqlSessionFactory);
+				User newDirector = userDAL.get(newDirectorId);
+
+				if (newDirector == null) {
+					return false;
+				} else {
+					return true;
+				}
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+				return false;
+			} catch (GenericException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+	}
+
+	private boolean validateCrawlDate(String stringCrawlDate) {
+		if (Validator.isNullOrEmpty(stringCrawlDate)) {
+			return false;
+		} else {
+			DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
+			DateTime crawlDate = DateTime.parse(stringCrawlDate, dateFormatter);
+			DateTime tomorrow = DateTime.now().plusDays(1).withTime(0, 0, 0, 0);
+
+			return (crawlDate.isAfter(tomorrow) || crawlDate.isEqual(tomorrow));
+		}
+	}
+
 	@RequestMapping(value = "/confirm_update_director/", method = RequestMethod.POST)
 	public ModelAndView confirmUpdateDirector(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
 		try {
@@ -386,19 +464,11 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || directorId == null) {
+			if (request == null || !validateDirectorId(directorId)) {
 				throw new ResourceNotFoundException();
 			}
 
 			int newDirectorId = Integer.parseInt(directorId);
-
-			// get User detail
-			UserDAL userDAL = DALFactory.getDAL(UserDAL.class, sqlSessionFactory);
-			User newDirector = userDAL.get(newDirectorId);
-
-			if (newDirector == null) {
-				throw new ResourceNotFoundException();
-			}
 
 			model.addAttribute("request", request);
 			model.addAttribute("newDirectorId", newDirectorId);
@@ -424,7 +494,7 @@ public class RelationRequestController extends BaseController {
 
 		try {
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
-			int newDirectorId = Integer.parseInt(httpRequest.getParameter("new_director_id"));
+			String directorId = httpRequest.getParameter("new_director_id");
 
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 
@@ -433,15 +503,11 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			UserDAL userDAL = DALFactory.getDAL(UserDAL.class, sqlSessionFactory);
-
-			User user = userDAL.get(newDirectorId);
-
-			if (request == null || user == null) {
+			if (request == null || !validateDirectorId(directorId)) {
 				// inform error message about invalid data
 				messageId = "WRN2";
 			} else {
-
+				int newDirectorId = Integer.parseInt(directorId);
 				request.setAssign_user_id(newDirectorId);
 
 				// create session
@@ -452,7 +518,7 @@ public class RelationRequestController extends BaseController {
 				// get old information before update
 				RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
 				RequestChangeInfo oldInfo = setInfo(oldRequest);
-				
+
 				// update request
 				requestDAL.updateOnlyDirectorOfRequest(request);
 
@@ -465,7 +531,7 @@ public class RelationRequestController extends BaseController {
 				commentDAL.setSession(session);
 
 				// Insert into table comment
-				commentDAL.updateRequest(oldInfo, newInfo, newRequest);
+				commentDAL.updateRequest(null, oldInfo, newInfo, newRequest);
 
 				session.commit();
 
@@ -497,5 +563,115 @@ public class RelationRequestController extends BaseController {
 		}
 
 		return GSON.toJson(map);
+	}
+
+	@RequestMapping(value = "/confirm_destroy/", method = RequestMethod.POST)
+	public ModelAndView confirmDestroy(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
+		try {
+			ViewBuilder builder = getViewBuilder("request.confirm-destroy", model);
+			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
+
+			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
+
+			// get Request detail
+			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
+
+			RelationRequest request = requestDAL.get(requestId);
+
+			if (request == null) {
+				throw new ResourceNotFoundException();
+			}
+			model.addAttribute("request", request);
+
+			return view(builder);
+		} catch (NumberFormatException e) {
+			throw new ResourceNotFoundException(e, this.getClass());
+		} catch (GenericException e) {
+			throw new BadRequestException(e, this.getClass());
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/destroy/", method = RequestMethod.POST)
+	public String submitDestroy(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
+
+		String messageId = null;
+		boolean success = false;
+		SqlSession session = null;
+		RelationRequestDAL requestDAL = null;
+		CommentDAL commentDAL = null;
+
+		try {
+			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
+			String comment = httpRequest.getParameter("destroy-comment");
+
+			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
+
+			// get Request detail
+			requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
+
+			RelationRequest request = requestDAL.get(requestId);
+
+			if (request == null || !validateComment(comment)) {
+				// inform error message about invalid data
+				messageId = "WRN2";
+			} else {
+
+				// create session
+				session = sqlSessionFactory.openSession();
+
+				requestDAL.setSession(session);
+
+				// get old information before update
+				RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
+				RequestChangeInfo oldInfo = setInfo(oldRequest);
+
+				// update request
+				requestDAL.updateRequestToDestroy(request);
+
+				// get new information after update
+				RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
+				RequestChangeInfo newInfo = setInfo(newRequest);
+
+				// open sql session
+				commentDAL = DALFactory.getDAL(CommentDAL.class, sqlSessionFactory);
+				commentDAL.setSession(session);
+
+				// Insert into table comment
+				commentDAL.updateRequest(comment, oldInfo, newInfo, newRequest);
+
+				session.commit();
+
+				// Display information message when delete successful
+				messageId = "INF1";
+				success = true;
+			}
+
+		} catch (GenericException e) {
+			// inform error message about invalid data
+			messageId = "WRN2";
+		} finally {
+			if (session != null) {
+				session.close();
+				session = null;
+			}
+			if (requestDAL != null) {
+				requestDAL.forceCloseSession();
+			}
+		}
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("message_id", messageId);
+		map.put("success", success);
+
+		if (success) {
+			map.put("url", "/request/list/");
+		}
+
+		return GSON.toJson(map);
+	}
+
+	protected boolean validateComment(String comment) {
+		return !(Validator.isNullOrEmpty(comment) || Validator.checkExceedLength(Constants.MAX_LENGTH_COMMENT, comment));
 	}
 }

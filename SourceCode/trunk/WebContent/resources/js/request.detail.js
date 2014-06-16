@@ -4,6 +4,12 @@ $(me.dapps).bind('load', function() {
 	// create datetimepicker
 	me.dapps.ui.enhanced.scanDatetimePickers();
 	
+	var crawlDate = $('#crawl-date');
+	var tomorrow = new Date();
+	tomorrow.setDate(tomorrow.getDate() + 1);
+	crawlDate.datetimepicker('setDate', tomorrow).change();
+	$('#crawl-date').datetimepicker('option', 'minDate', tomorrow);
+	
 	$("#enable-change-director").click(function(e) {
 		
 		$('#show-more').show();

@@ -214,6 +214,7 @@
             pgp_sym_decrypt(request.login_password_1, #{pgcrypto}) AS login_password_1,
             pgp_sym_decrypt(request.login_password_2, #{pgcrypto}) AS login_password_2,
             request.crawl_date,
+            to_char(request.crawl_date::timestamp with time zone, 'YYYY年MM月DD日'::text) AS crawl_date_to_display,
             request.other_comment,
             request.status,
             request.assign_user_id,
@@ -225,7 +226,7 @@
             media.media_name,
             media_label.login_id_1 AS label_login_id_1,
             media_label.login_id_2 AS label_login_id_2,
-            status.description as status_description
+            status.description AS status_description
         FROM
         	other_media.relation_request AS request
         INNER JOIN
@@ -248,6 +249,8 @@
             other_media.relation_request
         SET
             status = #{status},
+            assign_user_id = #{assign_user_id},
+            crawl_date = #{crawl_date}::date,
             updated_at = CURRENT_TIMESTAMP
         WHERE
             relation_request_id = #{relation_request_id}    
@@ -260,6 +263,16 @@
         SET
             assign_user_id = #{assign_user_id},
             updated_at = CURRENT_TIMESTAMP
+        WHERE
+            relation_request_id = #{relation_request_id}    
+    </update>
+    
+    <!-- update request to DESTROY status -->
+    <update id="updateRequestToDestroy" parameterType="com.hrs.mediarequesttool.pojos.RelationRequest">
+        UPDATE
+            other_media.relation_request
+        SET
+            status = 'DESTROYED'
         WHERE
             relation_request_id = #{relation_request_id}    
     </update>

@@ -41,6 +41,10 @@
 	margin-left: 60px;
 }
 
+#button-destroy {
+	float: right;
+}
+
 #message {
 	margin: 20px 60px;
 	font-size: 18px;

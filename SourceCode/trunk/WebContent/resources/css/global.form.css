@@ -18,6 +18,11 @@
 	content: '';
 }
 
+.form-line-bottom {
+	margin: 10px 0 40px;
+	line-height: 22px;
+}
+
 .form-col-left {
 	margin-right: 61%;
 	margin-left: 120px;
@@ -26,6 +31,15 @@
 .form-col-right {
 	float: right;
 	width: 60%;
+}
+
+.form-col-left-box {
+	margin-right: 71%;
+}
+
+.form-col-right-box {
+	float: right;
+	width: 70%;
 }
 
 .form-input-note {

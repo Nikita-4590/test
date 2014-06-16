@@ -27,6 +27,7 @@ public class RelationRequest {
 	private String status_description;
 	private String label_login_id_1;
 	private String label_login_id_2;
+	private String crawl_date_to_display;
 	
 	public int getRelation_request_id() {
 		return relation_request_id;
@@ -234,6 +235,14 @@ public class RelationRequest {
 
 	public void setLabel_login_id_2(String label_login_id_2) {
 		this.label_login_id_2 = label_login_id_2;
+	}
+
+	public String getCrawl_date_to_display() {
+		return crawl_date_to_display;
+	}
+
+	public void setCrawl_date_to_display(String crawl_date_to_display) {
+		this.crawl_date_to_display = crawl_date_to_display;
 	}
 	
 }
