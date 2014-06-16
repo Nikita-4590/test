@@ -5,29 +5,29 @@
 	<#list relationRequests.list as relationRequest>
 	<tr row-id="${relationRequest.relation_request_id}" <#if relationRequest.status ? lower_case  == compare_status ? lower_case> class="account-disabled" </#if>>
 		<td>
-		    ${relationRequest.status_description!""}
+		    ${relationRequest.status_description!"－"}
 		</td>
 		<td>
-			${relationRequest.created_at!""}
+			${relationRequest.created_at!"－"}
 		</td>
 		<td>
-			${relationRequest.crawl_date!""}
+			${relationRequest.crawl_date!"－"}
 		</td>
 		<td>
-			${relationRequest.company_id!""}
+			${relationRequest.company_id!"－"}
 		</td>
 		
 		<td>
-			${relationRequest.company_name!""}
+			${relationRequest.company_name!"－"}
 		</td>
 		<td>
-			${relationRequest.media_name!""}
+			${relationRequest.media_name!"－"}
 		</td>
 		<td>
-			${relationRequest.relation_request_id!""}
+			${relationRequest.relation_request_id!"－"}
 		</td>
 		<td>
-			${relationRequest.assign_user_name!""}
+			${relationRequest.assign_user_name!"－"}
 		</td>
 	</tr>	 
 	</#list>
