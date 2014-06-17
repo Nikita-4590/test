@@ -5,15 +5,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.hrs.mediarequesttool.common.Constants;
-
 public abstract class Validator {
 	public static boolean isNullOrEmpty(String testString) {
 		return testString == null || StringUtils.strip(testString).isEmpty();
-	}
-
-	public static boolean isChecked(String testString) {
-		return testString != null && StringUtils.strip(testString).equalsIgnoreCase(Constants.CHECKBOX_ON);
 	}
 	
 	public static boolean isCheckedFlag(String testString, String flag) {
