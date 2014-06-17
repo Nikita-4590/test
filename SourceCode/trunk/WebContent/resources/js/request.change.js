@@ -1,10 +1,9 @@
 
 function confirmChange(requestId) {
-	
-	var view = $('view').val();
+
 	var select_new_director = $('#select-new-director').val();
 	
-	if ($.trim(view) == 'OK' && $.trim(select_new_director) == '') {
+	if ($('#view').val() == 'OK' && $.trim(select_new_director) == '') {
 		if (isUnset(me.dapps.global['request.assign_director_warning_box'])) {
 			me.dapps.global['request.assign_director_warning_box'] = new me.dapps.box({
 				auto_hide : true,
@@ -28,35 +27,62 @@ function confirmChange(requestId) {
 		me.dapps.global['request.assign_director_warning_box'].show(localMessage);
 	} else {
 		if (isUnset(me.dapps.global['request.change_confirm_box'])) {
+			if ($('#view').val() == 'NG' && $('#select-next-status').val() == 'CONFIRMING') {
+				me.dapps.global['request.change_confirm_box'] = new me.dapps.box({
+					auto_hide : false,
+					title : '接続確認中に戻しますか？',
+					close_button : false,
+					loading_text : '読み込み中。。。',
+					button : {
+						align : 'right',
+						list : [ {
+							text : 'キャンセル',
+							loading : true,
+							action : function(targetBox) {
+								targetBox.close();
+							}
+						}, {
+							text : 'いいえ',
+							action : function(targetBox) {
+								targetBox.close();
+							}
+						}, {
+							text : 'はい',
+							action : function(targetBox) {
+								targetBox.main.find('#change-request-form').submit();
+							}
+						} ]
+					}
+				});
+			} else {
+				me.dapps.global['request.change_confirm_box'] = new me.dapps.box({
+					auto_hide : false,
+					title : '同意しますか？',
+					close_button : false,
+					loading_text : '読み込み中。。。',
+					button : {
+						align : 'right',
+						list : [ {
+							text : 'キャンセル',
+							loading : true,
+							action : function(targetBox) {
+								targetBox.close();
+							}
+						}, {
+							text : 'いいえ',
+							action : function(targetBox) {
+								targetBox.close();
+							}
+						}, {
+							text : 'はい',
+							action : function(targetBox) {
+								targetBox.main.find('#change-request-form').submit();
+							}
+						} ]
+					}
+				});
+			}
 			
-			me.dapps.global['request.change_confirm_box'] = new me.dapps.box({
-				auto_hide : false,
-				title : '同意しますか？',
-				close_button : false,
-				loading_text : '読み込み中。。。',
-				button : {
-					align : 'right',
-					list : [ {
-						text : 'キャンセル',
-						loading : true,
-						action : function(targetBox) {
-							targetBox.close();
-						}
-					}, {
-						text : 'いいえ',
-						action : function(targetBox) {
-							targetBox.close();
-						}
-					}, {
-						text : 'はい',
-						action : function(targetBox) {
-							// targetBox.close();
-							//$('body').append($('<div class="mask" />'));
-							targetBox.main.find('#change-request-form').submit();
-						}
-					} ]
-				}
-			});
 			// fix bug #2879
 			me.dapps.global['request.change_confirm_box'].submitAgent = {
 					isSubmitting : false,

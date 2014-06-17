@@ -229,7 +229,6 @@ public class RelationRequestController extends BaseController {
 			} else if (currentStatus.equals(Constants.STATUS_OK)) {
 				String directorId = httpRequest.getParameter("new_director_id");
 				if (!validateDirectorId(directorId)) {
-					// TODO: trong truong hop ko co thi client phai show message
 					throw new ResourceNotFoundException();
 				} else {
 					int newDirectorId = Integer.parseInt(directorId);
