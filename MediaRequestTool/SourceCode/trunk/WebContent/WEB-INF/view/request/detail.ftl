@@ -121,7 +121,7 @@
 				<label>${request.company_id!""}</label>
 			</div>
 			<div class="form-col-left">
-				<label for="company_id">御社ID</label>
+				<label for="company_id">企業ID</label>
 			</div>	
 		</div>
 		
@@ -130,7 +130,7 @@
 				<label>${request.company_name!""}</label>
 			</div>
 			<div class="form-col-left">
-				<label for="company_name">御社名</label>
+				<label for="company_name">企業名</label>
 			</div>	
 		</div>
 		
@@ -170,7 +170,7 @@
 				<label>${request.media_name!""}</label>
 			</div>
 			<div class="form-col-left">
-				<label for="media_name">媒体</label>
+				<label for="media_name">媒体名</label>
 			</div>	
 		</div>
 		

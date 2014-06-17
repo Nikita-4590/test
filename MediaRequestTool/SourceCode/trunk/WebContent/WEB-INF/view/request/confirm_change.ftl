@@ -7,6 +7,18 @@
 	<input type="hidden" name="crawl_date" value="${crawlDate!""}" />
 	
 	<#if request.status = "NG" && nextStatus = "CONFIRMING">
+		<div>
+			<label><b>＜依頼情報＞</b></label>
+		</div>
+		<div>
+			<label>・${request.company_name!""}</label>
+		</div>
+		<div>
+			<label>・${request.media_name!""}</label>
+		</div>
+		<div>
+			<label>・${request.login_id_1!""}</label>
+		</div>
 		<div class="form-line">
 			<div class="form-col-right-box">
 				<textarea placeholder="ここに戻す理由を入力してください。"maxlength="255"　name="destroy-comment"
