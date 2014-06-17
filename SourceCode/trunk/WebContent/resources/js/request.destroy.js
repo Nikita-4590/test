@@ -126,10 +126,10 @@ function confirmDestroy(requestId) {
 				},
 				error : function(e, err) {
 					messageBox._response = null;
-					var messageId = me.dapps.global['message.change.general'];
+					var messageId = me.dapps.global['message.destroy.general'];
 
 					if (e.status == 403) {
-						me.dapps.global['message.change.forbidden'];
+						me.dapps.global['message.destroy.forbidden'];
 					}
 
 					message = me.dapps.ui.enhanced.locale.text(messageId);
@@ -138,18 +138,18 @@ function confirmDestroy(requestId) {
 					messageBox.show(message);
 				},
 				complete : function() {
-					me.dapps.global['request.change_confirm_box'].submitAgent.endSubmit();
+					me.dapps.global['request.destroy_confirm_box'].submitAgent.endSubmit();
 				}
 			});
 
 		},
 		error : function(box, e) {
-			var messageId = me.dapps.global['message.change.general'];
+			var messageId = me.dapps.global['message.destroy.general'];
 
 			if (e.status == 403) {
-				me.dapps.global['message.change.forbidden'];
+				me.dapps.global['message.destroy.forbidden'];
 			} else if (e.status == 404) {
-				me.dapps.global['message.change.not_found'];
+				me.dapps.global['message.destroy.not_found'];
 			}
 
 			message = me.dapps.ui.enhanced.locale.text(messageId);

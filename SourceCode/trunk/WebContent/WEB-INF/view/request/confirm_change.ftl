@@ -22,7 +22,7 @@
 		<div class="form-line">
 			<div class="form-col-right-box">
 				<textarea placeholder="ここに戻す理由を入力してください。"maxlength="255"　name="destroy-comment"
-					dapps-validate-rule="{ 'required': true }" dapps-validate-message-id="WRN100"></textarea>
+					dapps-validate-rule="{ 'required': true }" dapps-validate-message-id="WRN151"></textarea>
 				<div class="form-input-note">
 					<span>255文字以下</span>
 				</div>
