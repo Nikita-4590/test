@@ -74,7 +74,7 @@
 			</div>
 		</div>	
 		
-		<#if view != "FINISHED" && view != "DEFAULT">
+		<#if view != "FINISHED">
 			<div class="form-line">
 				<div class="right-side">
 					<#if view = "CONFIRMING" || view= "NG">
