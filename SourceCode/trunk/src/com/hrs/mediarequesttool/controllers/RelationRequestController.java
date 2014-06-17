@@ -161,7 +161,7 @@ public class RelationRequestController extends BaseController {
 			} else if (currentStatus.equals(Constants.STATUS_FINISHED)) {
 				model.addAttribute("view", Constants.STATUS_FINISHED);
 			} else {
-				model.addAttribute("view", "DEFAULT");
+				throw new ResourceNotFoundException();
 			}
 
 			if (nextStatus != null) {
@@ -209,8 +209,10 @@ public class RelationRequestController extends BaseController {
 			}
 
 			String currentStatus = request.getStatus();
-
-			if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
+			
+			if (validateCurrentStatus(currentStatus)) {
+				throw new ResourceNotFoundException();
+			} else if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
 				String nextStatus = httpRequest.getParameter("selected_next_status");
 
 				if (currentStatus.equals(Constants.STATUS_CONFIRMING)) {
@@ -283,8 +285,10 @@ public class RelationRequestController extends BaseController {
 				String directorId = httpRequest.getParameter("new_director_id");
 				String crawlDate = httpRequest.getParameter("crawl_date");
 				String comment = httpRequest.getParameter("destroy-comment");
-
-				if (currentStatus.equals(Constants.STATUS_CONFIRMING) && !checkCaseStatusIsConfirming(currentStatus, nextStatus)) {
+				
+				if (validateCurrentStatus(currentStatus)) {
+					messageId = "ERR151";
+				} else if (currentStatus.equals(Constants.STATUS_CONFIRMING) && !checkCaseStatusIsConfirming(currentStatus, nextStatus)) {
 					messageId = "ERR151";
 				} else if (currentStatus.equals(Constants.STATUS_NG) && !checkCaseStatusIsNg(currentStatus, nextStatus)) {
 					messageId = "ERR151";
@@ -322,7 +326,7 @@ public class RelationRequestController extends BaseController {
 					// update request
 					requestDAL.updateRequest(request);
 
-					// get new information after update
+					// get new information after update 
 					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
 					RequestChangeInfo newInfo = setInfo(newRequest);
 
@@ -464,7 +468,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateDirectorId(directorId)) {
+			if (request == null || !validateDirectorId(directorId) || validateCurrentStatus(request.getStatus())) {
 				throw new ResourceNotFoundException();
 			}
 
@@ -504,7 +508,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateDirectorId(directorId)) {
+			if (request == null || !validateDirectorId(directorId) || validateCurrentStatus(request.getStatus())) {
 				// inform error message about invalid data
 				messageId = "ERR201";
 			} else {
@@ -582,7 +586,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null) {
+			if (request == null || validateCurrentStatus(request.getStatus())) {
 				throw new ResourceNotFoundException();
 			}
 			model.addAttribute("request", request);
@@ -616,7 +620,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateComment(comment)) {
+			if (request == null || !validateComment(comment) || validateCurrentStatus(request.getStatus())) {
 				// inform error message about invalid data
 				messageId = "ERR251";
 			} else {
@@ -633,7 +637,7 @@ public class RelationRequestController extends BaseController {
 				// update request
 				requestDAL.updateRequestToDestroy(request);
 
-				// get new information after update
+				// get new information after update 
 				RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
 				RequestChangeInfo newInfo = setInfo(newRequest);
 
@@ -675,7 +679,11 @@ public class RelationRequestController extends BaseController {
 		return GSON.toJson(map);
 	}
 
-	protected boolean validateComment(String comment) {
+	private boolean validateComment(String comment) {
 		return !(Validator.isNullOrEmpty(comment) || Validator.checkExceedLength(Constants.MAX_LENGTH_COMMENT, comment));
+	}
+	
+	private boolean validateCurrentStatus(String currentStatus) {
+		return Validator.isNullOrEmpty(currentStatus) || currentStatus.equals(Constants.STATUS_DELETED) || currentStatus.equals(Constants.STATUS_DESTROYED);
 	}
 }

@@ -12,6 +12,7 @@ public class Constants {
 	public final static String STATUS_DELETED = "DELETED";
 	public final static String STATUS_PROCESSING = "PROCESSING";
 	public final static String STATUS_FINISHED = "FINISHED";
+	public final static String STATUS_DESTROYED = "DESTROYED";
 	
 	public final static String[] NEXT_CONFIRMING = {"OK", "NG"};
 	public final static String[] NEXT_NG = {"CONFIRMING", "DELETED"};
