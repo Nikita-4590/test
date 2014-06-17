@@ -239,7 +239,17 @@
 	me.dapps.global['url.confirm_change'] = '${formatter.url("/request/confirm_change/?ajax")}';
 	me.dapps.global['url.confirm_update_director'] = '${formatter.url("/request/confirm_update_director/?ajax")}';
 	me.dapps.global['url.confirm_destroy'] = '${formatter.url("/request/confirm_destroy/?ajax")}';
-	me.dapps.global['message.assign_director_warning'] = "WRN1";
+	me.dapps.global['message.assign_director_warning'] = "WRN150";
+	me.dapps.global['message.change.not_found'] = 'ERR151';
+	me.dapps.global['message.change.forbidden'] = 'ERR152';
+	me.dapps.global['message.change.general'] = 'ERR153';
+	me.dapps.global['message.update_director_warning'] = "WRN200";
+	me.dapps.global['message.update.director.not_found'] = 'ERR201';
+	me.dapps.global['message.update.director.forbidden'] = 'ERR202';
+	me.dapps.global['message.update.director.general'] = 'ERR203';
+	me.dapps.global['message.destroy.not_found'] = 'ERR251';
+	me.dapps.global['message.destroy.forbidden'] = 'ERR252';
+	me.dapps.global['message.destroy.general'] = 'ERR253';
 </script>				
 </#escape>
 </#compress>

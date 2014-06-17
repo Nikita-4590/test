@@ -276,7 +276,7 @@ public class RelationRequestController extends BaseController {
 
 			if (request == null) {
 				// inform error message about invalid data
-				messageId = "WRN2";
+				messageId = "ERR151";
 			} else {
 				String currentStatus = request.getStatus();
 				String nextStatus = httpRequest.getParameter("selected_next_status");
@@ -285,15 +285,15 @@ public class RelationRequestController extends BaseController {
 				String comment = httpRequest.getParameter("destroy-comment");
 
 				if (currentStatus.equals(Constants.STATUS_CONFIRMING) && !checkCaseStatusIsConfirming(currentStatus, nextStatus)) {
-					messageId = "WRN2";
+					messageId = "ERR151";
 				} else if (currentStatus.equals(Constants.STATUS_NG) && !checkCaseStatusIsNg(currentStatus, nextStatus)) {
-					messageId = "WRN2";
+					messageId = "ERR151";
 				} else if (currentStatus.equals(Constants.STATUS_NG) && nextStatus.equals(Constants.STATUS_CONFIRMING) && !validateComment(comment)) {
-					messageId = "WRN2";
+					messageId = "ERR151";
 				} else if (currentStatus.equals(Constants.STATUS_OK) && !validateDirectorId(directorId)) {
-					messageId = "WRN2";
+					messageId = "ERR151";
 				} else if (currentStatus.equals(Constants.STATUS_PROCESSING) && !validateCrawlDate(crawlDate)) {
-					messageId = "WRN2";
+					messageId = "ERR151";
 				} else {
 					if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
 						request.setStatus(nextStatus);
@@ -341,17 +341,17 @@ public class RelationRequestController extends BaseController {
 					session.commit();
 
 					// Display information message when delete successful
-					messageId = "INF1";
+					messageId = "INF150";
 					success = true;
 				}
 			}
 
 		} catch (NumberFormatException e) {
 			// inform error message about invalid data
-			messageId = "WRN2";
+			messageId = "ERR151";
 		} catch (GenericException e) {
-			// inform error message about invalid data
-			messageId = "WRN2";
+			// inform error message about access database failure
+			messageId = "ERR150";
 		} finally {
 			if (session != null) {
 				session.close();
@@ -431,6 +431,7 @@ public class RelationRequestController extends BaseController {
 				e.printStackTrace();
 				return false;
 			} catch (GenericException e) {
+				// TODO: access database failure
 				e.printStackTrace();
 				return false;
 			}
@@ -476,6 +477,7 @@ public class RelationRequestController extends BaseController {
 		} catch (NumberFormatException e) {
 			throw new ResourceNotFoundException(e, this.getClass());
 		} catch (GenericException e) {
+			// TODO
 			throw new BadRequestException(e, this.getClass());
 		}
 	}
@@ -504,7 +506,7 @@ public class RelationRequestController extends BaseController {
 
 			if (request == null || !validateDirectorId(directorId)) {
 				// inform error message about invalid data
-				messageId = "WRN2";
+				messageId = "ERR201";
 			} else {
 				int newDirectorId = Integer.parseInt(directorId);
 				request.setAssign_user_id(newDirectorId);
@@ -535,14 +537,17 @@ public class RelationRequestController extends BaseController {
 				session.commit();
 
 				// Display information message when delete successful
-				messageId = "INF1";
+				messageId = "INF200";
 				success = true;
 				currentRequestId = newRequest.getRelation_request_id();
 			}
 
-		} catch (GenericException e) {
+		} catch (NumberFormatException e) {
 			// inform error message about invalid data
-			messageId = "WRN2";
+			messageId = "ERR201";
+		} catch (GenericException e) {
+			// inform error message about access database failure
+			messageId = "ERR200";
 		} finally {
 			if (session != null) {
 				session.close();
@@ -613,7 +618,7 @@ public class RelationRequestController extends BaseController {
 
 			if (request == null || !validateComment(comment)) {
 				// inform error message about invalid data
-				messageId = "WRN2";
+				messageId = "ERR251";
 			} else {
 
 				// create session
@@ -642,13 +647,13 @@ public class RelationRequestController extends BaseController {
 				session.commit();
 
 				// Display information message when delete successful
-				messageId = "INF1";
+				messageId = "INF250";
 				success = true;
 			}
 
 		} catch (GenericException e) {
-			// inform error message about invalid data
-			messageId = "WRN2";
+			// inform error message about access database failure
+			messageId = "ERR250";
 		} finally {
 			if (session != null) {
 				session.close();

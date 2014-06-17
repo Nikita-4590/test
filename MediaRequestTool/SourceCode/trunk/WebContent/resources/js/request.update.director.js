@@ -120,10 +120,10 @@ function confirmUpdateDirector(requestId) {
 				},
 				error : function(e, err) {
 					messageBox._response = null;
-					var messageId = me.dapps.global['message.change.general'];
+					var messageId = me.dapps.global['message.update.director.general'];
 
 					if (e.status == 403) {
-						me.dapps.global['message.change.forbidden'];
+						me.dapps.global['message.update.director.forbidden'];
 					}
 
 					message = me.dapps.ui.enhanced.locale.text(messageId);
@@ -137,12 +137,12 @@ function confirmUpdateDirector(requestId) {
 			
 		},
 		error : function(box, e) {
-			var messageId = me.dapps.global['message.change.general'];
+			var messageId = me.dapps.global['message.update.director.general'];
 
 			if (e.status == 403) {
-				me.dapps.global['message.change.forbidden'];
+				me.dapps.global['message.update.director.forbidden'];
 			} else if (e.status == 404) {
-				me.dapps.global['message.change.not_found'];
+				me.dapps.global['message.update.director.not_found'];
 			}
 
 			message = me.dapps.ui.enhanced.locale.text(messageId);
