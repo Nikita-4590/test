@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hrs.mediarequesttool.mappers.MediaMapper">
-	<select id="getAll" parameterType="map"
-		resultType="com.hrs.mediarequesttool.pojos.Media">
-		SELECT *
-		FROM
-			other_media.media
-		WHERE
-			target_flag IS TRUE
-		ORDER BY
-			created_at ASC
-	</select>
 	<select id="get" parameterType="map"
 		resultType="com.hrs.mediarequesttool.pojos.Media">
 		SELECT *
 		FROM
 			other_media.media
 		WHERE
-			id = #{id} AND
-			target_flag IS true
+			id = #{id} 
+		AND
+			(target_flag IS true OR media_id = 'ukerukun' OR  media_id = 'fromA-career')
 	</select>
 	<select id="getByMediaId" parameterType="string"
 		resultType="com.hrs.mediarequesttool.pojos.Media">

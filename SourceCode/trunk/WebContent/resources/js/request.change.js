@@ -47,7 +47,7 @@ function confirmChange(requestId) {
 								targetBox.close();
 							}
 						}, {
-							text : 'はい',
+							text : '戻す',
 							action : function(targetBox) {
 								targetBox.main.find('#change-request-form').submit();
 							}
@@ -74,7 +74,7 @@ function confirmChange(requestId) {
 								targetBox.close();
 							}
 						}, {
-							text : 'はい',
+							text : '同意する',
 							action : function(targetBox) {
 								targetBox.main.find('#change-request-form').submit();
 							}

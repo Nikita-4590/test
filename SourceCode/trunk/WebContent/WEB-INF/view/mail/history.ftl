@@ -88,20 +88,6 @@
 			<td style="border: 1px solid black; padding: 5px;">管理画面URL</td>
 			<td style="border: 1px solid black; padding: 5px;">${request.url!""}</td>
 		</tr>
-		<#if request.label_login_id_1??>
-		<tr>
-			<td style="border: 1px solid black; padding: 5px;"></td>
-			<td style="border: 1px solid black; padding: 5px;">${request.label_login_id_1!""}</td>
-			<td style="border: 1px solid black; padding: 5px;">${request.login_id_1!""}</td>
-		</tr>
-		</#if>
-		<#if request.label_login_id_2??>
-		<tr>
-			<td style="border: 1px solid black; padding: 5px;"></td>
-			<td style="border: 1px solid black; padding: 5px;">${request.label_login_id_2!""}</td>
-			<td style="border: 1px solid black; padding: 5px;">${request.login_id_2!""}</td>
-		</tr>
-		</#if>
 	</tbody>
 </table>
 <table style="border-collapse: collapse; border-spacing: 0; width: 800px;">

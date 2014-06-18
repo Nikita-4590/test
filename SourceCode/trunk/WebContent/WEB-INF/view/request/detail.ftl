@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		
-		<#if view = "OK" || view = "PROCESSING">
+		<#if view = "OK" || view = "PROCESSING" || view = "FINISHED">
 			<div class="form-line">
 				<div class="right-side">
 					<#if view = "OK">
@@ -32,8 +32,10 @@
 						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">担当ディレクターを依頼</a>
 					<#else>
 						<label name="current_director" id="current-director"><b>${request.assign_user_name!""}</b></label>
-						<a href="#"　id="enable-change-director" >担当ディレクターを変更</a>
-						<a href="#"　id="cancel-change-director" style="display: none;">担当ディレクターを変更しない</a>
+						<#if view = "PROCESSING">
+							<a href="#"　id="enable-change-director" >担当ディレクターを変更</a>
+							<a href="#"　id="cancel-change-director" style="display: none;">担当ディレクターを変更しない</a>
+						</#if>
 					</#if>
 				</div>
 				<div class="left-side">
@@ -98,9 +100,11 @@
 			</div>
 		</#if>
 		
-		<div class="form-line-bottom">
-			<a href="#"　id="button-destroy" onclick="confirmDestroy(${request.relation_request_id}); return false;" >ｘこの依頼を取消す</a>
-		</div>
+		<#if view != "FINISHED">
+			<div class="form-line-bottom">
+				<a href="#"　id="button-destroy" onclick="confirmDestroy(${request.relation_request_id}); return false;" >ｘこの依頼を取消す</a>
+			</div>
+		</#if>
 		
 		<input type="hidden" id="view" value="${view}" />
 	</div>
@@ -229,9 +233,13 @@
 	</div> </br>
 	<h3>その他伝達事項</h3>
 	<#-- ------------------------------------------------->
-	<div id="request-form-comment">
-		<span>${request.other_comment!""}</span></br></br></br>
-	</div>	
+	<div class="form-line" id="request-form-comment">
+		<span>${request.other_comment!""}</span>
+	</div>
+	<div class="center" id="close-button-wrapper">
+		<button id="close-button">このウィンドウを閉じる
+		</button>
+	</div>
 </div>
 
 <script type="text/javascript">

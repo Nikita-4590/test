@@ -21,10 +21,8 @@ function confirmDestroy(requestId) {
 						targetBox.close();
 					}
 				}, {
-					text : 'はい',
+					text : '取り消す',
 					action : function(targetBox) {
-						// targetBox.close();
-						// $('body').append($('<div class="mask" />'));
 						targetBox.main.find('#destroy-request-form').submit();
 					}
 				} ]

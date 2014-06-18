@@ -18,11 +18,15 @@ $(me.dapps).bind('load', function() {
 		e.preventDefault();
 	});
 	
-$("#cancel-change-director").click(function(e) {
+	$("#cancel-change-director").click(function(e) {
 		
 		$('#show-more').hide();
 		$('#cancel-change-director').hide();
 		$('#enable-change-director').show();
 		e.preventDefault();// can suy nghi them
+	});
+	
+	$('#close-button').click(function() {
+		window.open("", "_self").close();
 	});
 });
