@@ -14,22 +14,6 @@
        <if test="sort != null and direction != null">
             <if test="sort == 'status'">
                 <if test="priority != null and priority == 'director'">
-		         CASE 
-		             WHEN status = 'PROCESSING' THEN 2
-		             WHEN status = 'FINISHED' THEN 1 END
-		       </if>
-		       <if test="priority != null and priority == 'media_checker'">
-		         CASE
-		             WHEN status = 'NEW' THEN 4
-		             WHEN status = 'CONFIRMING' THEN 3
-		             WHEN status = 'NG' THEN 2
-		             WHEN status = 'OK' THEN 1 END
-		       </if>
-		       ${direction},created_at ASC,
-            </if>
-            <if test="sort == 'created_at'">
-                ${sort} ${direction},
-                <if test="priority != null and priority == 'director'">
                  CASE 
                      WHEN status = 'PROCESSING' THEN 2
                      WHEN status = 'FINISHED' THEN 1 END
@@ -41,12 +25,18 @@
                      WHEN status = 'NG' THEN 2
                      WHEN status = 'OK' THEN 1 END
                </if>
-               DESC,
+               ${direction},
             </if>
-            <if test="sort == 'crawl_date'">
-                ${sort} ${direction},created_at ASC,
+            <if test="sort != 'status'">
+                ${sort} ${direction},
             </if>
-            relation_request_id DESC
+            <if test="direction == 'desc' or direction == 'DESC'">
+               created_at ASC,
+            </if>
+            <if test="direction != 'desc' and direction != 'DESC'">
+               created_at DESC,
+            </if>
+            relation_request_id ${direction}
        </if>
        <if test="sort == null or direction == null">
                <if test="priority != null and priority == 'director'">
@@ -167,34 +157,22 @@
             </where>
             ORDER BY
             <if test="sort != null and direction != null">
-	            <if test="sort == 'created_at'">
+                <if test="sort != 'status'">
                     ${sort} ${direction},
-                    CASE 
+                </if>
+                <if test="sort == 'status'">
+                 CASE 
                     WHEN status = 'NEW' THEN 6
                     WHEN status = 'CONFIRMING' THEN 5
                     WHEN status = 'NG' THEN 4
                     WHEN status = 'OK' THEN 3
                     WHEN status = 'PROCESSING' THEN 2
-                    WHEN status = 'FINISHED' THEN 1 END DESC,
+                    WHEN status = 'FINISHED' THEN 1 END ${direction},
                 </if>
-                <if test="sort == 'crawl_date'">
-                    ${sort} ${direction},
-                    created_at DESC,
-                    relation_request_id DESC,
-                </if>
-	            <if test="sort == 'status'">
-                 CASE 
-	                WHEN status = 'NEW' THEN 6
-	                WHEN status = 'CONFIRMING' THEN 5
-	                WHEN status = 'NG' THEN 4
-	                WHEN status = 'OK' THEN 3
-	                WHEN status = 'PROCESSING' THEN 2
-	                WHEN status = 'FINISHED' THEN 1 END ${direction},
-	                created_at DESC,
-                    relation_request_id DESC,
-	            </if>
-	        </if>
-	           
+                created_at ${direction},
+                relation_request_id ${direction},
+            </if>
+               
             <if test="sort == null or direction != null">
                 created_at DESC,
                 relation_request_id DESC
@@ -234,9 +212,9 @@
             media_label.login_id_2 AS label_login_id_2,
             status.description AS status_description
         FROM
-        	other_media.relation_request AS request
+            other_media.relation_request AS request
         INNER JOIN
-        	other_media.relation_request_status AS status ON request.status = status.status_type
+            other_media.relation_request_status AS status ON request.status = status.status_type
         INNER JOIN
             other_media.contract_company AS company ON request.company_id = company.id
         INNER JOIN
@@ -244,9 +222,9 @@
         INNER JOIN
             other_media.media_label AS media_label ON media.media_id = media_label.media_id    
         LEFT JOIN
-        	other_media.user AS u ON request.assign_user_id = u.id
+            other_media.user AS u ON request.assign_user_id = u.id
         WHERE
-        	request.relation_request_id = #{request_id}
+            request.relation_request_id = #{request_id}
     </select>
     
     <!-- update data -->
