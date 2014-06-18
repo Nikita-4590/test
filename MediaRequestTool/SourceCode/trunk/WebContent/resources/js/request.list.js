@@ -89,7 +89,7 @@ function() {
 		searchParam = $('#input_text_search').val();
 		table.search([ {
 			query_type : 'all',
-			query_name : 'id',
+			query_name : 'searchText',
 			query_value : searchParam
 		} , {
 			query_type : 'all',
@@ -104,7 +104,7 @@ document.onkeydown = function(event) {
 			event.preventDefault();
 			table.search([ {
 				query_type : 'all',
-				query_name : 'id',
+				query_name : 'searchText',
 				query_value : searchParam
 			} , {
 				query_type : 'all',
