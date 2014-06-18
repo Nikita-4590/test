@@ -14,7 +14,7 @@
             </div>
             <div class="free_text_search_form">
                 <label class="label_control">フリーワード検索</label>
-                <input type="text" id="input_text_search" placeholder="ここに検索文字を入力してください"/>
+                <input type="text" id="input_text_search" placeholder="企業ID、企業名、媒体名、依頼ID、担当ディレクターで検索"/>
                 <input type="submit" id="button_search" class="button orange" value="検索"/>
             </div>
         </form>
@@ -26,10 +26,10 @@
                 <th class="time_common">登録日時</th>
                 <th class="time_common_date">連携開始日</th>
                 <th class="company_id">企業ID</th>
-                <th class="company_name">社名</th>
-                <th class="media_name">媒体</th>
+                <th class="company_name">企業名</th>
+                <th class="media_name">媒体名</th>
                 <th class="request_id">依頼ID</th>
-                <th>担当ディレクタ</th>
+                <th>担当ディレクター</th>
             </tr>
         </thead>
     </table>
