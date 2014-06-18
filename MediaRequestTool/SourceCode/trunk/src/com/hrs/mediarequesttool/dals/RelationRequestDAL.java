@@ -18,9 +18,8 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 	public RelationRequestDAL(SqlSessionFactory sessionFactory) {
 		super(sessionFactory, RelationRequestMapper.class);
 	}
-	
-	public PagingResult<RelationRequest> paging(int page, String direction,
-			String sort, String[] role,String priority) throws GenericException {
+
+	public PagingResult<RelationRequest> paging(int page, String direction, String sort, String[] role, String priority) throws GenericException {
 
 		try {
 			openSession();
@@ -29,38 +28,38 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			int total = mapper.count(role);
 			result.setPage(page, total, pagingSetting.getLimit());
 			if (!result.isExceed() && total != 0) {
-				List<RelationRequest> relationRequests = mapper.paging(
-						pagingSetting, sort, direction, role, priority);
+				List<RelationRequest> relationRequests = mapper.paging(pagingSetting, sort, direction, role, priority);
 				result.setList(relationRequests);
 			}
 			return result;
-			
+
 		} catch (Exception e) {
 			throw new GenericException(e, this.getClass());
 		} finally {
 			closeSession();
 		}
 	}
-	public PagingResult<RelationRequest> getAllRecord(int page, String direction, String sort, String searchParam, String status, String priority, String[] noneStatus)  throws GenericException{		
+
+	public PagingResult<RelationRequest> getAllRecord(int page, String direction, String sort, String searchParam, String status, String priority, String[] noneStatus) throws GenericException {
 		try {
 			openSession();
 			PagingResult<RelationRequest> result = new PagingResult<RelationRequest>();
 			int total = mapper.getCountSearch(status, parseTextSearch(searchParam), noneStatus);
 			Page pagingSetting = new Page(page);
 			result.setPage(page, total, pagingSetting.getLimit());
-			if(!result.isExceed() && total != 0) {
-				List<RelationRequest> relationRequests = mapper.getAllRecord(pagingSetting, sort, direction, parseTextSearch(searchParam), status, priority,noneStatus);
+			if (!result.isExceed() && total != 0) {
+				List<RelationRequest> relationRequests = mapper.getAllRecord(pagingSetting, sort, direction, parseTextSearch(searchParam), status, priority, noneStatus);
 				result.setList(relationRequests);
 			}
 			return result;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new GenericException(e, this.getClass());
 		} finally {
 			closeSession();
 		}
-		
+
 	}
-	
+
 	public RelationRequest get(int requestId) throws GenericException {
 		try {
 			openSession();
@@ -73,7 +72,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			closeSession();
 		}
 	}
-	
+
 	public void updateRequest(RelationRequest request) throws GenericException {
 		try {
 			openSession();
@@ -84,7 +83,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			closeSession();
 		}
 	}
-	
+
 	public void updateOnlyDirectorOfRequest(RelationRequest request) throws GenericException {
 		try {
 			openSession();
@@ -95,7 +94,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			closeSession();
 		}
 	}
-	
+
 	public void updateRequestToDestroy(RelationRequest request) throws GenericException {
 		try {
 			openSession();
