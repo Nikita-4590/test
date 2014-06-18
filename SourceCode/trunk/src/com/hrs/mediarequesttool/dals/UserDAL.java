@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 
+import com.hrs.mediarequesttool.common.Constants;
 import com.hrs.mediarequesttool.common.exception.GenericException;
 import com.hrs.mediarequesttool.mappers.UserMapper;
 import com.hrs.mediarequesttool.pojos.User;
@@ -34,7 +35,7 @@ public class UserDAL extends AbstractDAL<UserMapper> {
 	public User get(int newDirectorId) throws GenericException {
 		try {
 			openSession();
-			return mapper.get(newDirectorId);
+			return mapper.get(newDirectorId, Constants.USER_ROLE_OF_DIRECTOR);
 		} catch (Exception e) {
 			throw new GenericException(e, UserDAL.class);
 		} finally {
@@ -45,7 +46,7 @@ public class UserDAL extends AbstractDAL<UserMapper> {
 	public List<User> getListDirector(int currentUserId) throws GenericException {
 		try {
 			openSession();
-			return mapper.getListDirector(currentUserId);
+			return mapper.getListDirector(currentUserId, Constants.USER_ROLE_OF_DIRECTOR);
 		} catch (Exception e) {
 			throw new GenericException(e, UserDAL.class);
 		} finally {
