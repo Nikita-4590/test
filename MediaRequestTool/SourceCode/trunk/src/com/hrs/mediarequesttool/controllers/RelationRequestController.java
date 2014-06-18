@@ -175,6 +175,14 @@ public class RelationRequestController extends BaseController {
 			if (mediaLabel == null) {
 				throw new ResourceNotFoundException();
 			}
+			
+			if (mediaLabel.getMedia_id().equals(Constants.weban_media_id) && !Validator.isNullOrEmpty(request.getLogin_id_2())) {
+				request.setMedia_name(Constants.anGWS_media_name);
+				mediaLabel.setLogin_id_1(Constants.anGWS_login_id_1);
+				mediaLabel.setLogin_id_2(Constants.anGWS_login_id_2);
+				mediaLabel.setLogin_password_1(Constants.anGWS_login_password_1);
+				mediaLabel.setLogin_password_2(Constants.anGWS_login_password_2);
+			}
 
 			model.addAttribute("request", request);
 			model.addAttribute("mediaLabel", mediaLabel);
