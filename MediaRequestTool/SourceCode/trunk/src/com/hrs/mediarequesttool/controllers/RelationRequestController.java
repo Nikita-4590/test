@@ -620,7 +620,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateComment(comment) || validateCurrentStatus(request.getStatus())) {
+			if (request == null || !validateComment(comment) || validateCurrentStatus(request.getStatus()) || request.getStatus().equals(Constants.STATUS_FINISHED)) {
 				// inform error message about invalid data
 				messageId = "ERR251";
 			} else {

@@ -51,6 +51,11 @@
 	color: red;
 }
 
+#close-button {
+	font-weight: bold;
+	height: 45px;
+}
+
 .left-side {
 	margin-right: 75%;
 	margin-left: 45px;
@@ -59,4 +64,8 @@
 .right-side {
 	float: right;
 	width: 75%;
+}
+
+.center {
+	text-align: center;
 }

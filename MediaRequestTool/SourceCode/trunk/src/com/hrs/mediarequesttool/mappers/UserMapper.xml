@@ -18,7 +18,7 @@
     WHERE
       id = #{id}
     AND 
-      user_role = 2
+      user_role = 1
   </select>
   
   <select id="getListDirector" parameterType="map"
@@ -27,7 +27,7 @@
     FROM
       other_media.user
     WHERE
-      user_role = 2
+      user_role = 1
     <if test="current_user_id != 0">
 		AND	id != #{current_user_id}
 	</if>
