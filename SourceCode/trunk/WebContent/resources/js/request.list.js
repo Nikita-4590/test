@@ -11,7 +11,7 @@ function() {
 		sortable : true,
 		paging : true,
 		use_hashes : false,
-		sort_data : me.dapps.global['data_bindding'],
+		sort_data : me.dapps.global['data_binding'],
 		no_data_message : me.dapps.ui.enhanced.locale
 				.text('INF100'),
 		url_patterns : {
