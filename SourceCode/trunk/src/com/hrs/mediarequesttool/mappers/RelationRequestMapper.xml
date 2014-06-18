@@ -210,8 +210,6 @@
             request.updated_at,
             company.company_name,
             media.media_name,
-            media_label.login_id_1 AS label_login_id_1,
-            media_label.login_id_2 AS label_login_id_2,
             status.description AS status_description
         FROM
             other_media.relation_request AS request
@@ -221,8 +219,6 @@
             other_media.contract_company AS company ON request.company_id = company.id
         INNER JOIN
             other_media.media AS media ON request.media_id = media.id
-        INNER JOIN
-            other_media.media_label AS media_label ON media.media_id = media_label.media_id    
         LEFT JOIN
             other_media.user AS u ON request.assign_user_id = u.id
         WHERE
