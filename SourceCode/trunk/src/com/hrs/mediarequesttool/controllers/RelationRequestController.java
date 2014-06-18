@@ -61,7 +61,7 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("lstStatus", lstStatus);
 			viewBuilder = getViewBuilder("request.list", model);
 			viewBuilder.setScripts("request.list.js");
-			viewBuilder.setStylesheets("relation.list.css", "global.css");
+			viewBuilder.setStylesheets("request.list.css", "global.css");
 			viewBuilder.setPageTitle("依頼一覧");
 		} catch (GenericException e) {
 			e.printStackTrace();
@@ -77,7 +77,7 @@ public class RelationRequestController extends BaseController {
 		try {
 			String pageParam = httpRequest.getParameter("page");
 			String sortParam = httpRequest.getParameter("sort");
-			String searchParam = httpRequest.getParameter("id");
+			String searchParam = httpRequest.getParameter("searchText");
 			String statusParam = httpRequest.getParameter("status");
 			String directionParam = httpRequest.getParameter("sort_direction");
 			int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
