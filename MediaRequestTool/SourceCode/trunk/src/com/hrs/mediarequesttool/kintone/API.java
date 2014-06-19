@@ -36,6 +36,8 @@ public class API {
     PostResponse postResponse;
     try {
       PostData post = new PostData();
+      post.setApp("141");
+      post.setRecord(record);
 
       ClientHttpRequest request = requestFactory.createRequest(URI.create("https://hrs.cybozu.com/k/v1/record.json"), HttpMethod.POST);
 
@@ -59,9 +61,9 @@ public class API {
   class KintoneAPIClientHttpRequestFactory extends SimpleClientHttpRequestFactory {
     @Override
     public ClientHttpRequest createRequest(URI uri, HttpMethod httpMethod) throws IOException {
-      // TODO Auto-generated method stub
       ClientHttpRequest request = super.createRequest(uri, httpMethod);
 
+      // TODO need parse username:password to BASE64
       request.getHeaders().add("X-Cybozu-Authorization", "bnRxc29sdXRpb25zOm50cS1zb2x1dGlvbnMjMQ==");
       request.getHeaders().add("Authorization", "Basic bnRxc29sdXRpb25zOm50cS1zb2x1dGlvbnMjMQ==");
       request.getHeaders().add("Host", "hrs.cybozu.com:443");
