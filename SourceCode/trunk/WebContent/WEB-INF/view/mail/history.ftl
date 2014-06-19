@@ -43,8 +43,8 @@
 <span>【依頼内容】</span>
 <table style="border-collapse: collapse; border-spacing: 0;">
 	<thead>
-		<th style="border: 1px solid black;"></th>
-		<th style="border: 1px solid black;"></th>
+		<th style="border: 0px;"></th>
+		<th style="border: 0px;"></th>
 		<th style="border: 0px;"></th>
 	</thead>
 	<tbody>
@@ -102,7 +102,7 @@
 		</tr>
 		<tr>
 			<td></td>
-			<td><pre><#if request.other_comment??>${(request.other_comment)}</#if></pre></td>
+			<td><#if request.other_comment??>${(request.other_comment)}</#if></td>
 		</tr>
 	</tbody>
 </table>
