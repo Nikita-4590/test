@@ -24,9 +24,7 @@ me.dapps.sort_control = function(table, header, mapping,_sortable) {
 };
 me.dapps.sort_control.prototype.createControls = function(sort_data) {
 	var thisControl = this;
-	/*
-	 * ducbv edited
-	 */
+	
 	if(sort_data == true) {
 		
 		this.main = $('<div />').addClass('dapps-table-header-sort-control');
@@ -38,9 +36,7 @@ me.dapps.sort_control.prototype.createControls = function(sort_data) {
 		this.header.append(this.main);
 		this.main = $('<div />');
 	}	
-	/*
-	 * ducbv edited
-	 */
+	
 };
 me.dapps.sort_control.prototype.changeDirection = function() {
 	if (isUnset(this.direction) || this.direction == 'asc') {
@@ -124,9 +120,7 @@ me.dapps.table.prototype.transform = function(content) {
 	/*
 	 * make sortable header create by LongLH
 	 */	
-	/*
-	 * ducbv edited	
-	 */	
+	
 	if (thisTable.config.sort_data != undefined && isArray(thisTable.config.sort_data)) {		
 		var sortableHeader = this.headers.not('.dapps-table-select-header, .dapps-table-scroll-header');
 		if(sortableHeader != undefined && sortableHeader.length == thisTable.config.sort_data.length) {
@@ -162,9 +156,7 @@ me.dapps.table.prototype.transform = function(content) {
 				thisTable.sortControls.push(sortControl);
 			});
 		}
-		/*
-		 * End ducbv edited
-		 */
+		
 	}
 
 	// append body
@@ -650,7 +642,6 @@ me.dapps.table.prototype.paging = function(page) {
 me.dapps.table.prototype.search = function(queries) {
 	if (isArray(queries)) {
 		this.queries = queries;
-		console.log(queries);
 		if (this.config.paging || (!this.config.paging && !this.is_loaded)) {
 			this.page = 0;
 			this.loadData();
