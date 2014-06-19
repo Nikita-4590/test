@@ -25,11 +25,11 @@ public class API {
   static private final String HEADER_AUTHORIZATION = "Authorization";
   static private final String HEADER_CYBOZU_AUTHORIZATION = "X-Cybozu-Authorization";
   static private final String HEADER_CONTENT_TYPE = "Content-Type";
-  
+
   private KintoneAPIClientHttpRequestFactory requestFactory;
   private Gson gson;
   private Adapter adapter;
-  
+
   private URI kintoneURI;
   private String kintoneApplicationID;
 
@@ -37,7 +37,7 @@ public class API {
     requestFactory = new KintoneAPIClientHttpRequestFactory();
     adapter = new Adapter();
     gson = new Gson();
-    
+
     // get configuration from .properties
     kintoneURI = URI.create(PropertiesLoader.instance.getKintoneUrl());
     kintoneApplicationID = PropertiesLoader.instance.getKintoneApplicationID();
@@ -76,21 +76,19 @@ public class API {
   class KintoneAPIClientHttpRequestFactory extends SimpleClientHttpRequestFactory {
     private String token;
     private String host;
-    
-    
+
     KintoneAPIClientHttpRequestFactory() {
       String username = PropertiesLoader.instance.getKintoneUsername();
       String password = PropertiesLoader.instance.getKintonePassword();
-      
+
       token = generateToken(username, password);
       host = PropertiesLoader.instance.getKintoneHost();
     }
-    
+
     @Override
     public ClientHttpRequest createRequest(URI uri, HttpMethod httpMethod) throws IOException {
       ClientHttpRequest request = super.createRequest(uri, httpMethod);
 
-      // TODO need parse username:password to BASE64
       request.getHeaders().add(HEADER_CYBOZU_AUTHORIZATION, token);
       request.getHeaders().add(HEADER_AUTHORIZATION, "Basic " + token);
       request.getHeaders().add(HEADER_HOST, host);
@@ -101,7 +99,7 @@ public class API {
 
       return request;
     }
-    
+
     private String generateToken(String username, String password) {
       byte[] bytes = Base64.encode((username + ":" + password).getBytes());
       return new String(bytes);
