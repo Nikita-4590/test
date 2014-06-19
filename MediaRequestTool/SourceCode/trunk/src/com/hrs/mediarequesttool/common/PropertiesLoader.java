@@ -49,8 +49,23 @@ public class PropertiesLoader extends SpringBeanAutowiringSupport {
 	
 	@Value("${pgcrypto.passwd}")
 	private String pgcryptoPasswd;
+	
+	@Value("${kintone.username}")
+	private String kintoneUsername;
+	
+	@Value("${kintone.password}")
+	private String kintonePassword;
+	
+	@Value("${kintone.url}")
+	private String kintoneUrl;
+	
+	@Value("${kintone.host}")
+	private String kintoneHost;
+	
+	@Value("${kintone.app}")
+	private String kintoneApplicationID;
 
-	public int getPageSize() {
+  public int getPageSize() {
 		try {
 			return Integer.parseInt(pageSize);
 		} catch (Exception e) {
@@ -143,4 +158,23 @@ public class PropertiesLoader extends SpringBeanAutowiringSupport {
 		this.pgcryptoPasswd = pgcryptoPasswd;
 	}
 
+  public String getKintoneUsername() {
+    return kintoneUsername;
+  }
+
+  public String getKintonePassword() {
+    return kintonePassword;
+  }
+
+  public String getKintoneUrl() {
+    return kintoneUrl;
+  }
+
+  public String getKintoneHost() {
+    return kintoneHost;
+  }
+
+  public String getKintoneApplicationID() {
+    return kintoneApplicationID;
+  }
 }

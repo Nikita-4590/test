@@ -9,8 +9,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.security.crypto.codec.Base64;
 
 import com.google.gson.Gson;
+import com.hrs.mediarequesttool.common.PropertiesLoader;
 import com.hrs.mediarequesttool.kintone.data.PostData;
 import com.hrs.mediarequesttool.kintone.data.PostResponse;
 import com.hrs.mediarequesttool.kintone.data.Record;
@@ -18,14 +20,27 @@ import com.hrs.mediarequesttool.kintone.exception.KintoneException;
 import com.hrs.mediarequesttool.pojos.RelationRequest;
 
 public class API {
-  KintoneAPIClientHttpRequestFactory requestFactory;
-  Gson gson;
-  Adapter adapter;
+  static private final String JSON_MIME = "application/json";
+  static private final String HEADER_HOST = "Host";
+  static private final String HEADER_AUTHORIZATION = "Authorization";
+  static private final String HEADER_CYBOZU_AUTHORIZATION = "X-Cybozu-Authorization";
+  static private final String HEADER_CONTENT_TYPE = "Content-Type";
+  
+  private KintoneAPIClientHttpRequestFactory requestFactory;
+  private Gson gson;
+  private Adapter adapter;
+  
+  private URI kintoneURI;
+  private String kintoneApplicationID;
 
   public API() {
     requestFactory = new KintoneAPIClientHttpRequestFactory();
     adapter = new Adapter();
     gson = new Gson();
+    
+    // get configuration from .properties
+    kintoneURI = URI.create(PropertiesLoader.instance.getKintoneUrl());
+    kintoneApplicationID = PropertiesLoader.instance.getKintoneApplicationID();
   }
 
   public PostResponse post(RelationRequest request, boolean isUkerukun) throws KintoneException {
@@ -36,10 +51,10 @@ public class API {
     PostResponse postResponse;
     try {
       PostData post = new PostData();
-      post.setApp("141");
+      post.setApp(kintoneApplicationID);
       post.setRecord(record);
 
-      ClientHttpRequest request = requestFactory.createRequest(URI.create("https://hrs.cybozu.com/k/v1/record.json"), HttpMethod.POST);
+      ClientHttpRequest request = requestFactory.createRequest(kintoneURI, HttpMethod.POST);
 
       PrintWriter writer = new PrintWriter(request.getBody());
 
@@ -59,20 +74,37 @@ public class API {
   }
 
   class KintoneAPIClientHttpRequestFactory extends SimpleClientHttpRequestFactory {
+    private String token;
+    private String host;
+    
+    
+    KintoneAPIClientHttpRequestFactory() {
+      String username = PropertiesLoader.instance.getKintoneUsername();
+      String password = PropertiesLoader.instance.getKintonePassword();
+      
+      token = generateToken(username, password);
+      host = PropertiesLoader.instance.getKintoneHost();
+    }
+    
     @Override
     public ClientHttpRequest createRequest(URI uri, HttpMethod httpMethod) throws IOException {
       ClientHttpRequest request = super.createRequest(uri, httpMethod);
 
       // TODO need parse username:password to BASE64
-      request.getHeaders().add("X-Cybozu-Authorization", "bnRxc29sdXRpb25zOm50cS1zb2x1dGlvbnMjMQ==");
-      request.getHeaders().add("Authorization", "Basic bnRxc29sdXRpb25zOm50cS1zb2x1dGlvbnMjMQ==");
-      request.getHeaders().add("Host", "hrs.cybozu.com:443");
+      request.getHeaders().add(HEADER_CYBOZU_AUTHORIZATION, token);
+      request.getHeaders().add(HEADER_AUTHORIZATION, "Basic " + token);
+      request.getHeaders().add(HEADER_HOST, host);
 
       if (httpMethod == HttpMethod.POST) {
-        request.getHeaders().add("Content-Type", "application/json");
+        request.getHeaders().add(HEADER_CONTENT_TYPE, JSON_MIME);
       }
 
       return request;
+    }
+    
+    private String generateToken(String username, String password) {
+      byte[] bytes = Base64.encode((username + ":" + password).getBytes());
+      return new String(bytes);
     }
   }
 }
