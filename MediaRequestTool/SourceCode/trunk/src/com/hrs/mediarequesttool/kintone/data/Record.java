@@ -21,6 +21,9 @@ public class Record {
 
   @SerializedName("ドロップダウン")
   private RecordElement assignUser;
+  
+  @SerializedName("文字列__複数行__1")
+  private RecordElement commentForOtherMedia;
   // common fields - end
 
   // ukerukun fields - begin
@@ -35,8 +38,6 @@ public class Record {
   // ukerukun fields - end
 
   // other-media fields - begin
-  @SerializedName("文字列__複数行__1")
-  private RecordElement commentForOtherMedia;
 
   @SerializedName("文字列__1行__4")
   private RecordElement mediaNameForOtherMedia;
