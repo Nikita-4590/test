@@ -26,7 +26,7 @@
 
 	<s:http pattern="/auth/login/*" security="none" />
 	<s:http pattern="/auth/fail/*" security="none" />
-	<s:http pattern="/css/*" security="none" />
+	<s:http pattern="/css/**" security="none" />
 	<s:http pattern="/js/**" security="none" />
 	<s:http pattern="/img/**" security="none" />
 	<s:http pattern="/error/**" security="none" />
