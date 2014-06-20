@@ -36,8 +36,8 @@ import com.hrs.mediarequesttool.dals.MediaLabelDAL;
 import com.hrs.mediarequesttool.dals.RelationRequestDAL;
 import com.hrs.mediarequesttool.dals.StatusDAL;
 import com.hrs.mediarequesttool.dals.UserDAL;
-import com.hrs.mediarequesttool.kintone.API;
-import com.hrs.mediarequesttool.kintone.exception.KintoneException;
+//import com.hrs.mediarequesttool.kintone.API;
+//import com.hrs.mediarequesttool.kintone.exception.KintoneException;
 import com.hrs.mediarequesttool.pojos.MediaLabel;
 import com.hrs.mediarequesttool.pojos.RelationRequest;
 import com.hrs.mediarequesttool.pojos.RequestChangeInfo;
@@ -354,13 +354,14 @@ public class RelationRequestController extends BaseController {
 						commentDAL.updateRequest(null, oldInfo, newInfo, newRequest);
 					}
 					
+					/* renkei with API Kintone
 					if (currentStatus.equals(Constants.STATUS_PROCESSING) && nextStatus.equals(Constants.STATUS_FINISHED)) {
 						if (newRequest.getMedia_id().equals("ukerukun")) {
 							new API().post(newRequest, true); 
 						} else {
 							new API().post(newRequest, false);
 						}
-					} 
+					} */
 					
 					session.commit();
 
@@ -376,10 +377,10 @@ public class RelationRequestController extends BaseController {
 		} catch (GenericException e) {
 			// inform error message about access database failure
 			messageId = "ERR150";
-		} catch (KintoneException e) {
+		//} catch (KintoneException e) {
 			// TODO inform error message about cannot submit to Kintone
-			messageId = "ERR150"; 
-			e.printStackTrace();
+			//messageId = "ERR150"; 
+			//e.printStackTrace();
 		} finally {
 			if (session != null) {
 				session.close();

@@ -133,7 +133,8 @@ function confirmChange(requestId) {
 					text : 'OK',
 					action : function(targetBox) {
 						if (isSet(targetBox._response) && isSet(targetBox._response.url)) {
-							location.href = me.dapps.global['url.context'] + targetBox._response.url;
+							//location.href = me.dapps.global['url.context'] + targetBox._response.url;
+							window.open("", "_self").close();
 						} else if (isSet(targetBox._error) && targetBox._error.status == 403) {
 							location.href = me.dapps.global['url.context'] + "/";
 						} else {

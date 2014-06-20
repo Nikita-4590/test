@@ -40,10 +40,10 @@ class Adapter {
     return record;
   }
   
-  private String correctDate(String date) throws KintoneException {
+  //private String correctDate(String date) throws KintoneException {
     // TODO convert date to yyyy-MM-dd'T'HH:mm:ss'Z' and GMT+0
-    return date;
-  }
+    //return date;
+  //}
   
   private String correctCompanyID(String companyID) throws KintoneException {
     if (companyID != null) {
