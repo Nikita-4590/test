@@ -64,6 +64,15 @@ public class PropertiesLoader extends SpringBeanAutowiringSupport {
 	
 	@Value("${kintone.app}")
 	private String kintoneApplicationID;
+	
+	@Value("${kintone.ukerukuntype}")
+	private String kintoneUkerukunType;
+	
+	@Value("${kintone.tabaitaitype}")
+	private String kintoneTabaitaiType;
+	
+	@Value("${kintone.passwordkey}")
+	private String kintonePasswordKey;
 
   public int getPageSize() {
 		try {
@@ -176,5 +185,17 @@ public class PropertiesLoader extends SpringBeanAutowiringSupport {
 
   public String getKintoneApplicationID() {
     return kintoneApplicationID;
+  }
+  
+  public String getUkerukunType() {
+	return kintoneUkerukunType;
+  }
+  
+  public String getTabaitaiType() {
+	return kintoneTabaitaiType;
+  }
+  
+  public String getPasswordKey() {
+	return kintonePasswordKey;
   }
 }

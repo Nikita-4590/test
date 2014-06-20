@@ -36,8 +36,8 @@ import com.hrs.mediarequesttool.dals.MediaLabelDAL;
 import com.hrs.mediarequesttool.dals.RelationRequestDAL;
 import com.hrs.mediarequesttool.dals.StatusDAL;
 import com.hrs.mediarequesttool.dals.UserDAL;
-//import com.hrs.mediarequesttool.kintone.API;
-//import com.hrs.mediarequesttool.kintone.exception.KintoneException;
+import com.hrs.mediarequesttool.kintone.API;
+import com.hrs.mediarequesttool.kintone.exception.KintoneException;
 import com.hrs.mediarequesttool.pojos.MediaLabel;
 import com.hrs.mediarequesttool.pojos.RelationRequest;
 import com.hrs.mediarequesttool.pojos.RequestChangeInfo;
@@ -341,27 +341,26 @@ public class RelationRequestController extends BaseController {
 					// get new information after update 
 					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
 					RequestChangeInfo newInfo = setInfo(newRequest);
+					
+					// renkei with API Kintone
+					if (currentStatus.equals(Constants.STATUS_PROCESSING) && nextStatus.equals(Constants.STATUS_FINISHED)) {
+						if (newRequest.getMedia_id().equals(Constants.UKERUKUN_MEDIA_ID)) {
+							new API().post(newRequest, true); 
+						} else {
+							new API().post(newRequest, false);
+						}
+					}
 
 					// open sql session
 					commentDAL = DALFactory.getDAL(CommentDAL.class, sqlSessionFactory);
 					commentDAL.setSession(session);
 
 					// Insert into table comment
-
 					if (currentStatus.equals(Constants.STATUS_NG) && nextStatus.equals(Constants.STATUS_CONFIRMING)) {
 						commentDAL.updateRequest(comment, oldInfo, newInfo, newRequest);
 					} else {
 						commentDAL.updateRequest(null, oldInfo, newInfo, newRequest);
 					}
-					
-					/* renkei with API Kintone
-					if (currentStatus.equals(Constants.STATUS_PROCESSING) && nextStatus.equals(Constants.STATUS_FINISHED)) {
-						if (newRequest.getMedia_id().equals("ukerukun")) {
-							new API().post(newRequest, true); 
-						} else {
-							new API().post(newRequest, false);
-						}
-					} */
 					
 					session.commit();
 
@@ -377,10 +376,14 @@ public class RelationRequestController extends BaseController {
 		} catch (GenericException e) {
 			// inform error message about access database failure
 			messageId = "ERR150";
-		//} catch (KintoneException e) {
-			// TODO inform error message about cannot submit to Kintone
-			//messageId = "ERR150"; 
-			//e.printStackTrace();
+		} catch (KintoneException e) {
+			//　inform error message about cannot submit to Kintone
+			messageId = "ERR154"; 
+			e.printStackTrace();
+		} catch (Exception e) {
+			//TODO　inform error message about cannot submit to Kintone- encrypt password failed
+			messageId = "ERR154"; 
+			e.printStackTrace();
 		} finally {
 			if (session != null) {
 				session.close();
