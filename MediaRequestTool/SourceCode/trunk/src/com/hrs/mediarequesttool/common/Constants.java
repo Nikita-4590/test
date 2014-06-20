@@ -26,4 +26,6 @@ public class Constants {
 	public final static String anGWS_login_id_2 = "ユーザーID";
 	public final static String anGWS_login_password_1 = "パスワード";
 	public final static String anGWS_login_password_2 = "応募管理者用パスワード";
+	
+	public final static String UKERUKUN_MEDIA_ID = "ukerukun"; // for compare to submit data to Kintone
 }

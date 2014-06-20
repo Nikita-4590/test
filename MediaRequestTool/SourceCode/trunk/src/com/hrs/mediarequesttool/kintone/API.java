@@ -2,6 +2,7 @@ package com.hrs.mediarequesttool.kintone;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URI;
 
@@ -43,7 +44,7 @@ public class API {
     kintoneApplicationID = PropertiesLoader.instance.getKintoneApplicationID();
   }
 
-  public PostResponse post(RelationRequest request, boolean isUkerukun) throws KintoneException {
+  public PostResponse post(RelationRequest request, boolean isUkerukun) throws KintoneException, Exception {
     return post(adapter.parse(request, isUkerukun));
   }
 
@@ -56,7 +57,8 @@ public class API {
 
       ClientHttpRequest request = requestFactory.createRequest(kintoneURI, HttpMethod.POST);
 
-      PrintWriter writer = new PrintWriter(request.getBody());
+      //PrintWriter writer = new PrintWriter(request.getBody());
+      PrintWriter writer = new PrintWriter(new OutputStreamWriter(request.getBody(), "UTF-8"));
 
       writer.write(gson.toJson(post));
 
