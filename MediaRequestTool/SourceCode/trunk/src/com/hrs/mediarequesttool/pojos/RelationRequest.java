@@ -19,7 +19,6 @@ public class RelationRequest {
 	private String status;
 	private int assign_user_id;
 	private String assign_user_name;
-	private int update_user_id;
 	private String created_at;
 	private String updated_at;
 	private String company_name;
@@ -169,14 +168,6 @@ public class RelationRequest {
 	
 	public void setAssign_user_name(String assign_user_name) {
 		this.assign_user_name = assign_user_name;
-	}
-	
-	public int getUpdate_user_id() {
-		return update_user_id;
-	}
-	
-	public void setUpdate_user_id(int update_user_id) {
-		this.update_user_id = update_user_id;
 	}
 	
 	public String getCreated_at() {

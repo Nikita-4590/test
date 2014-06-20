@@ -205,7 +205,6 @@
             request.status,
             request.assign_user_id,
             u.user_name AS assign_user_name,
-            request.update_user_id,
             request.created_at,
             request.updated_at,
             company.company_name,
