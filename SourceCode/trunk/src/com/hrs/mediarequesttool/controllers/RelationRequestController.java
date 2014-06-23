@@ -59,8 +59,8 @@ public class RelationRequestController extends BaseController {
 		try {
 			StatusDAL statusDAL = getDAL(StatusDAL.class);
 			Role role = new Role(authentication.getPrincipal());
-			List<Status> lstStatus = statusDAL.getAll(role.getNoneStatus());
-			model.addAttribute("lstStatus", lstStatus);
+			List<Status> listStatus = statusDAL.getAll(role.getNoneStatus());
+			model.addAttribute("listStatus", listStatus);
 			viewBuilder = getViewBuilder("request.list", model);
 			viewBuilder.setScripts("request.list.js");
 			viewBuilder.setStylesheets("request.list.css", "global.css");

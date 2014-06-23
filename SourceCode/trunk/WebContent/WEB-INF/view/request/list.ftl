@@ -7,7 +7,7 @@
                 <label class="label_search">ステータス検索</label>
                 <select id="status_select_option" class="input_text_search">
                     <option value=""></option>
-                 <#list lstStatus as status>
+                 <#list listStatus as status>
                     <option value="${status.status_type}">${status.description}</option>
                  </#list>
                 </select>
