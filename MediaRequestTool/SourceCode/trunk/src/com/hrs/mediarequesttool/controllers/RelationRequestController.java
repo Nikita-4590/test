@@ -54,12 +54,12 @@ public class RelationRequestController extends BaseController {
 	}
 
 	@RequestMapping("/list/")
-	public ModelAndView getAllRequest(ModelMap model, Authentication authentication) throws GenericException {
+	public ModelAndView list(ModelMap model, Authentication authentication) throws GenericException {
 		ViewBuilder viewBuilder = null;
 		try {
 			StatusDAL statusDAL = getDAL(StatusDAL.class);
 			Role role = new Role(authentication.getPrincipal());
-			List<Status> listStatus = statusDAL.getAll(role.getNoneStatus());
+			List<Status> listStatus = statusDAL.getAll(role.getUnReadStatus());
 			model.addAttribute("listStatus", listStatus);
 			viewBuilder = getViewBuilder("request.list", model);
 			viewBuilder.setScripts("request.list.js");
@@ -87,7 +87,7 @@ public class RelationRequestController extends BaseController {
 			Role role = new Role(authentication.getPrincipal());
 			PagingResult<RelationRequest> relationRequests = null;
 			if (statusParam != null || searchParam != null) {
-				relationRequests = requestDAL.getAllRecord(page, directionParam, sortParam, searchParam, statusParam, role.getPriority(), role.getNoneStatus());
+				relationRequests = requestDAL.getAllRecord(page, directionParam, sortParam, searchParam, statusParam, role.getPriority(), role.getUnReadStatus());
 			} else {
 				relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority());
 			}
