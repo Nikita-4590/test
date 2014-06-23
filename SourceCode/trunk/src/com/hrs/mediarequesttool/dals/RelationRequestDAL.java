@@ -40,15 +40,15 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 		}
 	}
 
-	public PagingResult<RelationRequest> getAllRecord(int page, String direction, String sort, String searchParam, String status, String priority, String[] noneStatus) throws GenericException {
+	public PagingResult<RelationRequest> getAllRecord(int page, String direction, String sort, String searchParam, String status, String priority, String[] unReadStatus) throws GenericException {
 		try {
 			openSession();
 			PagingResult<RelationRequest> result = new PagingResult<RelationRequest>();
-			int total = mapper.getCountSearch(status, parseTextSearch(searchParam), noneStatus);
+			int total = mapper.getCountSearch(status, parseTextSearch(searchParam), unReadStatus);
 			Page pagingSetting = new Page(page);
 			result.setPage(page, total, pagingSetting.getLimit());
 			if (!result.isExceed() && total != 0) {
-				List<RelationRequest> relationRequests = mapper.getAllRecord(pagingSetting, sort, direction, parseTextSearch(searchParam), status, priority, noneStatus);
+				List<RelationRequest> relationRequests = mapper.getAllRecord(pagingSetting, sort, direction, parseTextSearch(searchParam), status, priority, unReadStatus);
 				result.setList(relationRequests);
 			}
 			return result;
