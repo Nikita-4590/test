@@ -30,13 +30,13 @@ public interface RelationRequestMapper {
 	 * don't change
 	 * was called when search
 	 */
-	int getCountSearch(@Param("status") String status, @Param("searchParam") String searchParam, @Param("noneStatus") String[] noneStatus);
+	int getCountSearch(@Param("status") String status, @Param("searchParam") String searchParam, @Param("unReadStatus") String[] unReadStatus);
 	List<RelationRequest> getAllRecord(@Param("page") Page page,
 			@Param("sort") String sort, 
 			@Param("direction") String direction,
 			@Param("searchParam") String searchParam,
 			@Param("status") String status,@Param("priority") String priority,
-			@Param("noneStatus") String[] noneStatus);
+			@Param("unReadStatus") String[] unReadStatus);
 	void updateRequest(RelationRequest request);
 	
 	void updateOnlyDirectorOfRequest(RelationRequest request);
