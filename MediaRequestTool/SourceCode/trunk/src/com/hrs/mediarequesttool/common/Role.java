@@ -12,33 +12,33 @@ public class Role {
 //	private final static String LEADER_STATUS_PRIORITY = "leader";
 	private final static String MEDIA_CHECKER_STATUS_PRIORITY = "media_checker";
 	
-	private final static String[] NONE_STATUS = {"DELETED","DESTROYED"};
-	private final static String HIGHT_LIGHT_DIRECTOR = "PROCESSING";
+	private final static String[] REQUEST_STATUS_UNREAD = {"DELETED","DESTROYED"};
+	private final static String HIGHT_LIGHT_IF_DIRECTOR = "PROCESSING";
 //	private final static String HIGHT_LIGHT_LEADER = "OK";
-	private final static String HIGHT_LIGHT_MEDIA = "NEW";
+	private final static String HIGHT_LIGHT_IF_MEDIA_CHECKER = "NEW";
 	private String[] roles;
 	private String priority;	
-	private String [] noneStatus;
+	private String [] unReadStatus;
 	private String hightLight;
 	public Role(Object object) {
-		setNoneStatus(NONE_STATUS);
+		setUnReadStatus(REQUEST_STATUS_UNREAD);
 		if (object instanceof User) {
 			User user = (User) object;
 			switch (user.getUser_role()) {
 			case 0:
-				setHightLight(HIGHT_LIGHT_MEDIA);
+				setHightLight(HIGHT_LIGHT_IF_MEDIA_CHECKER);
 				setRoles(MEDIA_CHECKER);
 				setPriority(MEDIA_CHECKER_STATUS_PRIORITY);
 				break;
 			case 1:
 			default:
-				setHightLight(HIGHT_LIGHT_DIRECTOR);
+				setHightLight(HIGHT_LIGHT_IF_DIRECTOR);
 				setRoles(DIRECTOR);
 				setPriority(DIRECTOR_STATUS_PRIORITY);
 				break;
 			}
 		} else {
-			setHightLight(HIGHT_LIGHT_DIRECTOR);
+			setHightLight(HIGHT_LIGHT_IF_DIRECTOR);
 			setRoles(DIRECTOR);
 			setPriority(DIRECTOR_STATUS_PRIORITY);
 		}
@@ -59,12 +59,12 @@ public class Role {
 		this.priority = priority;
 	}
 
-	public String[] getNoneStatus() {
-		return noneStatus;
+	public String[] getUnReadStatus() {
+		return unReadStatus;
 	}
 
-	public void setNoneStatus(String[] noneStatus) {
-		this.noneStatus = noneStatus;
+	public void setUnReadStatus(String[] unReadStatus) {
+		this.unReadStatus = unReadStatus;
 	}
 
 	public String getHightLight() {
