@@ -74,27 +74,27 @@
             </if>
             <if test="status == null or status == ''">
                 CAST(relation_request_id AS TEXT) ILIKE #{searchParam} AND status NOT IN 
-                   <foreach collection="noneStatus" index="index" item="item" open="("
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
                     separator="," close=")">
                        #{item}
                    </foreach>
                 OR company_name ILIKE #{searchParam} AND status NOT IN 
-                   <foreach collection="noneStatus" index="index" item="item" open="("
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
                     separator="," close=")">
                        #{item}
                    </foreach>
                 OR company_id ILIKE #{searchParam} AND status NOT IN 
-                   <foreach collection="noneStatus" index="index" item="item" open="("
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
                     separator="," close=")">
                        #{item}
                    </foreach>
                 OR media_name ILIKE #{searchParam} AND status NOT IN 
-                   <foreach collection="noneStatus" index="index" item="item" open="("
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
                     separator="," close=")">
                        #{item}
                    </foreach>
                 OR assign_user_name ILIKE #{searchParam} AND status NOT IN 
-                   <foreach collection="noneStatus" index="index" item="item" open="("
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
                     separator="," close=")">
                        #{item}
                    </foreach>
@@ -131,27 +131,27 @@
             </if>
             <if test="status == null or status == ''">
                 CAST(relation_request_id AS TEXT) ILIKE #{searchParam} AND status NOT IN 
-                   <foreach collection="noneStatus" index="index" item="item" open="("
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
                     separator="," close=")">
                        #{item}
                    </foreach>
                 OR company_name ILIKE #{searchParam} AND status NOT IN 
-                   <foreach collection="noneStatus" index="index" item="item" open="("
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
                     separator="," close=")">
                        #{item}
                    </foreach>
                 OR company_id ILIKE #{searchParam} AND status NOT IN 
-                   <foreach collection="noneStatus" index="index" item="item" open="("
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
                     separator="," close=")">
                        #{item}
                    </foreach>
                 OR media_name ILIKE #{searchParam} AND status NOT IN 
-                   <foreach collection="noneStatus" index="index" item="item" open="("
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
                     separator="," close=")">
                        #{item}
                    </foreach>
                 OR assign_user_name ILIKE #{searchParam} AND status NOT IN 
-                   <foreach collection="noneStatus" index="index" item="item" open="("
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
                     separator="," close=")">
                        #{item}
                    </foreach>
