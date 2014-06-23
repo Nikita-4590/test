@@ -157,13 +157,15 @@ public class RelationRequestController extends BaseController {
 				}
 
 				UserDAL userDAL = DALFactory.getDAL(UserDAL.class, sqlSessionFactory);
+				
+				// get list directors except current assign_user_id
 				List<User> directors = userDAL.getListDirector(request.getAssign_user_id());
 				model.addAttribute("directors", directors);
 
 			} else if (currentStatus.equals(Constants.STATUS_FINISHED)) {
 				model.addAttribute("view", Constants.STATUS_FINISHED);
 			} else {
-				throw new ResourceNotFoundException();
+				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.MSG_INVALID_STATUS_DATA));
 			}
 
 			if (nextStatus != null) {
@@ -175,7 +177,7 @@ public class RelationRequestController extends BaseController {
 			MediaLabel mediaLabel = mediaLabelDAL.get(request.getMedia_id());
 
 			if (mediaLabel == null) {
-				throw new ResourceNotFoundException();
+				throw new BadRequestException();
 			}
 			
 			if (mediaLabel.getMedia_id().equals(Constants.weban_media_id) && !Validator.isNullOrEmpty(request.getLogin_id_2())) {
@@ -195,7 +197,7 @@ public class RelationRequestController extends BaseController {
 
 		} catch (GenericException e) {
 			e.printStackTrace();
-			return redirect("err/"); // TODO: need check again
+			return fallbackToRequestList(httpRequest, redirectAttributes, e);
 		}
 
 		return view(builder);
@@ -220,7 +222,7 @@ public class RelationRequestController extends BaseController {
 
 			String currentStatus = request.getStatus();
 			
-			if (validateCurrentStatus(currentStatus)) {
+			if (!validateCurrentStatus(currentStatus)) {
 				throw new ResourceNotFoundException();
 			} else if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
 				String nextStatus = httpRequest.getParameter("selected_next_status");
@@ -298,7 +300,7 @@ public class RelationRequestController extends BaseController {
 				String crawlDate = httpRequest.getParameter("crawl_date");
 				String comment = httpRequest.getParameter("destroy-comment");
 				
-				if (validateCurrentStatus(currentStatus)) {
+				if (!validateCurrentStatus(currentStatus)) {
 					messageId = "ERR151";
 				} else if (currentStatus.equals(Constants.STATUS_CONFIRMING) && !checkCaseStatusIsConfirming(currentStatus, nextStatus)) {
 					messageId = "ERR151";
@@ -496,7 +498,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateDirectorId(directorId) || validateCurrentStatus(request.getStatus())) {
+			if (request == null || !validateDirectorId(directorId) || !validateCurrentStatus(request.getStatus())) {
 				throw new ResourceNotFoundException();
 			}
 
@@ -536,7 +538,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateDirectorId(directorId) || validateCurrentStatus(request.getStatus())) {
+			if (request == null || !validateDirectorId(directorId) || !validateCurrentStatus(request.getStatus())) {
 				// inform error message about invalid data
 				messageId = "ERR201";
 			} else {
@@ -614,7 +616,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || validateCurrentStatus(request.getStatus())) {
+			if (request == null || !validateCurrentStatus(request.getStatus())) {
 				throw new ResourceNotFoundException();
 			}
 			model.addAttribute("request", request);
@@ -648,7 +650,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateComment(comment) || validateCurrentStatus(request.getStatus()) || request.getStatus().equals(Constants.STATUS_FINISHED)) {
+			if (request == null || !validateComment(comment) || !validateCurrentStatus(request.getStatus()) || request.getStatus().equals(Constants.STATUS_FINISHED)) {
 				// inform error message about invalid data
 				messageId = "ERR251";
 			} else {
@@ -711,7 +713,28 @@ public class RelationRequestController extends BaseController {
 		return !(Validator.isNullOrEmpty(comment) || Validator.checkExceedLength(Constants.MAX_LENGTH_COMMENT, comment));
 	}
 	
-	private boolean validateCurrentStatus(String currentStatus) {
-		return Validator.isNullOrEmpty(currentStatus) || currentStatus.equals(Constants.STATUS_DELETED) || currentStatus.equals(Constants.STATUS_DESTROYED);
+	private boolean validateCurrentStatus(String currentStatus) throws GenericException {
+		if (Validator.isNullOrEmpty(currentStatus)) {
+			return false;
+		} else {
+			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
+			
+			StatusDAL statusDAL = DALFactory.getDAL(StatusDAL.class, sqlSessionFactory);
+			
+			Status status = statusDAL.get(currentStatus);
+			
+			if (status == null || status.getStatus_type().equals(Constants.STATUS_DELETED) || status.getStatus_type().equals(Constants.STATUS_DESTROYED)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	protected ModelAndView fallbackToRequestList(HttpServletRequest httpRequest, RedirectAttributes redirectAttributes, Throwable exception) {
+		ModelMap model = new ModelMap();
+		model.put("exception", exception);
+		setSplashAttributes(redirectAttributes, model);
+		return redirect("err/");
 	}
 }
