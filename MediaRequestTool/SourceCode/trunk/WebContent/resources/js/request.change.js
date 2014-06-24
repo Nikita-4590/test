@@ -168,10 +168,13 @@ function confirmChange(requestId) {
 				targetBox.main.find('#change-request-form').ajaxForm({
 					dataType : 'json',
 					success : function(response) {
-						
-						message = me.dapps.ui.enhanced.locale.text(response.message_id);
-						messageBox._response = response;
-						messageBox.show(message);
+						if (response.message_id == "INF150") {
+							window.open("", "_self").close();
+						} else {
+							message = me.dapps.ui.enhanced.locale.text(response.message_id);
+							messageBox._response = response;
+							messageBox.show(message);
+						}
 					},
 					error : function(e, err) {
 						messageBox._response = null;
