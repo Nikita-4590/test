@@ -10,6 +10,7 @@
 .form-line {
 	margin: 10px 0 20px;
 	line-height: 22px;
+	word-wrap: break-word;
 }
 
 .form-line:after {
