@@ -30,11 +30,8 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 	
 	static {
 		REQUEST_CHANGE_INFO = new LinkedHashMap<String, String>();
-		REQUEST_CHANGE_INFO.put("relation_request_id", "依頼ID");
-		REQUEST_CHANGE_INFO.put("status", "ステータス　EN");
-		REQUEST_CHANGE_INFO.put("status_description", "ステータス　JP");
+		REQUEST_CHANGE_INFO.put("status_description", "ステータス");
 		REQUEST_CHANGE_INFO.put("renkei_date", "連携開始日");
-		REQUEST_CHANGE_INFO.put("director_id", "担当ディレクター　ID");
 		REQUEST_CHANGE_INFO.put("director_name", "担当ディレクター");
 	}
 	
@@ -52,7 +49,7 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 		try {
 			Comment comment = new Comment();
 			
-			comment.setRequest_id(oldInfo.getRelation_request_id());
+			comment.setRequest_id(newRequest.getRelation_request_id());
 			comment.setComment_reason(reason);
 			comment.setOld_value(toJSON(oldInfo));
 			comment.setNew_value(toJSON(newInfo));

@@ -245,7 +245,7 @@
             assign_user_id = #{assign_user_id},
             updated_at = CURRENT_TIMESTAMP
         WHERE
-            relation_request_id = #{relation_request_id}    
+            relation_request_id = #{relation_request_id}
     </update>
     
     <!-- update request to DESTROY status -->

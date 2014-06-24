@@ -298,7 +298,7 @@ public class RelationRequestController extends BaseController {
 				String nextStatus = httpRequest.getParameter("selected_next_status");
 				String directorId = httpRequest.getParameter("new_director_id");
 				String crawlDate = httpRequest.getParameter("crawl_date");
-				String comment = httpRequest.getParameter("destroy-comment");
+				String comment = httpRequest.getParameter("backToConfirming-comment");
 				
 				if (!validateCurrentStatus(currentStatus)) {
 					messageId = "ERR151";
@@ -324,8 +324,6 @@ public class RelationRequestController extends BaseController {
 					} else if (currentStatus.equals(Constants.STATUS_PROCESSING)) {
 						request.setCrawl_date(crawlDate);
 						request.setStatus(Constants.STATUS_FINISHED);
-					} else {
-						// show message
 					}
 
 					// create session
@@ -342,7 +340,7 @@ public class RelationRequestController extends BaseController {
 
 					// get new information after update 
 					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
-					RequestChangeInfo newInfo = setInfo(newRequest);
+					RequestChangeInfo newInfo = setInfo(newRequest); // to send Email
 					
 					// renkei with API Kintone
 					if (currentStatus.equals(Constants.STATUS_PROCESSING) && nextStatus.equals(Constants.STATUS_FINISHED)) {
@@ -409,10 +407,7 @@ public class RelationRequestController extends BaseController {
 
 	private RequestChangeInfo setInfo(RelationRequest request) {
 		RequestChangeInfo requestChangeInfo = new RequestChangeInfo();
-		requestChangeInfo.setRelation_request_id(request.getRelation_request_id());
-		requestChangeInfo.setStatus(request.getStatus());
 		requestChangeInfo.setStatus_description(request.getStatus_description());
-		requestChangeInfo.setDirector_id(request.getAssign_user_id());
 		requestChangeInfo.setDirector_name(request.getAssign_user_name());
 		requestChangeInfo.setRenkei_date(request.getCrawl_date());
 
@@ -423,11 +418,7 @@ public class RelationRequestController extends BaseController {
 		if (Validator.isNullOrEmpty(nextStatus)) {
 			return false;
 		} else {
-			if (nextStatus.equals(Constants.STATUS_OK) || nextStatus.equals(Constants.STATUS_NG)) {
-				return true;
-			} else {
-				return false;
-			}
+			return nextStatus.equals(Constants.STATUS_OK) || nextStatus.equals(Constants.STATUS_NG);
 		}
 	}
 
@@ -435,11 +426,7 @@ public class RelationRequestController extends BaseController {
 		if (Validator.isNullOrEmpty(nextStatus)) {
 			return false;
 		} else {
-			if (nextStatus.equals(Constants.STATUS_CONFIRMING) || nextStatus.equals(Constants.STATUS_DELETED)) {
-				return true;
-			} else {
-				return false;
-			}
+			return nextStatus.equals(Constants.STATUS_CONFIRMING) || nextStatus.equals(Constants.STATUS_DELETED);
 		}
 	}
 
@@ -465,7 +452,6 @@ public class RelationRequestController extends BaseController {
 				e.printStackTrace();
 				return false;
 			} catch (GenericException e) {
-				// TODO: access database failure
 				e.printStackTrace();
 				return false;
 			}
@@ -476,11 +462,16 @@ public class RelationRequestController extends BaseController {
 		if (Validator.isNullOrEmpty(stringCrawlDate)) {
 			return false;
 		} else {
-			DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-			DateTime crawlDate = DateTime.parse(stringCrawlDate, dateFormatter);
-			DateTime tomorrow = DateTime.now().plusDays(1).withTime(0, 0, 0, 0);
+			try {
+				DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
+				DateTime crawlDate = DateTime.parse(stringCrawlDate, dateFormatter);
+				DateTime tomorrow = DateTime.now().plusDays(1).withTime(0, 0, 0, 0);
 
-			return (crawlDate.isAfter(tomorrow) || crawlDate.isEqual(tomorrow));
+				return (crawlDate.isAfter(tomorrow) || crawlDate.isEqual(tomorrow));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
 		}
 	}
 
@@ -498,7 +489,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateDirectorId(directorId) || !validateCurrentStatus(request.getStatus())) {
+			if (request == null || !validateDirectorId(directorId) || !request.getStatus().equals(Constants.STATUS_PROCESSING)) {
 				throw new ResourceNotFoundException();
 			}
 
@@ -511,7 +502,6 @@ public class RelationRequestController extends BaseController {
 		} catch (NumberFormatException e) {
 			throw new ResourceNotFoundException(e, this.getClass());
 		} catch (GenericException e) {
-			// TODO
 			throw new BadRequestException(e, this.getClass());
 		}
 	}
@@ -538,7 +528,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateDirectorId(directorId) || !validateCurrentStatus(request.getStatus())) {
+			if (request == null || !validateDirectorId(directorId) || !request.getStatus().equals(Constants.STATUS_PROCESSING)) {
 				// inform error message about invalid data
 				messageId = "ERR201";
 			} else {
@@ -650,7 +640,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateComment(comment) || !validateCurrentStatus(request.getStatus()) || request.getStatus().equals(Constants.STATUS_FINISHED)) {
+			if (request == null || !validateComment(comment) || !validateCurrentStatus(request.getStatus())) {
 				// inform error message about invalid data
 				messageId = "ERR251";
 			} else {
@@ -723,7 +713,7 @@ public class RelationRequestController extends BaseController {
 			
 			Status status = statusDAL.get(currentStatus);
 			
-			if (status == null || status.getStatus_type().equals(Constants.STATUS_DELETED) || status.getStatus_type().equals(Constants.STATUS_DESTROYED)) {
+			if (status == null || status.getStatus_type().equals(Constants.STATUS_DELETED) || status.getStatus_type().equals(Constants.STATUS_DESTROYED) || status.getStatus_type().equals(Constants.STATUS_FINISHED)) {
 				return false;
 			}
 		}
