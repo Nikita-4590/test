@@ -94,11 +94,9 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("relationRequests", relationRequests);
 			model.addAttribute("compare_status", role.getHightLight());
 		} catch (GenericException e) {
-			setSplashMessage(redirectAttributes, "ERR102");
-			return redirect("err/");
+			e.printStackTrace();
 		} catch (Exception e) {
-			setSplashMessage(redirectAttributes, "ERR102");
-			return redirect("err/");
+			e.printStackTrace();
 		}
 		return view("request.ajax_list", model);
 	}
