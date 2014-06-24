@@ -131,11 +131,12 @@ function confirmChange(requestId) {
 				list : [ {
 					text : 'OK',
 					action : function(targetBox) {
-						if (isSet(targetBox._response) && isSet(targetBox._response.url)) {
+						//if (isSet(targetBox._response) && isSet(targetBox._response.url)) {
 							//location.href = me.dapps.global['url.context'] + targetBox._response.url;
-							window.open("", "_self").close();
-						} else if (isSet(targetBox._error) && targetBox._error.status == 403) {
-							location.href = me.dapps.global['url.context'] + "/";
+							//window.open("", "_self").close();
+						//} else 
+						if (isSet(targetBox._error) && targetBox._error.status == 403) {
+							location.href = me.dapps.global['url.context'] + "/"; // redirect to login page
 						} else {
 							if (isSet(targetBox._parent)) {
 								targetBox._parent.close();
@@ -168,7 +169,7 @@ function confirmChange(requestId) {
 				targetBox.main.find('#change-request-form').ajaxForm({
 					dataType : 'json',
 					success : function(response) {
-						if (response.message_id == "INF150") {
+						if (response.success) {
 							window.open("", "_self").close();
 						} else {
 							message = me.dapps.ui.enhanced.locale.text(response.message_id);
