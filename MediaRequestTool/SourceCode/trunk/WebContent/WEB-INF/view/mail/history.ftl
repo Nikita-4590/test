@@ -11,7 +11,7 @@
 	<pre style="font-family: inherit;"></#compress>${comment.comment_reason!""}<#compress></pre>
 </p>
 <p>
-	<span>対応依頼ID: ${request.relation_request_id}</span>
+	<span style="color:red">対応依頼ID: ${request.relation_request_id}</span>
 </p>
 <br />
 <table style="border-collapse: collapse; border-spacing: 0;">
@@ -24,13 +24,13 @@
 		<#list comment.properties as property>
 			<#if property.label??>
 				<tr<#if property.isDiff()> style="color: red;"</#if>>
-					<td style="border: 1px solid black; padding: 5px;">
+					<td style="border: 1px solid black; padding: 5px; width: 150px;">
 						<span>${property.label}</span>
 					</td>
-					<td style="border: 1px solid black; padding: 5px; width: 250px; max-width: 250px; min-width: 250px; word-wrap: break-word;">
+					<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">
 						<span>${property.oldValue!""}</span>
 					</td>
-					<td style="border: 1px solid black; padding: 5px; width: 250px; max-width: 250px; min-width: 250px; word-wrap: break-word;">
+					<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">
 						<span>${property.newValue!""}</span>
 					</td>
 				</tr>
@@ -49,61 +49,50 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px;">申込者情報</td>
-			<td style="border: 1px solid black; padding: 5px;">企業ID</td>
-			<td style="border: 1px solid black; padding: 5px;">${request.company_id!""}</td>
+			<td style="border: 1px solid black; padding: 5px; width: 150px;">申込者情報</td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">企業ID</td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.company_id!""}</td>
 		</tr>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px;"></td>
-			<td style="border: 1px solid black; padding: 5px;">企業名</td>
-			<td style="border: 1px solid black; padding: 5px;">${request.company_name!""}</td>
+			<td style="border: 1px solid black; padding: 5px; width: 150px;"></td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">企業名</td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.company_name!""}</td>
 		</tr>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px;"></td>
-			<td style="border: 1px solid black; padding: 5px;">ご担当者名</td>
-			<td style="border: 1px solid black; padding: 5px;">${request.requester_name!""}</td>
+			<td style="border: 1px solid black; padding: 5px; width: 150px;"></td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">ご担当者名</td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.requester_name!""}</td>
 		</tr>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px;"></td>
-			<td style="border: 1px solid black; padding: 5px;">ご連絡先メールアドレス</td>
-			<td style="border: 1px solid black; padding: 5px;">${request.requester_mail!""}</td>
+			<td style="border: 1px solid black; padding: 5px; width: 150px;"></td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">ご連絡先メールアドレス</td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.requester_mail!""}</td>
 		</tr>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px;"></td>
-			<td style="border: 1px solid black; padding: 5px;">ご連絡先電話番号</td>
-			<td style="border: 1px solid black; padding: 5px;">${request.requester_phone!""}</td>
+			<td style="border: 1px solid black; padding: 5px; width: 150px;"></td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">ご連絡先電話番号</td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.requester_phone!""}</td>
 		</tr>
 		<tr>
-			<td>媒体アカウント情報</td>
-			<td></td>
-			<td></td>
+			<td style="border: 1px solid black; padding: 5px; width: 150px;">媒体アカウント情報</td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">媒体名</td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.media_name!""}</td>
 		</tr>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px;"></td>
-			<td style="border: 1px solid black; padding: 5px;">媒体名</td>
-			<td style="border: 1px solid black; padding: 5px;">${request.media_name!""}</td>
-		</tr>
-		<tr>
-			<td style="border: 1px solid black; padding: 5px;"></td>
-			<td style="border: 1px solid black; padding: 5px;">管理画面URL</td>
-			<td style="border: 1px solid black; padding: 5px;">${request.url!""}</td>
+			<td style="border: 1px solid black; padding: 5px; width: 150px;"></td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">管理画面URL</td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.url!""}</td>
 		</tr>
 	</tbody>
 </table>
-<table style="border-collapse: collapse; border-spacing: 0; width: 800px;">
+<br />
+<span>その他伝達事項</span>
+<table style="border-collapse: collapse; border-spacing: 0;">
 	<thead>
-		<th style="border: 0px; width: 200px;"></th>
 		<th style="border: 0px;"></th>
 	</thead>
 	<tbody>
-		<tr>
-			<td>その他伝達事項</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td><#if request.other_comment??>${(request.other_comment)}</#if></td>
-		</tr>
+		<td style="border: 0px solid black; padding: 5px; width: 600px; word-wrap: break-word;">${request.other_comment!""}</td>
 	</tbody>
 </table>
 </#compress>
