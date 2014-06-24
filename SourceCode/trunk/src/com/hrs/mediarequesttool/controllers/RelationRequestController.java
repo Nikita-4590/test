@@ -381,10 +381,6 @@ public class RelationRequestController extends BaseController {
 			//　inform error message about cannot submit to Kintone
 			messageId = "ERR154"; 
 			e.printStackTrace();
-		} catch (Exception e) {
-			//TODO　inform error message about cannot submit to Kintone- encrypt password failed
-			messageId = "ERR154"; 
-			e.printStackTrace();
 		} finally {
 			if (session != null) {
 				session.close();

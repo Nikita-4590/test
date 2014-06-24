@@ -22,7 +22,7 @@ class Adapter {
 	static public final String DATE_PATTERN = "yyyy-MM-dd";
 	static public final String A = "BLOWFISH";
 
-	public Record parse(RelationRequest request, boolean isUkerukun) throws KintoneException, Exception {
+	public Record parse(RelationRequest request, boolean isUkerukun) throws KintoneException {
 		Record record = new Record();
 
 		// set common fields
@@ -65,20 +65,24 @@ class Adapter {
 		return dtGMT00.toString();
 	}
 
-	private String encode(String key, String text) throws Exception {
-		MessageDigest mg = MessageDigest.getInstance("MD5");
-		mg.update(key.getBytes());
+	private String encode(String key, String text) throws KintoneException {
+		try {
+			MessageDigest mg = MessageDigest.getInstance("MD5");
+			mg.update(key.getBytes());
 
-		SecretKeySpec sksSpec = new SecretKeySpec(mg.digest(), A);
-		Cipher cipher = Cipher.getInstance(A + "/ECB/PKCS5Padding");
-		cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, sksSpec);
+			SecretKeySpec sksSpec = new SecretKeySpec(mg.digest(), A);
+			Cipher cipher = Cipher.getInstance(A + "/ECB/PKCS5Padding");
+			cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, sksSpec);
 
-		byte[] digest = cipher.doFinal(text.getBytes());
-		StringBuffer temp = new StringBuffer();
-		for (byte byteChara : digest) {
-			temp.append(String.format("%02x", byteChara));
+			byte[] digest = cipher.doFinal(text.getBytes());
+			StringBuffer temp = new StringBuffer();
+			for (byte byteChara : digest) {
+				temp.append(String.format("%02x", byteChara));
+			}
+			return temp.toString();
+		} catch (Exception e) {
+			throw new KintoneException();
 		}
-		return temp.toString();
 	}
 
 	private String correctCompanyID(String companyID) throws KintoneException {
