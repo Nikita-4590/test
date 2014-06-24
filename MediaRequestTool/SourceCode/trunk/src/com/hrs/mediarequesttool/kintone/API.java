@@ -44,7 +44,7 @@ public class API {
 		kintoneApplicationID = PropertiesLoader.instance.getKintoneApplicationID();
 	}
 
-	public PostResponse post(RelationRequest request, boolean isUkerukun) throws KintoneException, Exception {
+	public PostResponse post(RelationRequest request, boolean isUkerukun) throws KintoneException {
 		return post(adapter.parse(request, isUkerukun));
 	}
 
