@@ -164,7 +164,9 @@ public class RelationRequestController extends BaseController {
 			} else if (currentStatus.equals(Constants.STATUS_FINISHED)) {
 				model.addAttribute("view", Constants.STATUS_FINISHED);
 			} else {
-				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.MSG_INVALID_STATUS_DATA));
+				throw new ResourceNotFoundException();
+				//return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.MSG_INVALID_STATUS_DATA));
+				// TODO: bo loi tren. Can check ky them cac Exception
 			}
 
 			if (nextStatus != null) {
@@ -363,7 +365,7 @@ public class RelationRequestController extends BaseController {
 					
 					session.commit();
 
-					// Display information message when delete successful
+					// Display information message when change successful
 					messageId = "INF150";
 					success = true;
 				}
@@ -393,9 +395,9 @@ public class RelationRequestController extends BaseController {
 		map.put("message_id", messageId);
 		map.put("success", success);
 
-		if (success) {
-			map.put("url", "/request/list/");
-		}
+		//if (success) {
+			//map.put("url", "/request/list/");
+		//}
 
 		return GSON.toJson(map);
 	}
