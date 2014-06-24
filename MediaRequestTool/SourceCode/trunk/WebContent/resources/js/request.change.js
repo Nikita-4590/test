@@ -14,7 +14,6 @@ function confirmChange(requestId) {
 						text : 'OK',
 						action : function(targetBox) {
 							targetBox.close();
-							//validator.warning('#assign_user_name');
 						}
 					} ]
 				}
