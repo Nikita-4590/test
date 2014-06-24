@@ -54,7 +54,7 @@ public class RelationRequestController extends BaseController {
 	}
 
 	@RequestMapping("/list/")
-	public ModelAndView list(ModelMap model, Authentication authentication) throws GenericException {
+	public ModelAndView list(ModelMap model, Authentication authentication, RedirectAttributes redirectAttributes) throws GenericException {
 		ViewBuilder viewBuilder = null;
 		try {
 			StatusDAL statusDAL = getDAL(StatusDAL.class);
@@ -66,16 +66,15 @@ public class RelationRequestController extends BaseController {
 			viewBuilder.setStylesheets("request.list.css", "global.css");
 			viewBuilder.setPageTitle("依頼一覧");
 		} catch (GenericException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+			setSplashMessage(redirectAttributes, "ERR102");
+			return redirect("err/");
 		}
 		return view(viewBuilder);
 	}
 
 	@RequestMapping(value = "/ajax_list/", method = RequestMethod.GET)
 	@ResponseBody
-	public ModelAndView ajaxList(HttpServletRequest httpRequest, ModelMap model, Authentication authentication) {
+	public ModelAndView ajaxList(HttpServletRequest httpRequest, ModelMap model,RedirectAttributes redirectAttributes, Authentication authentication) {
 		try {
 			String pageParam = httpRequest.getParameter("page");
 			String sortParam = httpRequest.getParameter("sort");
@@ -95,9 +94,11 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("relationRequests", relationRequests);
 			model.addAttribute("compare_status", role.getHightLight());
 		} catch (GenericException e) {
-			e.printStackTrace();
+			setSplashMessage(redirectAttributes, "ERR102");
+			return redirect("err/");
 		} catch (Exception e) {
-			e.printStackTrace();
+			setSplashMessage(redirectAttributes, "ERR102");
+			return redirect("err/");
 		}
 		return view("request.ajax_list", model);
 	}
