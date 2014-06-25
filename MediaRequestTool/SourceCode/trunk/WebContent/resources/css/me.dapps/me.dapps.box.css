@@ -13,7 +13,7 @@
 	border: 1px solid black;
 	box-shadow: 0px 0px 30px 2px;
 	background-color: #fff;
-	padding: 10px;
+	padding-bottom: 10px;
 }
 
 .dapps-box-main:focus {
@@ -47,7 +47,7 @@
 }
 
 .dapps-box-title {
-	margin-right: 20px;
+	margin-top: 10px;
 	font-weight: bold;
 	font-size: 15px;
 	margin-left: 10px;
@@ -55,7 +55,7 @@
 }
 
 .dapps-box-content {
-	margin: 20px;
+	margin: 10px;
 }
 
 .dapps-box-button {
