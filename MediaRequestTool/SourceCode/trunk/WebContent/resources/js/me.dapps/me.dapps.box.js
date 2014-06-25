@@ -29,7 +29,8 @@ me.dapps.box = function(config) {
 		pre_open : undefined,
 		post_close : undefined,
 		post_open : undefined,
-		button : undefined
+		button : undefined,
+		type: undefined
 	};
 
 	for (key in this.default_config) {
@@ -44,16 +45,35 @@ me.dapps.box = function(config) {
 me.dapps.box.prototype.show = function(content) {
 	// create a reference for this instance
 	var thisBox = this;
+	
+	var classNames = {
+		'WARNING' : 'message-icon-wrn',
+		'ERROR'  : 'message-icon-err'
+	};
+	
+	if (isSet(classNames[this.config.type])) {
+		  IMG = $('<div />').attr('class', classNames[this.config.type]);
+	}
+	
+	if (isSet(this.config.type)) {
+		// create content have image
+		this.content = $('<div />').attr('class', 'dapps-box-content').append(IMG).append(content);
+	} else {
+		// create content don't have image
+		this.content = $('<div />').attr('class', 'dapps-box-content').append(content);
+	}
 
-	// create content
-	this.content = $('<div />').attr('class', 'dapps-box-content').append(content);
 
 	this.main = $('<div />').attr('id', this.id).attr('class', 'dapps-box-main').attr('tabindex', -1);
 	this.main.css({
 		'z-index' : this.config.z_index
 	});
-
-	this.header = $('<div />').attr('class', 'dapps-box-header');
+	
+	if (isSet(this.config.type)) {
+		this.header = $('<div />').attr('class', 'dapps-box-header-error');
+	} else {
+		this.header = $('<div />').attr('class', 'dapps-box-header');
+	}
 
 	if (this.config.close_button) {
 		// inject close button

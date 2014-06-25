@@ -23,8 +23,6 @@ function confirmUpdateDirector(requestId) {
 				}, {
 					text : 'はい',
 					action : function(targetBox) {
-						// targetBox.close();
-						//$('body').append($('<div class="mask" />'));
 						targetBox.main.find('#update-director-form').submit();
 					}
 				} ]
@@ -79,10 +77,14 @@ function confirmUpdateDirector(requestId) {
 			list : [ {
 				text : 'OK',
 				action : function(targetBox) {
-					if (isSet(targetBox._response) && isSet(targetBox._response.url)) {
-						location.href = me.dapps.global['url.context'] + targetBox._response.url;
-					} else if (isSet(targetBox._error) && targetBox._error.status == 403) {
-						location.href = me.dapps.global['url.context'] + "/";
+					if (isSet(targetBox._response) && targetBox._response.message_id == "ERR201") {
+						location.reload();
+					} else if (isSet(targetBox._error)) {
+						if (targetBox._error.status == 403) {
+							location.href = me.dapps.global['url.context'] + "/"; // redirect to login page
+						} else if (targetBox._error.status == 404) {
+							location.reload();
+						}
 					} else {
 						if (isSet(targetBox._parent)) {
 							targetBox._parent.close();
@@ -93,8 +95,6 @@ function confirmUpdateDirector(requestId) {
 			} ]
 		}
 	});
-	
-	//$('body').append($('<div class="mask" />'));
 	
 	me.dapps.global['request.update_director_confirm_box'].showFromUrl({
 		url : me.dapps.global['url.confirm_update_director'],
@@ -113,17 +113,22 @@ function confirmUpdateDirector(requestId) {
 			targetBox.main.find('#update-director-form').ajaxForm({
 				dataType : 'json',
 				success : function(response) {
-					
-					message = me.dapps.ui.enhanced.locale.text(response.message_id);
-					messageBox._response = response;
-					messageBox.show(message);
+					if (response.success) {
+						location.reload();
+					} else {
+						message = me.dapps.ui.enhanced.locale.text(response.message_id);
+						messageBox._response = response;
+						messageBox.show(message);
+					}
 				},
 				error : function(e, err) {
 					messageBox._response = null;
 					var messageId = me.dapps.global['message.update.director.general'];
 
 					if (e.status == 403) {
-						me.dapps.global['message.update.director.forbidden'];
+						messageId = me.dapps.global['message.update.director.forbidden'];
+					} else if (e.status == 404) {
+						messageId = me.dapps.global['message.update.director.not_found'];
 					}
 
 					message = me.dapps.ui.enhanced.locale.text(messageId);
@@ -140,9 +145,9 @@ function confirmUpdateDirector(requestId) {
 			var messageId = me.dapps.global['message.update.director.general'];
 
 			if (e.status == 403) {
-				me.dapps.global['message.update.director.forbidden'];
+				messageId = me.dapps.global['message.update.director.forbidden'];
 			} else if (e.status == 404) {
-				me.dapps.global['message.update.director.not_found'];
+				messageId = me.dapps.global['message.update.director.not_found'];
 			}
 
 			message = me.dapps.ui.enhanced.locale.text(messageId);

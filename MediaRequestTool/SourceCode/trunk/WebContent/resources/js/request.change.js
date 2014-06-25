@@ -126,17 +126,20 @@ function confirmChange(requestId) {
 		var messageBox = new me.dapps.box({
 			auto_hide : false,
 			close_button : false,
+			type: 'ERROR',
 			button : {
 				align : 'right',
 				list : [ {
 					text : 'OK',
 					action : function(targetBox) {
-						//if (isSet(targetBox._response) && isSet(targetBox._response.url)) {
-							//location.href = me.dapps.global['url.context'] + targetBox._response.url;
-							//window.open("", "_self").close();
-						//} else 
-						if (isSet(targetBox._error) && targetBox._error.status == 403) {
-							location.href = me.dapps.global['url.context'] + "/"; // redirect to login page
+						if (isSet(targetBox._response) && targetBox._response.message_id == "ERR151") {
+							location.reload();
+						} else if (isSet(targetBox._error)) {
+							if (targetBox._error.status == 403) {
+								location.href = me.dapps.global['url.context'] + "/"; // redirect to login page
+							} else if (targetBox._error.status == 404) {
+								location.reload();
+							}
 						} else {
 							if (isSet(targetBox._parent)) {
 								targetBox._parent.close();
@@ -147,8 +150,6 @@ function confirmChange(requestId) {
 				} ]
 			}
 		});
-		
-		//$('body').append($('<div class="mask" />'));
 		
 		me.dapps.global['request.change_confirm_box'].showFromUrl({
 			url : me.dapps.global['url.confirm_change'],
@@ -182,7 +183,9 @@ function confirmChange(requestId) {
 						var messageId = me.dapps.global['message.change.general'];
 
 						if (e.status == 403) {
-							me.dapps.global['message.change.forbidden'];
+							messageId = me.dapps.global['message.change.forbidden'];
+						} else if (e.status == 404) {
+							messageId = me.dapps.global['message.change.not_found'];
 						}
 
 						message = me.dapps.ui.enhanced.locale.text(messageId);
@@ -199,15 +202,15 @@ function confirmChange(requestId) {
 				var messageId = me.dapps.global['message.change.general'];
 
 				if (e.status == 403) {
-					me.dapps.global['message.change.forbidden'];
+					messageId = me.dapps.global['message.change.forbidden'];
 				} else if (e.status == 404) {
-					me.dapps.global['message.change.not_found'];
+					messageId = me.dapps.global['message.change.not_found'];
 				}
 
 				message = me.dapps.ui.enhanced.locale.text(messageId);
 
 				messageBox._error = e;
-				messageBox._parent = box;
+				messageBox._parent = box; // In case have already show confirm dialog
 				messageBox.show(message);
 			}
 		});

@@ -223,7 +223,7 @@ public class RelationRequestController extends BaseController {
 
 			String currentStatus = request.getStatus();
 			
-			if (!validateCurrentStatus(currentStatus)) {
+			if (!validateCurrentStatus(currentStatus) || currentStatus.equals(Constants.STATUS_FINISHED)) {
 				throw new ResourceNotFoundException();
 			} else if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
 				String nextStatus = httpRequest.getParameter("selected_next_status");
@@ -292,7 +292,7 @@ public class RelationRequestController extends BaseController {
 			RelationRequest request = requestDAL.get(requestId);
 
 			if (request == null) {
-				// inform error message about invalid data
+				// inform error message about invalid data. Not found
 				messageId = "ERR151";
 			} else {
 				String currentStatus = request.getStatus();
@@ -313,6 +313,8 @@ public class RelationRequestController extends BaseController {
 					messageId = "ERR151";
 				} else if (currentStatus.equals(Constants.STATUS_PROCESSING) && !validateCrawlDate(crawlDate)) {
 					messageId = "ERR151";
+				} else if (currentStatus.equals(Constants.STATUS_FINISHED)) {
+					messageId = "ERR151"; 
 				} else {
 					if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
 						request.setStatus(nextStatus);
@@ -366,13 +368,12 @@ public class RelationRequestController extends BaseController {
 					session.commit();
 
 					// Display information message when change successful
-					messageId = "INF150";
 					success = true;
 				}
 			}
 
 		} catch (NumberFormatException e) {
-			// inform error message about invalid data
+			// inform invalid data
 			messageId = "ERR151";
 		} catch (GenericException e) {
 			// inform error message about access database failure
@@ -508,7 +509,6 @@ public class RelationRequestController extends BaseController {
 	public String submitUpdateDirector(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
 
 		String messageId = null;
-		int currentRequestId = 0;
 		boolean success = false;
 		SqlSession session = null;
 		RelationRequestDAL requestDAL = null;
@@ -557,10 +557,8 @@ public class RelationRequestController extends BaseController {
 
 				session.commit();
 
-				// Display information message when delete successful
-				messageId = "INF200";
+				// Display information message when update director successful
 				success = true;
-				currentRequestId = newRequest.getRelation_request_id();
 			}
 
 		} catch (NumberFormatException e) {
@@ -583,10 +581,6 @@ public class RelationRequestController extends BaseController {
 		map.put("message_id", messageId);
 		map.put("success", success);
 
-		if (success) {
-			map.put("url", "/request/view_request/" + currentRequestId + "/");
-		}
-
 		return GSON.toJson(map);
 	}
 
@@ -603,7 +597,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateCurrentStatus(request.getStatus())) {
+			if (request == null || !validateCurrentStatus(request.getStatus()) || request.getStatus().equals(Constants.STATUS_FINISHED)) {
 				throw new ResourceNotFoundException();
 			}
 			model.addAttribute("request", request);
@@ -637,7 +631,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateComment(comment) || !validateCurrentStatus(request.getStatus())) {
+			if (request == null || !validateComment(comment) || !validateCurrentStatus(request.getStatus()) || request.getStatus().equals(Constants.STATUS_FINISHED)) {
 				// inform error message about invalid data
 				messageId = "ERR251";
 			} else {
@@ -667,11 +661,13 @@ public class RelationRequestController extends BaseController {
 
 				session.commit();
 
-				// Display information message when delete successful
-				messageId = "INF250";
+				// Display information message when destroy successful
 				success = true;
 			}
 
+		} catch (NumberFormatException e) {
+			// inform error message about invalid data
+			messageId = "ERR251";
 		} catch (GenericException e) {
 			// inform error message about access database failure
 			messageId = "ERR250";
@@ -710,7 +706,7 @@ public class RelationRequestController extends BaseController {
 			
 			Status status = statusDAL.get(currentStatus);
 			
-			if (status == null || status.getStatus_type().equals(Constants.STATUS_DELETED) || status.getStatus_type().equals(Constants.STATUS_DESTROYED) || status.getStatus_type().equals(Constants.STATUS_FINISHED)) {
+			if (status == null || status.getStatus_type().equals(Constants.STATUS_DELETED) || status.getStatus_type().equals(Constants.STATUS_DESTROYED)) {
 				return false;
 			}
 		}

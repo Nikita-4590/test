@@ -176,6 +176,8 @@ me.dapps.ui.enhanced.locale.text = function(id) {
 	var prefix = me.dapps.ui.enhanced.locale._DEBUG ? '[' + id + '] ' : '';
 
 	var message = (isSet(me.dapps.ui.enhanced.locale[id])) ? me.dapps.ui.enhanced.locale[id] : '';
+	
+	message = message.replace('"', '<br />"');
 
 	return prefix + message;
 };
