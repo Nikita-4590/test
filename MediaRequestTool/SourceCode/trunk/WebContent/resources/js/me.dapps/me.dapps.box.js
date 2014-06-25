@@ -46,13 +46,13 @@ me.dapps.box.prototype.show = function(content) {
 	// create a reference for this instance
 	var thisBox = this;
 	
-	var classNames = {
+	var classIcons = {
 		'WARNING' : 'message-icon-wrn',
 		'ERROR'  : 'message-icon-err'
 	};
 	
-	if (isSet(classNames[this.config.type])) {
-		  IMG = $('<div />').attr('class', classNames[this.config.type]);
+	if (isSet(classIcons[this.config.type])) {
+		  IMG = $('<div />').attr('class', classIcons[this.config.type]);
 	}
 	
 	if (isSet(this.config.type)) {
@@ -86,7 +86,13 @@ me.dapps.box.prototype.show = function(content) {
 	}
 
 	if (isSet(this.config.title)) {
-		var title = $('<div />').text(this.config.title).addClass('dapps-box-title');
+		var title = null;
+		if (isSet(this.config.type)) {
+			title = $('<div />').text(this.config.title).addClass('dapps-box-title-error');
+		} else {
+			title = $('<div />').text(this.config.title).addClass('dapps-box-title');
+		}
+		
 		this.header.append(title);
 	}
 
