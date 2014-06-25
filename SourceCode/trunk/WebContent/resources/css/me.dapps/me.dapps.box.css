@@ -30,6 +30,12 @@
 	content: '';
 }
 
+.dapps-box-header-error {
+	border: 1px solid rgb(163, 131, 131);
+	background-color: #F50C57;
+	padding: 10px;
+}
+
 .dapps-box-header .dapps-box-close-button {
 	text-decoration: none;
 	float: right;
@@ -49,7 +55,7 @@
 }
 
 .dapps-box-content {
-	margin: 10px;
+	margin: 20px;
 }
 
 .dapps-box-button {
@@ -65,4 +71,26 @@
 
 .dapps-box-footer {
 	margin: 5px;
+}
+
+.message-icon-wrn {
+	text-decoration: none;
+	float: left;
+	width: 33px;
+	height: 33px;
+	color: #333;
+	cursor: pointer;
+	margin-right: 10px;
+	background-image: url(img/box/icon_warning.png);
+}
+
+.message-icon-err {
+	text-decoration: none;
+	float: left;
+	width: 33px;
+	height: 33px;
+	color: #333;
+	cursor: pointer;
+	margin-right: 10px;
+	background-image: url(img/box/icon_error.png);
 }

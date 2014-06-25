@@ -84,11 +84,14 @@ function confirmDestroy(requestId) {
 			list : [ {
 				text : 'OK',
 				action : function(targetBox) {
-					if (isSet(targetBox._response) && isSet(targetBox._response.url)) {
-						//location.href = me.dapps.global['url.context'] + targetBox._response.url;
-						window.open("", "_self").close();
-					} else if (isSet(targetBox._error) && targetBox._error.status == 403) {
-						location.href = me.dapps.global['url.context'] + "/";
+					if (isSet(targetBox._response) && targetBox._response.message_id == "ERR251") {
+						location.reload();
+					} else if (isSet(targetBox._error)) {
+						if (targetBox._error.status == 403) {
+							location.href = me.dapps.global['url.context'] + "/"; // redirect to login page
+						} else if (targetBox._error.status == 404) {
+							location.reload();
+						}
 					} else {
 						if (isSet(targetBox._parent)) {
 							targetBox._parent.close();
@@ -118,17 +121,22 @@ function confirmDestroy(requestId) {
 			targetBox.main.find('#destroy-request-form').ajaxForm({
 				dataType : 'json',
 				success : function(response) {
-
-					message = me.dapps.ui.enhanced.locale.text(response.message_id);
-					messageBox._response = response;
-					messageBox.show(message);
+					if (response.success) {
+						window.open("", "_self").close();
+					} else {
+						message = me.dapps.ui.enhanced.locale.text(response.message_id);
+						messageBox._response = response;
+						messageBox.show(message);
+					}
 				},
 				error : function(e, err) {
 					messageBox._response = null;
 					var messageId = me.dapps.global['message.destroy.general'];
 
 					if (e.status == 403) {
-						me.dapps.global['message.destroy.forbidden'];
+						messageId = me.dapps.global['message.destroy.forbidden'];
+					} else if (e.status == 404) {
+						messageId = me.dapps.global['message.destroy.not_found'];
 					}
 
 					message = me.dapps.ui.enhanced.locale.text(messageId);
@@ -146,9 +154,9 @@ function confirmDestroy(requestId) {
 			var messageId = me.dapps.global['message.destroy.general'];
 
 			if (e.status == 403) {
-				me.dapps.global['message.destroy.forbidden'];
+				messageId = me.dapps.global['message.destroy.forbidden'];
 			} else if (e.status == 404) {
-				me.dapps.global['message.destroy.not_found'];
+				messageId = me.dapps.global['message.destroy.not_found'];
 			}
 
 			message = me.dapps.ui.enhanced.locale.text(messageId);
