@@ -34,6 +34,31 @@
 	width: 60%;
 }
 
+.form-col-left-box {
+	margin-right: 71%;
+}
+
+.form-col-right-box {
+	float: right;
+	width: 70%;
+}
+
+.form-col-left-special {
+	margin-left: 45px;
+	float: left; 
+	width: 200px; 
+}
+
+.form-col-right-special {
+	float: right; 
+	width: 450px; 
+}
+
+.form-col-middle-special {
+	margin-left: 200px;
+	margin-right: 450px; 
+}
+
 .form-input-note {
 	color: #999;
 	font-size: 11px;
