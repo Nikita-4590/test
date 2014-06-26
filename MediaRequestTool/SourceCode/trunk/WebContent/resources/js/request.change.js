@@ -7,6 +7,8 @@ function confirmChange(requestId) {
 		if (isUnset(me.dapps.global['request.assign_director_warning_box'])) {
 			me.dapps.global['request.assign_director_warning_box'] = new me.dapps.box({
 				auto_hide : true,
+				title : '!!! 警告  !!!',
+				type : 'ERROR',
 				close_button : false,
 				button : {
 					align : 'right',
@@ -125,8 +127,9 @@ function confirmChange(requestId) {
 
 		var messageBox = new me.dapps.box({
 			auto_hide : false,
-			close_button : false,
+			title: '!!! 警告  !!!',
 			type: 'ERROR',
+			close_button : false,
 			button : {
 				align : 'right',
 				list : [ {

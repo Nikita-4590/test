@@ -165,8 +165,6 @@ public class RelationRequestController extends BaseController {
 				model.addAttribute("view", Constants.STATUS_FINISHED);
 			} else {
 				throw new ResourceNotFoundException();
-				//return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.MSG_INVALID_STATUS_DATA));
-				// TODO: bo loi tren. Can check ky them cac Exception
 			}
 
 			if (nextStatus != null) {
@@ -243,7 +241,7 @@ public class RelationRequestController extends BaseController {
 				}
 			} else if (currentStatus.equals(Constants.STATUS_OK)) {
 				String directorId = httpRequest.getParameter("new_director_id");
-				if (!validateDirectorId(directorId)) {
+				if (!validateNewDirectorId(directorId)) {
 					throw new ResourceNotFoundException();
 				} else {
 					int newDirectorId = Integer.parseInt(directorId);
@@ -309,7 +307,7 @@ public class RelationRequestController extends BaseController {
 					messageId = "ERR151";
 				} else if (currentStatus.equals(Constants.STATUS_NG) && nextStatus.equals(Constants.STATUS_CONFIRMING) && !validateComment(comment)) {
 					messageId = "ERR151";
-				} else if (currentStatus.equals(Constants.STATUS_OK) && !validateDirectorId(directorId)) {
+				} else if (currentStatus.equals(Constants.STATUS_OK) && !validateNewDirectorId(directorId)) {
 					messageId = "ERR151";
 				} else if (currentStatus.equals(Constants.STATUS_PROCESSING) && !validateCrawlDate(crawlDate)) {
 					messageId = "ERR151";
@@ -428,7 +426,7 @@ public class RelationRequestController extends BaseController {
 		}
 	}
 
-	private boolean validateDirectorId(String directorId) {
+	private boolean validateNewDirectorId(String directorId) {
 		if (Validator.isNullOrEmpty(directorId)) {
 			return false;
 		} else {
@@ -478,6 +476,7 @@ public class RelationRequestController extends BaseController {
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-update-director", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
+			int currentDirectorIdOnView = Integer.parseInt(httpRequest.getParameter("current_director_id"));
 			String directorId = httpRequest.getParameter("new_director_id");
 
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
@@ -487,7 +486,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateDirectorId(directorId) || !request.getStatus().equals(Constants.STATUS_PROCESSING)) {
+			if (request == null || (currentDirectorIdOnView != request.getAssign_user_id()) || !validateNewDirectorId(directorId) || !request.getStatus().equals(Constants.STATUS_PROCESSING)) {
 				throw new ResourceNotFoundException();
 			}
 
@@ -516,6 +515,7 @@ public class RelationRequestController extends BaseController {
 
 		try {
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
+			int currentDirectorIdOnView = Integer.parseInt(httpRequest.getParameter("current_director_id"));
 			String directorId = httpRequest.getParameter("new_director_id");
 
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
@@ -525,7 +525,7 @@ public class RelationRequestController extends BaseController {
 
 			RelationRequest request = requestDAL.get(requestId);
 
-			if (request == null || !validateDirectorId(directorId) || !request.getStatus().equals(Constants.STATUS_PROCESSING)) {
+			if (request == null || (currentDirectorIdOnView != request.getAssign_user_id()) || !validateNewDirectorId(directorId) || !request.getStatus().equals(Constants.STATUS_PROCESSING)) {
 				// inform error message about invalid data
 				messageId = "ERR201";
 			} else {

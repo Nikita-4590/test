@@ -205,7 +205,7 @@
             request.status,
             request.assign_user_id,
             u.user_name AS assign_user_name,
-            request.created_at,
+            to_char(request.created_at, 'YYYY年MM月DD日 HH24:MI'::text) AS created_at,
             request.updated_at,
             company.company_name,
             media.media_name,

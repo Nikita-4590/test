@@ -52,25 +52,47 @@ me.dapps.box.prototype.show = function(content) {
 	};
 	
 	if (isSet(classIcons[this.config.type])) {
-		  IMG = $('<div />').attr('class', classIcons[this.config.type]);
+		  ICONS = $('<div />').attr('class', classIcons[this.config.type]);
 	}
 	
 	if (isSet(this.config.type)) {
 		// create content have image
-		this.content = $('<div />').attr('class', 'dapps-box-content').append(IMG).append(content);
+		this.content = $('<div />').attr('class', 'dapps-box-content').append(ICONS).append(content);
 	} else {
 		// create content don't have image
 		this.content = $('<div />').attr('class', 'dapps-box-content').append(content);
 	}
+	
+	var classMains = {
+		'WARNING' : 'dapps-box-main-wrn',
+		'ERROR'  : 'dapps-box-main-err'
+	};
+			
+	if (isSet(classMains[this.config.type])) {
+		MAINS = $('<div />').attr('id', this.id).attr('class', classMains[this.config.type]).attr('tabindex', -1);
+	}
+	
+	if (isSet(this.config.type)) {
+		this.main = MAINS;
+	} else {
+		this.main = $('<div />').attr('id', this.id).attr('class', 'dapps-box-main').attr('tabindex', -1);
+	}
 
-
-	this.main = $('<div />').attr('id', this.id).attr('class', 'dapps-box-main').attr('tabindex', -1);
 	this.main.css({
 		'z-index' : this.config.z_index
 	});
 	
+	var classHeaders = {
+		'WARNING' : 'dapps-box-header-wrn',
+		'ERROR'  : 'dapps-box-header-err'
+	};
+		
+	if (isSet(classHeaders[this.config.type])) {
+		HEADERS = $('<div />').attr('class', classHeaders[this.config.type]);
+	}
+	
 	if (isSet(this.config.type)) {
-		this.header = $('<div />').attr('class', 'dapps-box-header-error');
+		this.header = HEADERS;
 	} else {
 		this.header = $('<div />').attr('class', 'dapps-box-header');
 	}
@@ -84,11 +106,20 @@ me.dapps.box.prototype.show = function(content) {
 
 		this.header.append(closeButton);
 	}
+	
+	var classTitles = {
+		'WARNING' : 'dapps-box-title-wrn',
+		'ERROR'  : 'dapps-box-title-err'
+	};
+			
+	if (isSet(classTitles[this.config.type])) {
+		TITLES = $('<div />').text(this.config.title).addClass(classTitles[this.config.type]);
+	}
 
 	if (isSet(this.config.title)) {
 		var title = null;
 		if (isSet(this.config.type)) {
-			title = $('<div />').text(this.config.title).addClass('dapps-box-title-error');
+			title = TITLES;
 		} else {
 			title = $('<div />').text(this.config.title).addClass('dapps-box-title');
 		}
