@@ -12,6 +12,7 @@ function() {
 		paging : true,
 		use_hashes : false,
 		sort_data : me.dapps.global['data_binding'],
+		default_sort : 'status',
 		no_data_message : me.dapps.ui.enhanced.locale
 				.text('INF100'),
 		url_patterns : {
@@ -87,6 +88,7 @@ function() {
 		e.preventDefault();
 		status = $("#status_select_option option:selected").val();
 		searchParam = $('#input_text_search').val();
+		table.config.default_sort = 'created_at';
 		table.search([ {
 			query_type : 'all',
 			query_name : 'searchText',

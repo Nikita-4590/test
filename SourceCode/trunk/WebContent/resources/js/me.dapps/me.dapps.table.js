@@ -15,7 +15,7 @@ if (isSet($)) {
 
 // sort control
 me.dapps.sort_control = function(table, header, mapping,_sortable) {
-	
+	table.setDefaultSort();
 	this.table = table;	
 	this.header = $(header);	
 	this.mapping = mapping;
@@ -77,6 +77,7 @@ me.dapps.table = function(config) {
 		row_clicked : undefined,
 		post_load : undefined,
 		pre_load : undefined,
+		default_sort : undefined
 	};
 
 	for (key in this.default_config) {
@@ -640,6 +641,7 @@ me.dapps.table.prototype.paging = function(page) {
 	this.loadData();
 };
 me.dapps.table.prototype.search = function(queries) {
+	this.setDefaultSort();
 	if (isArray(queries)) {
 		this.queries = queries;
 		if (this.config.paging || (!this.config.paging && !this.is_loaded)) {
@@ -770,4 +772,12 @@ me.dapps.table.prototype.appendParametersToUrl = function(hashes) {
 		// store hashes
 		this.hashes = window.location.href;
 	}
+};
+me.dapps.table.prototype.setDefaultSort = function() {
+	var $this = this;
+	if(isSet($this.config.default_sort)) {
+		$this.sort = $this.config.default_sort;
+		$this.sort_direction = 'desc';
+	}
+	
 };
