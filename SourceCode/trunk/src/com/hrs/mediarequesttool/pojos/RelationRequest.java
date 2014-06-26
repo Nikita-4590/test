@@ -23,6 +23,8 @@ public class RelationRequest {
 	private String updated_at;
 	private String company_name;
 	private String media_name;
+	private String label_login_id_1;
+	private String label_login_id_2;
 	private String status_description;
 	private String crawl_date_to_display;
 	
@@ -202,6 +204,22 @@ public class RelationRequest {
 		this.media_name = media_name;
 	}
 	
+	public String getLabel_login_id_1() {
+		return label_login_id_1;
+	}
+
+	public void setLabel_login_id_1(String label_login_id_1) {
+		this.label_login_id_1 = label_login_id_1;
+	}
+
+	public String getLabel_login_id_2() {
+		return label_login_id_2;
+	}
+
+	public void setLabel_login_id_2(String label_login_id_2) {
+		this.label_login_id_2 = label_login_id_2;
+	}
+
 	public String getStatus_description() {
 		return status_description;
 	}
