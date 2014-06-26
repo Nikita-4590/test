@@ -10,7 +10,6 @@ me.dapps.ui.enhanced.locale['ERR051'] = 'メールアドレスが無効になっ
 me.dapps.ui.enhanced.locale['INF100'] = '該当データが存在しません。';
 me.dapps.ui.enhanced.locale['ERR100'] = 'エラーが発生（セッションの切断）しリクエストが完了できませんでした。<br />「OK」ボタンをクリックすると、ログイン画面に移動します。';
 me.dapps.ui.enhanced.locale['ERR101'] = 'エラーが発生（予期せぬエラー）しリクエストが完了できませんでした。<br />システム担当者に連絡してください。';
-me.dapps.ui.enhanced.locale['ERR102'] = 'エラーが発生（データベース接続失敗）しリクエストが完了できませんでした。<br />システム担当者に連絡してください。';
 me.dapps.ui.enhanced.locale['WRN151'] = 'コメントを入力してください。';
 me.dapps.ui.enhanced.locale['ERR150'] = 'エラーが発生（データベース接続失敗）しリクエストが完了できませんでした。<br />システム担当者に連絡してください。';
 me.dapps.ui.enhanced.locale['ERR151'] = 'エラーが発生（他のユーザによりレコードが更新された）しリクエストが完了できませんでした。<br />「OK」ボタンをクリックすると、ページを自動的に再読み込みさせます。';
