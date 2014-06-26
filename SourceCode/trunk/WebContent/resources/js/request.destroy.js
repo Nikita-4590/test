@@ -78,6 +78,8 @@ function confirmDestroy(requestId) {
 
 	var messageBox = new me.dapps.box({
 		auto_hide : false,
+		title: '!!! 警告  !!!',
+		type: 'ERROR',
 		close_button : false,
 		button : {
 			align : 'right',

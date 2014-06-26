@@ -14,8 +14,6 @@ public class Constants {
 	public final static String STATUS_FINISHED = "FINISHED";
 	public final static String STATUS_DESTROYED = "DESTROYED";
 	
-	public final static String MSG_INVALID_STATUS_DATA = "Invalid Status (DATA CORRUPT)";
-	
 	public final static String[] NEXT_CONFIRMING = {"OK", "NG"};
 	public final static String[] NEXT_NG = {"CONFIRMING", "DELETED"};
 	

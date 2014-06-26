@@ -42,6 +42,8 @@ function() {
 				if (isUnset(me.dapps.global['relation_request.list_error_box'])) {
 					me.dapps.global['relation_request.list_error_box'] = new me.dapps.box({
 						auto_hide : false,
+						title : '!!! 警告  !!!',
+						type : 'ERROR',
 						close_button : false,
 						button : {
 							align : 'right',

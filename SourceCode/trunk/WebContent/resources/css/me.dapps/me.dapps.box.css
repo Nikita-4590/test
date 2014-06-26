@@ -10,7 +10,27 @@
 	top: 0;
 	left: 0;
 	position: absolute;
-	border: 1px solid black;
+	border: 2px solid black;
+	box-shadow: 0px 0px 30px 2px;
+	background-color: #fff;
+	padding-bottom: 10px;
+}
+
+.dapps-box-main-err {
+	top: 0;
+	left: 0;
+	position: absolute;
+	border: 2px solid red;
+	box-shadow: 0px 0px 30px 2px;
+	background-color: #fff;
+	padding-bottom: 10px;
+}
+
+.dapps-box-main-wrn {
+	top: 0;
+	left: 0;
+	position: absolute;
+	border: 2px solid yellow;
 	box-shadow: 0px 0px 30px 2px;
 	background-color: #fff;
 	padding-bottom: 10px;
@@ -30,9 +50,15 @@
 	content: '';
 }
 
-.dapps-box-header-error {
+.dapps-box-header-err {
+	border-bottom: 1px solid rgb(163, 131, 131);
+	background-color: rgb(255, 0, 0);
+	padding: 10px;
+}
+
+.dapps-box-header-wrn {
 	border: 1px solid rgb(163, 131, 131);
-	background-color: #F50C57;
+	background-color: #C7AC1C;
 	padding: 10px;
 }
 
@@ -54,9 +80,17 @@
 	line-height: 20px;
 }
 
-.dapps-box-title-error {
+.dapps-box-title-err {
 	font-weight: bold;
-	font-size: 15px;
+	font-size: 16px;
+	line-height: 5px;
+	text-align: center;
+	color: white;
+}
+
+.dapps-box-title-wrn {
+	font-weight: bold;
+	font-size: 16px;
 	line-height: 5px;
 	text-align: center;
 	color: white;
