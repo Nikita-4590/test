@@ -3,33 +3,45 @@
 <div class="page" id="request-detail-page">
 	<div id="request-form-top" class="form">
 		<div class="form-line">
-			<div class="right-side">
-				<label id="request-id">${request.relation_request_id}</label>
-			</div>
-			<div class="left-side">
+			<div class="form-col-left-special">
 				<label>依頼ID</label>
+			</div>
+			<div class="form-col-right-special">
+				<label>受付日：　${request.created_at}</label>
+			</div>
+			<div class="form-col-middle-special">
+				<label id="request-id">${request.relation_request_id}</label>
 			</div>
 		</div>
 		
 		<div class="form-line">
-			<div class="right-side">
-				<label id="label-current-status">${request.status_description}</label>
-			</div>
-			<div class="left-side">
+			<div class="form-col-left-special">
 				<label>現在のステータス</label>
+			</div>
+			<div class="form-col-right-special">
+			</div>
+			<div class="form-col-middle-special">
+				<label id="label-current-status">${request.status_description}</label>
 			</div>
 		</div>
 		
 		<#if view = "OK" || view = "PROCESSING" || view = "FINISHED">
 			<div class="form-line">
-				<div class="right-side">
+				<div class="form-col-left-special">
+					<label>担当ディレクター</label>
+				</div>
+				<div class="form-col-right-special">
+					<#if view = "OK">
+						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">担当ディレクターを依頼</a>
+					</#if>
+				</div>
+				<div class="form-col-middle-special">
 					<#if view = "OK">
 						<select name="new_director" id="select-new-director">
 							<#list directors as director>
 								<option value="${director.id}">${director.user_name}</option>
 							</#list>
 						</select>
-						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">担当ディレクターを依頼</a>
 					<#else>
 						<label><b>${request.assign_user_name!""}</b></label>
 						<input type="hidden" id="current-director" value="${request.assign_user_id!""}" />
@@ -39,47 +51,56 @@
 						</#if>
 					</#if>
 				</div>
-				<div class="left-side">
-					<label>担当ディレクター</label>
-				</div>
 			</div>
 			
 			<#if view = "PROCESSING">
 				<div class="form-line" id="show-more" style="display: none;">
-					<div class="right-side">
+					<div class="form-col-left-special">
+						<label>新規担当ディレクター</label>
+					</div>
+					<div class="form-col-right-special">
+						<a href="#" class="button-link" id="update-director" onclick="confirmUpdateDirector(${request.relation_request_id}); return false;">変更する</a>
+					</div>
+					<div class="form-col-middle-special">
 						<select name="update_director" id="select-update-director">
 							<#list directors as director>
 								<option value="${director.id}">${director.user_name}</option>
 							</#list>
 						</select>
-						<a href="#" class="button-link" id="update-director" onclick="confirmUpdateDirector(${request.relation_request_id}); return false;">変更する</a>
-					</div>
-					<div class="left-side">
-						<label>新規担当ディレクター</label>
 					</div>
 				</div>
 			</#if>
 		</#if>
 		
 		<div class="form-line">
-			<div class="right-side">
+			<div class="form-col-left-special">
+				<label for="crawl_date">連携開始日</label>
+			</div>
+			<div class="form-col-right-special">
+				<#if view = "PROCESSING">
+					<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">連携開始日を登録</a>
+				</#if>
+			</div>
+			<div class="form-col-middle-special">
 				<#if view = "PROCESSING">
 					<input type="text" id="crawl-date" name="crawl_date" dapps-ui-datepicker="{'input':{'format':'yy-mm-dd'},'output':{'format':'yy年mm月dd日'}}" />
 				<#elseif view = "FINISHED"> <label><b>${request.crawl_date_to_display!""}</b></label>
 				<#else> <label><b>未確定</b></label>		
 				</#if>
-				<#if view = "PROCESSING">
-					<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">連携開始日を登録</a>
-				</#if>
-			</div>
-			<div class="left-side">
-				<label for="crawl_date">連携開始日</label>
 			</div>
 		</div>	
 		
 		<#if view != "FINISHED">
 			<div class="form-line">
-				<div class="right-side">
+				<div class="form-col-left-special">
+					<label><#if view = "CONFIRMING">接続確認の結果<#else>次のステータス</#if></label>
+				</div>
+				<div class="form-col-right-special">
+					<#if view = "NEW" || view = "CONFIRMING" || view = "NG">
+						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;"><#if view = "NEW">依頼を受け付ける<#else>変更する</#if></a>
+					</#if>	
+				</div>
+				<div class="form-col-middle-special">
 					<#if view = "CONFIRMING" || view= "NG">
 						<select name="select_next_status" id="select-next-status">
 							<#list listNextStatus as status>
@@ -91,12 +112,6 @@
 					<#elseif view = "NEW" || view = "OK" || view = "PROCESSING">
 						<label id="label-next-status">${nextStatus.description}</label>
 					</#if>
-					<#if view = "NEW" || view = "CONFIRMING" || view = "NG">
-						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;"><#if view = "NEW">依頼を受け付ける<#else>変更する</#if></a>
-					</#if>	
-				</div>
-				<div class="left-side">
-					<label><#if view = "CONFIRMING">接続確認の結果<#else>次のステータス</#if></label>
 				</div>
 			</div>
 		</#if>

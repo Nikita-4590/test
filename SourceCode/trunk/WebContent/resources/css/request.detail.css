@@ -28,17 +28,12 @@
 }
 
 #change-status {
-	margin-left: 60px;
 	font-size: 14px;
 	background-image: url(../img/bg_button_orange.png);
 }
 
 #enable-change-director, #cancel-change-director {
 	margin-left: 20px;
-}
-
-#update-director {
-	margin-left: 60px;
 }
 
 #button-destroy {
@@ -54,16 +49,6 @@
 #close-button {
 	font-weight: bold;
 	height: 45px;
-}
-
-.left-side {
-	margin-right: 75%;
-	margin-left: 45px;
-}
-
-.right-side {
-	float: right;
-	width: 75%;
 }
 
 .center {
