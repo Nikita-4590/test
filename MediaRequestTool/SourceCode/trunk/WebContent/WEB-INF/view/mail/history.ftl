@@ -49,40 +49,45 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px; width: 150px;">申込者情報</td>
+			<td style="border: 1px solid black; padding: 5px; width: 150px;" rowspan="5">申込者情報</td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">企業ID</td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.company_id!""}</td>
 		</tr>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px; width: 150px;"></td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">企業名</td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.company_name!""}</td>
 		</tr>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px; width: 150px;"></td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">ご担当者名</td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.requester_name!""}</td>
 		</tr>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px; width: 150px;"></td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">ご連絡先メールアドレス</td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.requester_mail!""}</td>
 		</tr>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px; width: 150px;"></td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">ご連絡先電話番号</td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.requester_phone!""}</td>
 		</tr>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px; width: 150px;">媒体アカウント情報</td>
+			<td style="border: 1px solid black; padding: 5px; width: 150px;" <#if request.label_login_id_2??>rowspan="4"<#else>rowspan="3"</#if>>媒体アカウント情報</td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">媒体名</td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.media_name!""}</td>
 		</tr>
 		<tr>
-			<td style="border: 1px solid black; padding: 5px; width: 150px;"></td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">管理画面URL</td>
 			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.url!""}</td>
 		</tr>
+		<tr>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">${request.label_login_id_1!""}</td>
+			<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.login_id_1!""}</td>
+		</tr>
+		<#if request.label_login_id_2??>
+			<tr>
+				<td style="border: 1px solid black; padding: 5px; width: 200px; word-wrap: break-word;">${request.label_login_id_2!""}</td>
+				<td style="border: 1px solid black; padding: 5px; width: 200px; max-width: 250px; min-width: 150px; word-wrap: break-word;">${request.login_id_2!""}</td>
+			</tr>
+		</#if>
 	</tbody>
 </table>
 <br />
