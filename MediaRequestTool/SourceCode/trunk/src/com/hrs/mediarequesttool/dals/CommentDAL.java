@@ -54,8 +54,8 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 			comment.setOld_value(toJSON(oldInfo));
 			comment.setNew_value(toJSON(newInfo));
 			
-			if (newRequest.getMedia_id().equals(Constants.weban_media_id) && !Validator.isNullOrEmpty(newRequest.getLogin_id_2())) {
-				newRequest.setMedia_name(Constants.anGWS_media_name);
+			if (newRequest.getMedia_id().equals(Constants.WEBAN_MEDIA_ID) && !Validator.isNullOrEmpty(newRequest.getLogin_id_2())) {
+				newRequest.setMedia_name(Constants.ANGWS_MEDIA_NAME);
 			}
 			
 			insertComment(comment, RequestChangeInfo.class, newRequest);
