@@ -250,7 +250,7 @@
 	<h3>その他伝達事項</h3>
 	<#-- ------------------------------------------------->
 	<div id="request-comment">
-		<label><pre>${request.other_comment!""}</pre></label>
+		<label><pre style="word-wrap: break-word;">${request.other_comment!""}</pre></label>
 	</div>
 	<div class="center" id="close-button-wrapper">
 		<button id="close-button">このウィンドウを閉じる
