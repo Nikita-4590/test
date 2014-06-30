@@ -51,6 +51,15 @@
 	height: 45px;
 }
 
+#request-comment {
+	margin-top: 15px;
+	font-size: 14px;
+	width: 980px;
+	height: auto;
+	background-color: white;
+	word-break: break-all;
+}
+
 .center {
 	text-align: center;
 }

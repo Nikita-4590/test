@@ -405,7 +405,7 @@ public class RelationRequestController extends BaseController {
 		RequestChangeInfo requestChangeInfo = new RequestChangeInfo();
 		requestChangeInfo.setStatus_description(request.getStatus_description());
 		requestChangeInfo.setDirector_name(request.getAssign_user_name());
-		requestChangeInfo.setRenkei_date(request.getCrawl_date());
+		requestChangeInfo.setRenkei_date(request.getCrawl_date_to_display());
 
 		return requestChangeInfo;
 	}

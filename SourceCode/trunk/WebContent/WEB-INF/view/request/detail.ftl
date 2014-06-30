@@ -249,8 +249,8 @@
 	</div> </br>
 	<h3>その他伝達事項</h3>
 	<#-- ------------------------------------------------->
-	<div class="form-line" id="request-form-comment">
-		<span>${request.other_comment!""}</span>
+	<div id="request-comment">
+		<label><pre>${request.other_comment!""}</pre></label>
 	</div>
 	<div class="center" id="close-button-wrapper">
 		<button id="close-button">このウィンドウを閉じる
