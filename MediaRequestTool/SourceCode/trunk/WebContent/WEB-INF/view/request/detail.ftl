@@ -34,6 +34,10 @@
 					<#if view = "OK">
 						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">担当ディレクターを依頼</a>
 					</#if>
+					<#if view = "PROCESSING">
+						<a href="#"　id="enable-change-director" >担当ディレクターを変更</a>
+						<a href="#"　id="cancel-change-director" style="display: none;">担当ディレクターを変更しない</a>
+					</#if>
 				</div>
 				<div class="form-col-middle-special">
 					<#if view = "OK">
@@ -45,10 +49,6 @@
 					<#else>
 						<label><b>${request.assign_user_name!""}</b></label>
 						<input type="hidden" id="current-director" value="${request.assign_user_id!""}" />
-						<#if view = "PROCESSING">
-							<a href="#"　id="enable-change-director" >担当ディレクターを変更</a>
-							<a href="#"　id="cancel-change-director" style="display: none;">担当ディレクターを変更しない</a>
-						</#if>
 					</#if>
 				</div>
 			</div>

@@ -88,12 +88,10 @@ function confirmDestroy(requestId) {
 				action : function(targetBox) {
 					if (isSet(targetBox._response) && targetBox._response.message_id == "ERR251") {
 						location.reload();
-					} else if (isSet(targetBox._error)) {
-						if (targetBox._error.status == 403) {
-							location.href = me.dapps.global['url.context'] + "/"; // redirect to login page
-						} else if (targetBox._error.status == 404) {
-							location.reload();
-						}
+					} else if (isSet(targetBox._error) && targetBox._error.status == 403) {
+						location.href = me.dapps.global['url.context'] + "/"; // redirect to login page
+					} else if (isSet(targetBox._error) && targetBox._error.status == 404) {
+						location.reload();
 					} else {
 						if (isSet(targetBox._parent)) {
 							targetBox._parent.close();
