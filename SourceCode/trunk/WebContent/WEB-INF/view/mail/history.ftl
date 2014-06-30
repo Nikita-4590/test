@@ -82,8 +82,8 @@
 </table>
 <br />
 <span>その他伝達事項</span>
-<div id="request-comment" style="font-size: 13px;">
-	<label><pre>${request.other_comment!""}</pre></label>
+<div id="request-comment" style="font-size: 13px; width: 600px;">
+	<label><pre style="word-wrap: break-word;">${request.other_comment!""}</pre></label>
 </div>
 </#compress>
 </#escape>
