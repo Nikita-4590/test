@@ -242,7 +242,7 @@
 				<label>${request.login_password_2!""}</label>
 			</div>
 			<div class="form-col-left">
-				<label for="login_password_2">パスワード2</label>
+				<label for="login_password_2">${mediaLabel.login_password_2}</label>
 			</div>	
 		</div>
 		</#if>
