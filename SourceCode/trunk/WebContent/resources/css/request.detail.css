@@ -32,10 +32,6 @@
 	background-image: url(../img/bg_button_orange.png);
 }
 
-#enable-change-director, #cancel-change-director {
-	margin-left: 20px;
-}
-
 #button-destroy {
 	float: right;
 }
