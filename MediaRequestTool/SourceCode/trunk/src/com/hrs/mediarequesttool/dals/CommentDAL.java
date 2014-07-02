@@ -77,12 +77,15 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 			
 			mapper.insert(comment);
 			
-			Comment newComment = mapper.get(comment.getRequest_comment_id());
+			if (newRequest.getStatus().equals(Constants.STATUS_FINISHED)) {
+				// send mail
+				Comment newComment = mapper.get(comment.getRequest_comment_id());
 
-			if (newComment != null) {
-				getProperties(newComment, type);
+				if (newComment != null) {
+					getProperties(newComment, type);
 
-				HistorySender.execute(newComment, newRequest);
+					HistorySender.execute(newComment, newRequest);
+				}
 			}
 		} catch (Exception e) {
 			throw new GenericException(e);
