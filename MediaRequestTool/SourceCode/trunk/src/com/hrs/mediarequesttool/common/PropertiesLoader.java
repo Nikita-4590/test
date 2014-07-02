@@ -38,12 +38,6 @@ public class PropertiesLoader extends SpringBeanAutowiringSupport {
 	@Value("${format.datetime.output}")
 	private String outputDateFormat;
 
-	@Value("${database.username}")
-	private String dbUsername;
-
-	@Value("${database.password}")
-	private String dbPassword;
-
 	@Value("${paging.size}")
 	private String pageSize;
 	
@@ -74,21 +68,13 @@ public class PropertiesLoader extends SpringBeanAutowiringSupport {
 	@Value("${kintone.passwordkey}")
 	private String kintonePasswordKey;
 
-  public int getPageSize() {
+	public int getPageSize() {
 		try {
 			return Integer.parseInt(pageSize);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 10;
 		}
-	}
-
-	public String getDbUsername() {
-		return dbUsername;
-	}
-
-	public String getDbPassword() {
-		return dbPassword;
 	}
 
 	public String getInputDateFormat() {
