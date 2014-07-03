@@ -18,7 +18,6 @@ import com.hrs.mediarequesttool.auth.AuthProvider;
 import com.hrs.mediarequesttool.pojos.User;
 import com.hrs.mediarequesttool.common.Constants;
 import com.hrs.mediarequesttool.common.exception.GenericException;
-import com.hrs.mediarequesttool.common.validator.Validator;
 import com.hrs.mediarequesttool.mappers.CommentMapper;
 import com.hrs.mediarequesttool.pojos.Comment;
 
@@ -53,10 +52,6 @@ public class CommentDAL extends AbstractDAL<CommentMapper> {
 			comment.setComment_reason(reason);
 			comment.setOld_value(toJSON(oldInfo));
 			comment.setNew_value(toJSON(newInfo));
-			
-			if (newRequest.getMedia_id().equals(Constants.WEBAN_MEDIA_ID) && !Validator.isNullOrEmpty(newRequest.getLogin_id_2())) {
-				newRequest.setMedia_name(Constants.ANGWS_MEDIA_NAME);
-			}
 			
 			insertComment(comment, RequestChangeInfo.class, newRequest);
 		} catch (NullPointerException e) {

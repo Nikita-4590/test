@@ -179,12 +179,18 @@ public class RelationRequestController extends BaseController {
 				throw new BadRequestException();
 			}
 			
-			if (mediaLabel.getMedia_id().equals(Constants.WEBAN_MEDIA_ID) && !Validator.isNullOrEmpty(request.getLogin_id_2())) {
-				request.setMedia_name(Constants.ANGWS_MEDIA_NAME);
-				mediaLabel.setLogin_id_1(Constants.ANGWS_LOGIN_ID_1);
-				mediaLabel.setLogin_id_2(Constants.ANGWS_LOGIN_ID_2);
-				mediaLabel.setLogin_password_1(Constants.ANGWS_LOGIN_PASSWORD_1);
-				mediaLabel.setLogin_password_2(Constants.ANGWS_LOGIN_PASSWORD_2);
+			if (mediaLabel.getMedia_id().equals(Constants.WEBAN_MEDIA_ID)) {
+				if (!Validator.isNullOrEmpty(request.getLogin_id_2()) && !Validator.isNullOrEmpty(request.getLogin_password_2())) {
+					mediaLabel.setLogin_id_1(Constants.ANGWS_LOGIN_ID_1);
+					mediaLabel.setLogin_id_2(Constants.ANGWS_LOGIN_ID_2);
+					mediaLabel.setLogin_password_1(Constants.ANGWS_LOGIN_PASSWORD_1);
+					mediaLabel.setLogin_password_2(Constants.ANGWS_LOGIN_PASSWORD_2);
+				} else {
+					mediaLabel.setLogin_id_1(Constants.WEBAN_LOGIN_ID_1);
+					mediaLabel.setLogin_id_2(null);
+					mediaLabel.setLogin_password_1(Constants.WEBAN_LOGIN_PASSWORD_1);
+					mediaLabel.setLogin_password_2(null);
+				}
 			}
 
 			model.addAttribute("request", request);
