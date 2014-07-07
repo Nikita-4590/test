@@ -253,7 +253,7 @@
 		<label><pre style="word-wrap: break-word;">${request.other_comment!""}</pre></label>
 	</div>
 	<div class="center" id="close-button-wrapper">
-		<button id="close-button">このウィンドウを閉じる
+		<button id="close-button">依頼一覧へ
 		</button>
 	</div>
 </div>
