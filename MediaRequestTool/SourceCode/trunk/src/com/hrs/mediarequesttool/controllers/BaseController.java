@@ -14,9 +14,11 @@ import com.google.gson.Gson;
 import com.hrs.mediarequesttool.auth.AuthProvider;
 import com.hrs.mediarequesttool.common.Breadcrumb;
 import com.hrs.mediarequesttool.common.Formatter;
+import com.hrs.mediarequesttool.common.PasswordEncrypt;
 import com.hrs.mediarequesttool.common.exception.GenericException;
 import com.hrs.mediarequesttool.dals.DALFactory;
 import com.hrs.mediarequesttool.pojos.User;
+import java.util.Date;
 
 public abstract class BaseController {
 	protected ModelAndView view(String viewName) {
@@ -173,6 +175,21 @@ public abstract class BaseController {
 		private String[] scripts;
 		private String[] stylesheets;
 		private String pageTitle;
+	}
+	
+	public String generateHttpReqID(Object user) {
+		Date date = new Date();
+		double random = Math.random();
+		long time = date.getTime();
+		if(user instanceof User) {
+			User currentUser = (User) user;
+			String userName = currentUser.getUser_id();
+			String toGenerate = Long.toString(time) + userName + Double.toString(random);
+			return PasswordEncrypt.hashPassword(toGenerate);
+		} else {
+			String toGenerate = Long.toString(time) + Double.toString(random);
+			return PasswordEncrypt.hashPassword(toGenerate);
+		}
 	}
 	
 	public <T> T getDAL(Class<T> clazz) throws GenericException{
