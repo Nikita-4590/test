@@ -48,6 +48,9 @@ if (typeof me == 'undefined') {
 if (typeof me.dapps == 'undefined') {
 	me.dapps = new Object;
 }
+if(typeof me.lib == 'undefined') {
+	me.lib = new Object;
+}
 
 // create global variable container
 if (typeof me.dapps.global == 'undefined') {
