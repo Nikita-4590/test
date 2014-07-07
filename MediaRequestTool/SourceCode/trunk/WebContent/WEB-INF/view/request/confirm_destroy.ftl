@@ -28,5 +28,6 @@
 		</div>
 	</div>
 </form>
+    me.dapps.global['url.backtolist'] = '${formatter.url("/request/list/")}';
 </#escape>
 </#compress>

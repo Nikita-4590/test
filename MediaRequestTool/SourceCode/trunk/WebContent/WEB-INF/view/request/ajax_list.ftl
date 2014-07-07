@@ -1,7 +1,16 @@
 <@compress single_line=true>
 <#escape x as x?html>
 <#if relationRequests?? && relationRequests.list??>
-	<tbody current-page="${relationRequests.currentPage}" total-page="${relationRequests.totalPage}">
+	<tbody total-page="${relationRequests.totalPage}"
+                           <#if sort?? && direction??>
+                               sort="${sort}"
+                               current-page="${relationRequests.currentPage}"
+                               direction="${direction}"
+                           </#if>
+                           <#if searchStatus??>status_select_option="${searchStatus}"</#if>
+                           <#if searchText??>input_text_search="${searchText}"</#if>
+                           >
+	>
 	<#list relationRequests.list as relationRequest>
 	<tr row-id="${relationRequest.relation_request_id}" <#if relationRequest.status  == compare_status> class="account-disabled" </#if>>
 		<td>
