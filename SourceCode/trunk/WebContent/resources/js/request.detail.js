@@ -27,6 +27,13 @@ $(me.dapps).bind('load', function() {
 	});
 	
 	$('#close-button').click(function() {
-		window.open("", "_self").close();
+		var url = '/MediaRequestTool/request/list/';
+		ajaxPostFormSubmit(url, $('#stored_httprequestid_input').val());
 	});
+	function ajaxPostFormSubmit(url, value) {
+		var form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
+		var input = $('<input id="http_request_id" name="http_request_id" value="' + value + '"' + '>');
+		form.append(input);
+		form.submit();
+	};
 });

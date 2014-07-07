@@ -1,3 +1,9 @@
+function ajaxPostFormSubmit(url, value) {
+		var form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
+		var input = $('<input id="http_request_id" name="http_request_id" value="' + value + '"' + '>');
+		form.append(input);
+		form.submit();
+	};
 function confirmDestroy(requestId) {
 
 	if (isUnset(me.dapps.global['request.destroy_confirm_box'])) {
@@ -122,7 +128,9 @@ function confirmDestroy(requestId) {
 				dataType : 'json',
 				success : function(response) {
 					if (response.success) {
-						window.open("", "_self").close();
+						var url = me.dapps.global['url.backtolist'];
+						ajaxPostFormSubmit(url, $('#stored_httprequestid_input').val());
+						//window.open("", "_self").close();
 					} else {
 						message = me.dapps.ui.enhanced.locale.text(response.message_id);
 						messageBox._response = response;
