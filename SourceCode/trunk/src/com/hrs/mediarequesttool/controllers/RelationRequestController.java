@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -52,15 +54,29 @@ public class RelationRequestController extends BaseController {
 	public ModelAndView index(ModelMap model) {
 		return redirect("request/list/", model);
 	}
-
 	@RequestMapping("/list/")
-	public ModelAndView list(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, RedirectAttributes redirectAttributes) throws GenericException {
+	public ModelAndView list(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, RedirectAttributes redirectAttributes, HttpSession session) throws GenericException {
+		
+		/*
+		 * add function check request id
+		 * httpRequest.getAttribute(Constants.STORED_REQUEST_ID) == id of httprequest
+		 */
+		String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
+		if(httpRequestID == null || httpRequestID.equals("undefined")) {
+			httpRequestID = this.generateHttpReqID(authentication.getPrincipal());
+			model.addAttribute("httpRequestId", httpRequestID);
+			session.setAttribute(httpRequestID, new SearchObject());
+		} else {
+			model.addAttribute("httpRequestId", httpRequestID);
+		}
+		
 		ViewBuilder viewBuilder = null;
 		try {
 			StatusDAL statusDAL = getDAL(StatusDAL.class);
 			Role role = new Role(authentication.getPrincipal());
 			List<Status> listStatus = statusDAL.getAll(role.getUnReadStatus());
 			model.addAttribute("listStatus", listStatus);
+			
 			viewBuilder = getViewBuilder("request.list", model);
 			viewBuilder.setScripts("request.list.js");
 			viewBuilder.setStylesheets("request.list.css", "global.css");
@@ -72,25 +88,66 @@ public class RelationRequestController extends BaseController {
 		return view(viewBuilder);
 	}
 
-	@RequestMapping(value = "/ajax_list/", method = RequestMethod.GET)
+	@RequestMapping(value = "/ajax_list/")
 	@ResponseBody
-	public ModelAndView ajaxList(HttpServletRequest httpRequest, ModelMap model, Authentication authentication) {
+	public ModelAndView ajaxList(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, HttpSession session) {
 		try {
+			
 			String pageParam = httpRequest.getParameter("page");
 			String sortParam = httpRequest.getParameter("sort");
 			String searchParam = httpRequest.getParameter("searchText");
 			String statusParam = httpRequest.getParameter("status");
-			String directionParam = httpRequest.getParameter("sort_direction");
+			String directionParam = httpRequest.getParameter("direction");
+			String firstLoad = httpRequest.getParameter("firstload");
 			int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
 			Role role = new Role(authentication.getPrincipal());
 			PagingResult<RelationRequest> relationRequests = null;
-			if (statusParam != null || searchParam != null) {
-				relationRequests = requestDAL.getAllRecord(page, directionParam, sortParam, searchParam, statusParam, role.getPriority(), role.getUnReadStatus());
+			String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
+			if(firstLoad != null) {
+				Object search = session.getAttribute(httpRequestID);
+				SearchObject searchObject = null;
+				if(search instanceof String) {
+					searchObject =(SearchObject) GSON.fromJson(search.toString(), SearchObject.class);
+				} else {
+					searchObject =(SearchObject) search;
+				}
+				if(searchObject != null && searchObject.getDirection() != null && searchObject.getSort() != null) {
+					model.addAttribute("sort", searchObject.getSort());
+					model.addAttribute("direction", searchObject.getDirection());
+					if(searchObject.getStatus() != null && searchObject.getSearchText() != null) {
+						relationRequests = requestDAL.getAllRecord(searchObject.getPage(), searchObject.getDirection(), searchObject.getSort(), searchObject.getSearchText(), searchObject.getStatus(), role.getPriority(), role.getUnReadStatus());
+						model.addAttribute("searchText", searchObject.getSearchText());
+						model.addAttribute("searchStatus", searchObject.getStatus());
+					} else {
+						relationRequests = requestDAL.paging(searchObject.getPage(), searchObject.getDirection(), searchObject.getSort(), role.getRoles(), role.getPriority());
+					}
+				} else {
+					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority());
+				}
 			} else {
-				relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority());
+				if(httpRequestID == null) {
+					String _httpRequestID = this.generateHttpReqID(authentication.getPrincipal());
+					model.addAttribute("httpRequestId", _httpRequestID);
+				} else {
+					model.addAttribute("httpRequestId", httpRequestID);
+				}
+				SearchObject searchObject = new SearchObject();
+				if(statusParam != null || searchParam != null) {
+					searchObject.setPage(page);
+					searchObject.setDirection(directionParam);
+					searchObject.setSort(sortParam);
+					searchObject.setSearchText(searchParam);
+					searchObject.setStatus(statusParam);
+					relationRequests = requestDAL.getAllRecord(page, directionParam, sortParam, searchParam, statusParam, role.getPriority(), role.getUnReadStatus());
+				} else {
+					searchObject.setPage(page);
+					searchObject.setDirection(directionParam);
+					searchObject.setSort(sortParam);
+					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority());
+				}
+				session.setAttribute(httpRequestID, searchObject);
 			}
-
 			model.addAttribute("relationRequests", relationRequests);
 			model.addAttribute("compare_status", role.getHightLight());
 		} catch (GenericException e) {
@@ -101,11 +158,17 @@ public class RelationRequestController extends BaseController {
 		return view("request.ajax_list", model);
 	}
 
-	@RequestMapping("/view_request/{relation_request_id}/")
+	@RequestMapping(value = "/view_request/{relation_request_id}/")
+	@ResponseBody
 	public ModelAndView viewRequest(HttpServletRequest httpRequest, @PathVariable("relation_request_id") int requestId, ModelMap model, RedirectAttributes redirectAttributes) {
+		
 		ViewBuilder builder = getViewBuilder("request.detail", model);
-
+		
 		try {
+			String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
+			if(httpRequestID != null) {
+				model.addAttribute("httpRequestId", httpRequestID);
+			}
 			// get data from database
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 
@@ -210,6 +273,10 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/confirm_change/", method = RequestMethod.POST)
 	public ModelAndView confirmChange(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
+		String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
+		if(httpRequestID != null) {
+			model.addAttribute("httpRequestId", httpRequestID);
+		}
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-change", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
@@ -278,7 +345,10 @@ public class RelationRequestController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/change/", method = RequestMethod.POST)
 	public String submitChange(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-
+		String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
+		if(httpRequestID != null) {
+			model.addAttribute("httpRequestId", httpRequestID);
+		}
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
@@ -403,7 +473,7 @@ public class RelationRequestController extends BaseController {
 		//if (success) {
 			//map.put("url", "/request/list/");
 		//}
-
+		System.out.print(map);
 		return GSON.toJson(map);
 	}
 
@@ -479,6 +549,10 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/confirm_update_director/", method = RequestMethod.POST)
 	public ModelAndView confirmUpdateDirector(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
+		String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
+		if(httpRequestID != null) {
+			model.addAttribute("httpRequestId", httpRequestID);
+		}
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-update-director", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
@@ -512,7 +586,10 @@ public class RelationRequestController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/update_director/", method = RequestMethod.POST)
 	public String submitUpdateDirector(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-
+		String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
+		if(httpRequestID != null) {
+			model.addAttribute("httpRequestId", httpRequestID);
+		}
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
@@ -592,6 +669,10 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/confirm_destroy/", method = RequestMethod.POST)
 	public ModelAndView confirmDestroy(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
+		String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
+		if(httpRequestID != null) {
+			model.addAttribute("httpRequestId", httpRequestID);
+		}
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-destroy", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
@@ -619,7 +700,10 @@ public class RelationRequestController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/destroy/", method = RequestMethod.POST)
 	public String submitDestroy(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-
+		String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
+		if(httpRequestID != null) {
+			model.addAttribute("httpRequestId", httpRequestID);
+		}
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
@@ -725,5 +809,45 @@ public class RelationRequestController extends BaseController {
 		model.put("exception", exception);
 		setSplashAttributes(redirectAttributes, model);
 		return redirect("err/");
+	}
+	
+	
+	private class SearchObject {
+		private int page;
+		private String direction;
+		private String status;
+		private String searchText;
+		private String sort;
+		public int getPage() {
+			return page;
+		}
+		public void setPage(int page) {
+			this.page = page;
+		}
+		public String getDirection() {
+			return direction;
+		}
+		public void setDirection(String direction) {
+			this.direction = direction;
+		}
+		public String getStatus() {
+			return status;
+		}
+		public void setStatus(String status) {
+			this.status = status;
+		}
+		public String getSearchText() {
+			return searchText;
+		}
+		public void setSearchText(String searchText) {
+			this.searchText = searchText;
+		}
+		public String getSort() {
+			return sort;
+		}
+		public void setSort(String sort) {
+			this.sort = sort;
+		}
+		
 	}
 }
