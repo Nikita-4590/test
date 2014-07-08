@@ -36,6 +36,10 @@
 		$(this.htmlElement).removeClass('dapps-table-sort-control-asc').removeClass('dapps-table-sort-control-desc').addClass('dapps-table-sort-control-' + this.direction);
 	};
 	
+	me.lib.SortControl.prototype.cleanSortControl = function() {
+		this.direction = undefined;
+	};
+	
 	me.lib.SortControl.prototype.resetSortControl = function(sortValue) {
 		if(this.sort != sortValue) {
 			this.direction = undefined;

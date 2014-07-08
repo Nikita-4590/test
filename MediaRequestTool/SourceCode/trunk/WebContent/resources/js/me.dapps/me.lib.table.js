@@ -66,6 +66,7 @@ if (isSet($)) {
 	 * call ajax when first load or click sort, change page
 	 */
 	me.lib.table.prototype.callAjax = function(isFirstLoad) {
+		
 		var _this = this;
 		var url = _this.hashUrl(true);
 		if(isSet(isFirstLoad)) {
@@ -116,12 +117,12 @@ if (isSet($)) {
 		$(this.htmlElement).attr('style' , 'width : ' + this.config.width.toString() + '%');
 		if(this.config.use_hashes) {
 			this.encodeUrl();
-		} 
-		
+		}
 		this.callAjax(true);
 		var thead = $(this.table).find('thead')[0];
 		this.removeHeader();
 		this.createHeader(thead);
+		
 	};
 	
 	/*
@@ -153,6 +154,7 @@ if (isSet($)) {
 		var body = new me.lib.TableBody();
 		this.appendChild(body);
 		body.createBodyFromHTML(response, this);
+		body.restoreDataSearch(response, this.config.store_data);
 		this.body = body;
 		this.localChildrenNode = this.body.children;
 	};
@@ -283,6 +285,8 @@ if (isSet($)) {
 	 */
 	me.lib.table.prototype.search = function(searchParams) {
 		this.page = 1;
+		this.sort = this.config.default_sort;
+		this.direction = 'desc';
 		if(this.config.paging) {
 			this.head.reloadSortControls();
 			this.setDataSearch(searchParams);
