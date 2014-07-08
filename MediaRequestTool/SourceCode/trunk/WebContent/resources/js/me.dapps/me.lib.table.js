@@ -113,15 +113,15 @@ if (isSet($)) {
 		$(this.htmlElement).attr('me-dapps-table', this.id);
 		this.cleanFormSearch();
 		this.applyCss('dapps-table-main');
-		$(this.htmlElement).attr('style' , 'width : ' + this.config.width + '%');
+		$(this.htmlElement).attr('style' , 'width : ' + this.config.width.toString() + '%');
 		if(this.config.use_hashes) {
 			this.encodeUrl();
 		} 
 		
+		this.callAjax(true);
 		var thead = $(this.table).find('thead')[0];
 		this.removeHeader();
 		this.createHeader(thead);
-		this.callAjax(true);
 	};
 	
 	/*

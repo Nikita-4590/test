@@ -11,7 +11,7 @@ function() {
 		form.submit();
 	};
 	table = $('#request-ajax-table').table({
-		width : '100%',
+		width : '100',
 		select_row : false,
 		sortable : true,
 		paging : true,
