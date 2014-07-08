@@ -63,7 +63,6 @@
 
 	me.lib.TableBody.prototype.createBodyFromHTML = function(tbodyHTML) {
 		var _this = this;
-		_this.restoreDataSearch(tbodyHTML, _this.$parent.config.store_data);
 		var children = $(tbodyHTML).find('tr');
 		if(children.length > 0) {
 			for(var index = 0; index < children.length; index++) {

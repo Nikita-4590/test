@@ -85,12 +85,15 @@
 				var divChildren = rowChildren.children[indexRow].children;
 				for(var divIndex = 0; divIndex < divChildren.length; divIndex++) {
 					if(isFunction(divChildren[divIndex].reloadSort)) {
+						divChildren[divIndex].cleanSortControl();
 						divChildren[divIndex].reloadSort(_this.$parent.config['default_sort']);
 					}
 				}
 			}
 		}
 	};
+	
+	
 	
 	me.lib.TableHeader.prototype.reloadSortAfterReloadBody = function() {
 		var _this = this;
