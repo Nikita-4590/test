@@ -106,12 +106,7 @@ public class RelationRequestController extends BaseController {
 			String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
 			if(firstLoad != null) {
 				Object search = session.getAttribute(httpRequestID);
-				SearchObject searchObject = null;
-				if(search instanceof String) {
-					searchObject =(SearchObject) GSON.fromJson(search.toString(), SearchObject.class);
-				} else {
-					searchObject =(SearchObject) search;
-				}
+				SearchObject searchObject =(SearchObject) search;
 				if(searchObject != null && searchObject.getDirection() != null && searchObject.getSort() != null) {
 					model.addAttribute("sort", searchObject.getSort());
 					model.addAttribute("direction", searchObject.getDirection());
@@ -273,10 +268,7 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/confirm_change/", method = RequestMethod.POST)
 	public ModelAndView confirmChange(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
-		String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
-		if(httpRequestID != null) {
-			model.addAttribute("httpRequestId", httpRequestID);
-		}
+		
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-change", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
@@ -345,10 +337,7 @@ public class RelationRequestController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/change/", method = RequestMethod.POST)
 	public String submitChange(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-		String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
-		if(httpRequestID != null) {
-			model.addAttribute("httpRequestId", httpRequestID);
-		}
+		
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
@@ -473,7 +462,6 @@ public class RelationRequestController extends BaseController {
 		//if (success) {
 			//map.put("url", "/request/list/");
 		//}
-		System.out.print(map);
 		return GSON.toJson(map);
 	}
 
@@ -549,10 +537,7 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/confirm_update_director/", method = RequestMethod.POST)
 	public ModelAndView confirmUpdateDirector(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
-		String httpRequestID = httpRequest.getParameter(Constants.STORED_REQUEST_ID);
-		if(httpRequestID != null) {
-			model.addAttribute("httpRequestId", httpRequestID);
-		}
+		
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-update-director", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
