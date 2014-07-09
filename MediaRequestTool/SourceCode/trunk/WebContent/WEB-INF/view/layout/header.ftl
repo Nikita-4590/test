@@ -3,7 +3,7 @@
 </div>
 <div id="header-line" class="clearfix">
     <#if httpRequestId??>
-        <form id="http_request_id" type="submit" method="POST" action="http://localhost:8080/MediaRequestTool/request/view_request/204/">
+        <form id="http_request_id" type="submit" method="POST">
             <input type="hidden" id="stored_httprequestid_input" name="stored_httprequestid_input" value="${httpRequestId}">
         </form>
     </#if>

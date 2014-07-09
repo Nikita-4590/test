@@ -26,6 +26,7 @@
 					} else if(this.name == 'current-page') {
 						_this.$parent.page = parseInt($(tbody).attr('current-page')) + 1;
 					} else if(this.name == 'sort') {
+						_this.$parent.head.reloadSortControls();
 						_this.$parent.sort = $(tbody).attr('sort');
 						if(isSet(_this.$parent.config.default_sort)) {
 							_checkSort = true;

@@ -96,7 +96,7 @@ function() {
 		e.preventDefault();
 		status = $("#status_select_option option:selected").val();
 		searchParam = $('#input_text_search').val();
-		table.config.default_sort = 'created_at';
+		table.setDefaultSort('created_at');
 		table.search([ {
 			query_name : 'searchText',
 			query_value : searchParam

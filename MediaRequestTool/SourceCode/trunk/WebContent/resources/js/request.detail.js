@@ -27,7 +27,7 @@ $(me.dapps).bind('load', function() {
 	});
 	
 	$('#close-button').click(function() {
-		var url = '/MediaRequestTool/request/list/';
+		var url = me.dapps.global['url.backtolist'];
 		ajaxPostFormSubmit(url, $('#stored_httprequestid_input').val());
 	});
 	function ajaxPostFormSubmit(url, value) {

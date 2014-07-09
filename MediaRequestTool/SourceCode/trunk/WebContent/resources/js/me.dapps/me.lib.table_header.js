@@ -86,7 +86,7 @@
 				for(var divIndex = 0; divIndex < divChildren.length; divIndex++) {
 					if(isFunction(divChildren[divIndex].reloadSort)) {
 						divChildren[divIndex].cleanSortControl();
-						divChildren[divIndex].reloadSort(_this.$parent.config['default_sort']);
+						divChildren[divIndex].reloadSort(_this.$parent.sort);
 					}
 				}
 			}
