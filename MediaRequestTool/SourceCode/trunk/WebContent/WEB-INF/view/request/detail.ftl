@@ -259,7 +259,7 @@
 </div>
 
 <script type="text/javascript">
-    me.dapps.global['url.backtolist'] = '${formatter.url("/request/list/")}';
+    me.dapps.global['url.back_to_list'] = '${formatter.url("/request/list/")}';
 	me.dapps.global['url.context'] = '${formatter.url("")}';
 	me.dapps.global['url.confirm_change'] = '${formatter.url("/request/confirm_change/?ajax")}';
 	me.dapps.global['url.confirm_update_director'] = '${formatter.url("/request/confirm_update_director/?ajax")}';
@@ -275,6 +275,6 @@
 	me.dapps.global['message.destroy.not_found'] = 'ERR251';
 	me.dapps.global['message.destroy.forbidden'] = 'ERR252';
 	me.dapps.global['message.destroy.general'] = 'ERR253';
-</script>				
+</script>
 </#escape>
 </#compress>
