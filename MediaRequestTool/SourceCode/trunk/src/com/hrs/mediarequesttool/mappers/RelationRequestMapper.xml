@@ -20,10 +20,7 @@
                </if>
                <if test="priority != null and priority == 'media_checker'">
                  CASE
-                    WHEN status = 'NEW' THEN 5
-                    WHEN status = 'CONFIRMING' THEN 4
-                    WHEN status = 'NG' THEN 3
-                    WHEN status = 'OK' THEN 2 
+                    WHEN status = 'NEW' THEN 2
                     WHEN status = 'PROCESSING' THEN 1 END
                </if>
                ${direction},
@@ -37,7 +34,7 @@
             <if test="direction != 'desc' and direction != 'DESC'">
                created_at DESC,
             </if>
-            relation_request_id ${direction}
+            relation_request_id ASC
        </if>
        <if test="sort == null or direction == null">
                <if test="priority != null and priority == 'director'">
@@ -47,15 +44,12 @@
                </if>
                <if test="priority != null and priority == 'media_checker'">
                  CASE
-                    WHEN status = 'NEW' THEN 5
-                    WHEN status = 'CONFIRMING' THEN 4
-                    WHEN status = 'NG' THEN 3
-                    WHEN status = 'OK' THEN 2 
+                    WHEN status = 'NEW' THEN 2
                     WHEN status = 'PROCESSING' THEN 1 END
                </if>
                DESC,
              created_at ASC,
-             relation_request_id DESC
+             relation_request_id ASC
        </if>
        LIMIT #{page.limit} OFFSET #{page.offset}
     </select>
@@ -161,21 +155,22 @@
             <if test="sort != null and direction != null">
                 <if test="sort != 'status'">
                     ${sort} ${direction},
+                    CASE 
+                    WHEN status = 'NEW' THEN 3
+                    WHEN status = 'PROCESSING' THEN 2
+                    WHEN status = 'FINISHED' THEN 1 END DESC,
                 </if>
                 <if test="sort == 'status'">
                  CASE 
-                    WHEN status = 'NEW' THEN 6
-                    WHEN status = 'CONFIRMING' THEN 5
-                    WHEN status = 'NG' THEN 4
-                    WHEN status = 'OK' THEN 3
+                    WHEN status = 'NEW' THEN 3
                     WHEN status = 'PROCESSING' THEN 2
                     WHEN status = 'FINISHED' THEN 1 END ${direction},
                 </if>
-                created_at ${direction},
-                relation_request_id ${direction},
+                created_at DESC,
+                relation_request_id DESC
             </if>
                
-            <if test="sort == null or direction != null">
+            <if test="sort == null or direction == null">
                 created_at DESC,
                 relation_request_id DESC
             </if>

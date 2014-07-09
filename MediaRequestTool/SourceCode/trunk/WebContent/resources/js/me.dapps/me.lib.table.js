@@ -37,7 +37,7 @@ if (isSet($)) {
 			pre_load : undefined,
 			default_sort : undefined,
 			method : 'get',
-			http_request_id : undefined
+			flow_id : undefined
 		};
 		for (key in this.default_config) {
 			if (isUnset(this.config[key])) {
@@ -73,8 +73,8 @@ if (isSet($)) {
 			url += '&firstload=true';
 		}
 		if(_this.config.method.toLowerCase() == 'post') {
-			if(isSet($('#' + _this.config.http_request_id).val())) {
-				url += '&http_request_id=' + $('#' + _this.config.http_request_id).val(); 
+			if(isSet($('#' + _this.config.flow_id).val())) {
+				url += '&flow_id=' + $('#' + _this.config.flow_id).val();
 			}
 		}
 		$.ajax({
@@ -82,12 +82,12 @@ if (isSet($)) {
 			type : 'get',
 			contentType : "application/x-www-form-urlencoded; charset=utf-8",
 			success : function(response) {
-				if(isSet(isFirstLoad)) {
+				if(isFirstLoad) {
 					var thead = $(_this.table).find('thead')[0];
 					_this.removeHeader();
 					_this.createHeader(thead);
-					_this.tableProcess($.trim(response));
 				}
+				_this.tableProcess($.trim(response));
 			},
 			error : function(e) {
 				if (isFunction(_this.config.post_load)) {

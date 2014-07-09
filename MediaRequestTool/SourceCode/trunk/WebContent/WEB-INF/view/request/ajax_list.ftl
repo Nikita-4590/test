@@ -12,7 +12,7 @@
                            >
 	>
 	<#list relationRequests.list as relationRequest>
-	<tr row-id="${relationRequest.relation_request_id}" <#if relationRequest.status  == compare_status> class="account-disabled" </#if>>
+	<tr row-id="${relationRequest.relation_request_id}" <#if relationRequest.status  == compare_status && currentUser == relationRequest.assign_user_id && isDirector == true || relationRequest.status  == compare_status && isDirector == false> class="account-disabled" </#if>>
 		<td>
 		    ${relationRequest.status_description!"－"}
 		</td>

@@ -6,7 +6,7 @@ $(me.dapps).bind(
 function() {
 	function ajaxPostFormSubmit(url, value) {
 		var form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
-		var input = $('<input id="http_request_id" name="http_request_id" value="' + value + '"' + '>');
+		var input = $('<input id="flow_id" name="flow_id" value="' + value + '"' + '>');
 		form.append(input);
 		form.submit();
 	};
@@ -35,7 +35,7 @@ function() {
 			'id' : 'status_select_option',
 			'query_name' : 'status'
 		}],
-		http_request_id : 'stored_httprequestid_input',
+		flow_id : 'stored_httprequestid_input',
 		isResetSortAfterSearch : true,
 		post_load : function(targetTable, e) {
 			if (isSet(e) && e.status != 200) {
