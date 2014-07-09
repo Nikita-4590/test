@@ -53,6 +53,9 @@
 				}
 			});
 		});
+		if(isUnset(_this.$parent.totalPage)) {
+			_this.$parent.totalPage = 1;
+		}
 		if(_checkDirection && _checkSort) {
 			_this.$parent.head.reloadSortAfterReloadBody();
 		}

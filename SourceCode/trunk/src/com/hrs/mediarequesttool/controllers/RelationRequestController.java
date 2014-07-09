@@ -61,13 +61,13 @@ public class RelationRequestController extends BaseController {
 		 * add function check request id
 		 * httpRequest.getAttribute(Constants.STORED_REQUEST_ID) == id of httprequest
 		 */
-		String flowID = httpRequest.getParameter(Constants.FOLOW_ID);
-		if(flowID == null || flowID.equals("undefined")) {
-			flowID = this.generateHttpReqID(authentication.getPrincipal());
-			model.addAttribute("flowID", flowID);
-			session.setAttribute(flowID, new SearchObject());
+		String flowId = httpRequest.getParameter(Constants.FOLOW_ID);
+		if(flowId == null || flowId.equals("undefined")) {
+			flowId = this.generateHttpReqID(authentication.getPrincipal());
+			model.addAttribute("flowId", flowId);
+			session.setAttribute(flowId, new SearchObject());
 		} else {
-			model.addAttribute("flowID", flowID);
+			model.addAttribute("flowId", flowId);
 		}
 		
 		ViewBuilder viewBuilder = null;
@@ -103,9 +103,9 @@ public class RelationRequestController extends BaseController {
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
 			Role role = new Role(authentication.getPrincipal());
 			PagingResult<RelationRequest> relationRequests = null;
-			String flowID = httpRequest.getParameter(Constants.FOLOW_ID);
+			String flowId = httpRequest.getParameter(Constants.FOLOW_ID);
 			if(firstLoad != null) {
-				Object search = session.getAttribute(flowID);
+				Object search = session.getAttribute(flowId);
 				SearchObject searchObject =(SearchObject) search;
 				if(searchObject != null && searchObject.getDirection() != null && searchObject.getSort() != null) {
 					model.addAttribute("sort", searchObject.getSort());
@@ -121,11 +121,11 @@ public class RelationRequestController extends BaseController {
 					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority());
 				}
 			} else {
-				if(flowID == null) {
-					String _flowID = this.generateHttpReqID(authentication.getPrincipal());
-					model.addAttribute("flowID", _flowID);
+				if(flowId == null) {
+					flowId = this.generateHttpReqID(authentication.getPrincipal());
+					model.addAttribute("flowId", flowId);
 				} else {
-					model.addAttribute("flowID", flowID);
+					model.addAttribute("flowId", flowId);
 				}
 				SearchObject searchObject = new SearchObject();
 				if(statusParam != null || searchParam != null) {
@@ -141,7 +141,7 @@ public class RelationRequestController extends BaseController {
 					searchObject.setSort(sortParam);
 					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority());
 				}
-				session.setAttribute(flowID, searchObject);
+				session.setAttribute(flowId, searchObject);
 			}
 			model.addAttribute("relationRequests", relationRequests);
 			model.addAttribute("compare_status", role.getHightLight());
@@ -162,9 +162,9 @@ public class RelationRequestController extends BaseController {
 		ViewBuilder builder = getViewBuilder("request.detail", model);
 		
 		try {
-			String flowID = httpRequest.getParameter(Constants.FOLOW_ID);
-			if(flowID != null) {
-				model.addAttribute("flowID", flowID);
+			String flowId = httpRequest.getParameter(Constants.FOLOW_ID);
+			if(flowId != null) {
+				model.addAttribute("flowId", flowId);
 			}
 			// get data from database
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
@@ -573,9 +573,9 @@ public class RelationRequestController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/update_director/", method = RequestMethod.POST)
 	public String submitUpdateDirector(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-		String flowID = httpRequest.getParameter(Constants.FOLOW_ID);
-		if(flowID != null) {
-			model.addAttribute("flowID", flowID);
+		String flowId = httpRequest.getParameter(Constants.FOLOW_ID);
+		if(flowId != null) {
+			model.addAttribute("flowId", flowId);
 		}
 		String messageId = null;
 		boolean success = false;
@@ -656,9 +656,9 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/confirm_destroy/", method = RequestMethod.POST)
 	public ModelAndView confirmDestroy(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
-		String flowID = httpRequest.getParameter(Constants.FOLOW_ID);
-		if(flowID != null) {
-			model.addAttribute("flowID", flowID);
+		String flowId = httpRequest.getParameter(Constants.FOLOW_ID);
+		if(flowId != null) {
+			model.addAttribute("flowId", flowId);
 		}
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-destroy", model);
@@ -687,9 +687,9 @@ public class RelationRequestController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/destroy/", method = RequestMethod.POST)
 	public String submitDestroy(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-		String flowID = httpRequest.getParameter(Constants.FOLOW_ID);
-		if(flowID != null) {
-			model.addAttribute("flowID", flowID);
+		String flowId = httpRequest.getParameter(Constants.FOLOW_ID);
+		if(flowId != null) {
+			model.addAttribute("flowId", flowId);
 		}
 		String messageId = null;
 		boolean success = false;

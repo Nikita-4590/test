@@ -2,9 +2,9 @@
 	<span>${pageTitle!""}</span>
 </div>
 <div id="header-line" class="clearfix">
-    <#if flowID??>
+    <#if flowId??>
         <form id="flow_id" type="submit" method="POST">
-            <input type="hidden" id="stored_httprequestid_input" name="stored_httprequestid_input" value="${flowID}">
+            <input type="hidden" id="stored_httprequestid_input" name="stored_httprequestid_input" value="${flowId}">
         </form>
     </#if>
 	<div id="header-buttons">
