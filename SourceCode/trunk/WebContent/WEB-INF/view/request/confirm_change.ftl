@@ -33,7 +33,9 @@
 			</div>
 		</div>
 	</#if>
-	me.dapps.global['url.back_to_list'] = '${formatter.url("/request/list/")}';
+	<script type="text/javascript">
+	   me.dapps.global['url.back_to_list'] = '${formatter.url("/request/list/")}';
+	</script>
 </form>
 </#escape>
 </#compress>
