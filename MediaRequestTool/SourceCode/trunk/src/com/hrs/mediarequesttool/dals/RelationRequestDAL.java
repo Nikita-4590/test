@@ -1,5 +1,6 @@
 package com.hrs.mediarequesttool.dals;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -27,8 +28,9 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			Page pagingSetting = new Page(page);
 			int total = mapper.count(role);
 			result.setPage(page, total, pagingSetting.getLimit());
+			List<RelationRequest> relationRequests = new ArrayList<RelationRequest>();
 			if (!result.isExceed() && total != 0) {
-				List<RelationRequest> relationRequests = mapper.paging(pagingSetting, sort, direction, role, priority);
+				relationRequests = mapper.paging(pagingSetting, sort, direction, role, priority);
 				result.setList(relationRequests);
 			}
 			return result;
