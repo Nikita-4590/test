@@ -82,11 +82,11 @@ if (isSet($)) {
 			type : 'get',
 			contentType : "application/x-www-form-urlencoded; charset=utf-8",
 			success : function(response) {
-				_this.tableProcess($.trim(response));
 				if(isSet(isFirstLoad)) {
 					var thead = $(_this.table).find('thead')[0];
 					_this.removeHeader();
 					_this.createHeader(thead);
+					_this.tableProcess($.trim(response));
 				}
 			},
 			error : function(e) {
