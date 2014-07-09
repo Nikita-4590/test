@@ -83,6 +83,11 @@ if (isSet($)) {
 			contentType : "application/x-www-form-urlencoded; charset=utf-8",
 			success : function(response) {
 				_this.tableProcess($.trim(response));
+				if(isSet(isFirstLoad)) {
+					var thead = $(_this.table).find('thead')[0];
+					_this.removeHeader();
+					_this.createHeader(thead);
+				}
 			},
 			error : function(e) {
 				if (isFunction(_this.config.post_load)) {
@@ -119,10 +124,6 @@ if (isSet($)) {
 			this.encodeUrl();
 		}
 		this.callAjax(true);
-		var thead = $(this.table).find('thead')[0];
-		this.removeHeader();
-		this.createHeader(thead);
-		
 	};
 	
 	/*
@@ -341,6 +342,9 @@ if (isSet($)) {
 		}
 		
 		
+	};
+	me.lib.table.prototype.setDefaultSort = function(default_sort) {
+		this.config.default_sort = default_sort;
 	};
 	/*
 	 * compare string 
