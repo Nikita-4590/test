@@ -25,13 +25,13 @@
 			</div>
 		</div>
 		
-		<#if view = "OK" || view = "PROCESSING" || view = "FINISHED">
+		<#if view = "NEW" || view = "PROCESSING" || view = "FINISHED">
 			<div class="form-line">
 				<div class="form-col-left-special">
 					<label>担当ディレクター</label>
 				</div>
 				<div class="form-col-right-special">
-					<#if view = "OK">
+					<#if view = "NEW">
 						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">担当ディレクターを依頼</a>
 					</#if>
 					<#if view = "PROCESSING">
@@ -40,7 +40,7 @@
 					</#if>
 				</div>
 				<div class="form-col-middle-special">
-					<#if view = "OK">
+					<#if view = "NEW">
 						<select name="new_director" id="select-new-director">
 							<#list directors as director>
 								<option value="${director.id}">${director.user_name}</option>
@@ -93,23 +93,12 @@
 		<#if view != "FINISHED">
 			<div class="form-line">
 				<div class="form-col-left-special">
-					<label><#if view = "CONFIRMING">接続確認の結果<#else>次のステータス</#if></label>
+					<label>次のステータス</label>
 				</div>
-				<div class="form-col-right-special">
-					<#if view = "NEW" || view = "CONFIRMING" || view = "NG">
-						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;"><#if view = "NEW">依頼を受け付ける<#else>変更する</#if></a>
-					</#if>	
+				<div class="form-col-right-special">	
 				</div>
 				<div class="form-col-middle-special">
-					<#if view = "CONFIRMING" || view= "NG">
-						<select name="select_next_status" id="select-next-status">
-							<#list listNextStatus as status>
-								<#if view = "NG"><option value="${status.status_type}">${status.description}</option>
-								<#else><option value="${status.status_type}"<#if status.status_type = "OK">selected="selected">ログイン成功<#else>>ログイン失敗</#if></option>
-								</#if>
-							</#list>
-						</select>
-					<#elseif view = "NEW" || view = "OK" || view = "PROCESSING">
+					<#if view = "NEW" || view = "PROCESSING">
 						<label id="label-next-status">${nextStatus.description}</label>
 					</#if>
 				</div>
@@ -125,10 +114,9 @@
 		<input type="hidden" id="view" value="${view}" />
 	</div>
 	
-	<#if view = "CONFIRMING" || view = "OK" || view = "PROCESSING">
+	<#if view = "NEW" || view = "PROCESSING">
 		<div id="message">
-			<#if view = "CONFIRMING">※ログイン確認を実施してください。
-			<#elseif view = "OK">※担当ディレクターを設定してください。
+			<#if view = "NEW">※担当ディレクターを設定してください。
 			<#else>※連携開始日を設定してください。
 			</#if>
 		</div>
