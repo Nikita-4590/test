@@ -1,14 +1,14 @@
 function ajaxPostFormSubmit(url, value) {
-		var form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
-		var input = $('<input id="flow_id" name="flow_id" value="' + value + '"' + '>');
-		form.append(input);
-		form.submit();
-	};
+	var form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
+	var input = $('<input id="flow_id" name="flow_id" value="' + value + '"' + '>');
+	form.append(input);
+	form.submit();
+};
 function confirmChange(requestId) {
 
 	var select_new_director = $('#select-new-director').val();
-	
-	if ($('#view').val() == 'OK' && $.trim(select_new_director) == '') {
+
+	if ($('#view').val() == 'NEW' && $.trim(select_new_director) == '') {
 		if (isUnset(me.dapps.global['request.assign_director_warning_box'])) {
 			me.dapps.global['request.assign_director_warning_box'] = new me.dapps.box({
 				auto_hide : true,
@@ -33,107 +33,86 @@ function confirmChange(requestId) {
 		me.dapps.global['request.assign_director_warning_box'].show(localMessage);
 	} else {
 		if (isUnset(me.dapps.global['request.change_confirm_box'])) {
-			if ($('#view').val() == 'NG' && $('#select-next-status').val() == 'CONFIRMING') {
-				me.dapps.global['request.change_confirm_box'] = new me.dapps.box({
-					auto_hide : false,
-					title : '接続確認中に戻しますか？',
-					close_button : false,
-					loading_text : '読み込み中。。。',
-					button : {
-						align : 'right',
-						list : [ {
-							text : 'キャンセル',
-							loading : true,
-							action : function(targetBox) {
-								targetBox.close();
-							}
-						}, {
-							text : 'いいえ',
-							action : function(targetBox) {
-								targetBox.close();
-							}
-						}, {
-							text : '戻す',
-							action : function(targetBox) {
-								targetBox.main.find('#change-request-form').submit();
-							}
-						} ]
-					}
-				});
-			} else {
-				me.dapps.global['request.change_confirm_box'] = new me.dapps.box({
-					auto_hide : false,
-					title : '同意しますか？',
-					close_button : false,
-					loading_text : '読み込み中。。。',
-					button : {
-						align : 'right',
-						list : [ {
-							text : 'キャンセル',
-							loading : true,
-							action : function(targetBox) {
-								targetBox.close();
-							}
-						}, {
-							text : 'いいえ',
-							action : function(targetBox) {
-								targetBox.close();
-							}
-						}, {
-							text : '同意する',
-							action : function(targetBox) {
-								targetBox.main.find('#change-request-form').submit();
-							}
-						} ]
-					}
-				});
-			}
-			
+			me.dapps.global['request.change_confirm_box'] = new me.dapps.box({
+				auto_hide : false,
+				title : '同意しますか？',
+				close_button : false,
+				loading_text : '読み込み中。。。',
+				button : {
+					align : 'right',
+					list : [ {
+						text : 'キャンセル',
+						loading : true,
+						action : function(targetBox) {
+							targetBox.close();
+						}
+					}, {
+						text : 'いいえ',
+						action : function(targetBox) {
+							targetBox.close();
+						}
+					}, {
+						text : '同意する',
+						action : function(targetBox) {
+							targetBox.main.find('#change-request-form').submit();
+						}
+					} ]
+				}
+			});
+
 			// fix bug #2879
 			me.dapps.global['request.change_confirm_box'].submitAgent = {
-					isSubmitting : false,
-					theForm : null,// form
-					theMask : null,// mask 
-					theBoxMain : null,// Confirm delete dialog box
-					//public functions
-					setSubmitForm : function(theform){
-						//default config
-						isSubmitting = false;
-						theForm = theMask = theBoxMain = null;
-						/////
-						theForm = theform;
-						theBoxMain = theForm.parent().parent();
-					},
-					
-					/////Submit process, When isSubmitting = true -> not allowed to submit
-					/////                When isSubmitting = false-> allowed user to submit and cover mask
-					injectSubmit : function(){
-						if(theForm==null || !theForm.is('form')) {return;}
-						theForm.submit(function(event){
-							if(isSubmitting) {event.preventDefault();}// if data is submitting oldData, not allow to continue to submit
-							else{
-								if(!event.isDefaultPrevented()){//validate success
-									isSubmitting = true;
-									if(theMask==null){
-										theMask = $('<div class="mask" />');
-										theMask.zIndex(theBoxMain.zIndex());
-									}
-									theMask.insertAfter(theBoxMain);
-								}
-							}
-						});
-					},
-					endSubmit : function(){
-						isSubmitting = false;
-						theMask.remove();
+				isSubmitting : false,
+				theForm : null,// form
+				theMask : null,// mask
+				theBoxMain : null,// Confirm delete dialog box
+				// public functions
+				setSubmitForm : function(theform) {
+					// default config
+					isSubmitting = false;
+					theForm = theMask = theBoxMain = null;
+					// ///
+					theForm = theform;
+					theBoxMain = theForm.parent().parent();
+				},
+
+				// ///Submit process, When isSubmitting = true -> not allowed to
+				// submit
+				// /// When isSubmitting = false-> allowed user to submit and
+				// cover mask
+				injectSubmit : function() {
+					if (theForm == null || !theForm.is('form')) {
+						return;
 					}
+					theForm.submit(function(event) {
+						if (isSubmitting) {
+							event.preventDefault();
+						}// if data is submitting oldData, not allow to
+							// continue to submit
+						else {
+							if (!event.isDefaultPrevented()) {// validate
+																// success
+								isSubmitting = true;
+								if (theMask == null) {
+									theMask = $('<div class="mask" />');
+									theMask.zIndex(theBoxMain.zIndex());
+								}
+								theMask.insertAfter(theBoxMain);
+							}
+						}
+					});
+				},
+				endSubmit : function() {
+					isSubmitting = false;
+					theMask.remove();
+				}
 			};
 		}
 
 		var messageBox = new me.dapps.box({
 			auto_hide : false,
-			title: '!!! 警告  !!!',
-			type: 'ERROR',
+			title : '!!! 警告  !!!',
+			type : 'ERROR',
 			close_button : false,
 			button : {
 				align : 'right',
@@ -156,7 +135,7 @@ function confirmChange(requestId) {
 				} ]
 			}
 		});
-		
+
 		me.dapps.global['request.change_confirm_box'].showFromUrl({
 			url : me.dapps.global['url.confirm_change'],
 			method : 'post',
@@ -164,22 +143,22 @@ function confirmChange(requestId) {
 				relation_request_id : requestId,
 				selected_next_status : $('#select-next-status').val(),
 				new_director_id : $('#select-new-director').val(),
-				crawl_date: $('#crawl-date-dapps-value').val()
+				crawl_date : $('#crawl-date-dapps-value').val()
 			},
 			callback : function(targetBox) {
 				targetBox.main.find('#change-request-form').validator();
-				
+
 				var theAgent = me.dapps.global['request.change_confirm_box'].submitAgent;
 				theAgent.setSubmitForm(targetBox.main.find('#change-request-form'));
 				theAgent.injectSubmit();
-				
+
 				targetBox.main.find('#change-request-form').ajaxForm({
 					dataType : 'json',
 					success : function(response) {
 						if (response.success) {
 							var url = me.dapps.global['url.back_to_list'];
 							ajaxPostFormSubmit(url, $('#stored_httprequestid_input').val());
-							//window.open("", "_self").close();
+							// window.open("", "_self").close();
 						} else {
 							message = me.dapps.ui.enhanced.locale.text(response.message_id);
 							messageBox._response = response;
@@ -200,11 +179,12 @@ function confirmChange(requestId) {
 						messageBox._error = e;
 						targetBox._parent = null;
 						messageBox.show(message);
-					}, complete: function () {
-						me.dapps.global['request.change_confirm_box'].submitAgent.endSubmit();// Alert to submitAgent that Submit have finished
-				    }
+					},
+					complete : function() {
+						me.dapps.global['request.change_confirm_box'].submitAgent.endSubmit();// Alert to submitAgenet that Submit have finished
+					}
 				});
-				
+
 			},
 			error : function(box, e) {
 				var messageId = me.dapps.global['message.change.general'];
@@ -218,7 +198,7 @@ function confirmChange(requestId) {
 				message = me.dapps.ui.enhanced.locale.text(messageId);
 
 				messageBox._error = e;
-				messageBox._parent = box; // In case have already show confirm dialog
+				messageBox._parent = box;
 				messageBox.show(message);
 			}
 		});

@@ -1,6 +1,5 @@
 package com.hrs.mediarequesttool.controllers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -181,34 +180,12 @@ public class RelationRequestController extends BaseController {
 
 			StatusDAL statusDAL = DALFactory.getDAL(StatusDAL.class, sqlSessionFactory);
 			Status nextStatus = new Status();
-			String[] listStatus = null;
 			String currentStatus = request.getStatus();
 
-			List<Status> listNextStatus = new ArrayList<Status>();
+			if (currentStatus.equals(Constants.STATUS_NEW) || currentStatus.equals(Constants.STATUS_PROCESSING)) {
 
-			if (currentStatus.equals(Constants.STATUS_NEW)) {
-
-				model.addAttribute("view", Constants.STATUS_NEW);
-
-				nextStatus = statusDAL.get(Constants.STATUS_CONFIRMING);
-
-			} else if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
-
-				if (currentStatus.equals(Constants.STATUS_CONFIRMING)) {
-					model.addAttribute("view", Constants.STATUS_CONFIRMING);
-					listStatus = Constants.NEXT_CONFIRMING;
-				} else {
-					model.addAttribute("view", Constants.STATUS_NG);
-					listStatus = Constants.NEXT_NG;
-				}
-				listNextStatus = statusDAL.getListNextStatus(listStatus);
-
-				model.addAttribute("listNextStatus", listNextStatus);
-
-			} else if (currentStatus.equals(Constants.STATUS_OK) || currentStatus.equals(Constants.STATUS_PROCESSING)) {
-
-				if (currentStatus.equals(Constants.STATUS_OK)) {
-					model.addAttribute("view", Constants.STATUS_OK);
+				if (currentStatus.equals(Constants.STATUS_NEW)) {
+					model.addAttribute("view", Constants.STATUS_NEW);
 					nextStatus = statusDAL.get(Constants.STATUS_PROCESSING);
 				} else {
 					model.addAttribute("view", Constants.STATUS_PROCESSING);
@@ -290,23 +267,7 @@ public class RelationRequestController extends BaseController {
 			
 			if (!validateCurrentStatus(currentStatus) || currentStatus.equals(Constants.STATUS_FINISHED)) {
 				throw new ResourceNotFoundException();
-			} else if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
-				String nextStatus = httpRequest.getParameter("selected_next_status");
-
-				if (currentStatus.equals(Constants.STATUS_CONFIRMING)) {
-					if (checkCaseStatusIsConfirming(currentStatus, nextStatus)) {
-						model.addAttribute("nextStatus", nextStatus);
-					} else {
-						throw new ResourceNotFoundException();
-					}
-				} else {
-					if (checkCaseStatusIsNg(currentStatus, nextStatus)) {
-						model.addAttribute("nextStatus", nextStatus);
-					} else {
-						throw new ResourceNotFoundException();
-					}
-				}
-			} else if (currentStatus.equals(Constants.STATUS_OK)) {
+			} else if (currentStatus.equals(Constants.STATUS_NEW)) {
 				String directorId = httpRequest.getParameter("new_director_id");
 				if (!validateNewDirectorId(directorId)) {
 					throw new ResourceNotFoundException();
@@ -364,28 +325,17 @@ public class RelationRequestController extends BaseController {
 				String nextStatus = httpRequest.getParameter("selected_next_status");
 				String directorId = httpRequest.getParameter("new_director_id");
 				String crawlDate = httpRequest.getParameter("crawl_date");
-				String comment = httpRequest.getParameter("backToConfirming-comment");
 				
 				if (!validateCurrentStatus(currentStatus)) {
 					messageId = "ERR151";
-				} else if (currentStatus.equals(Constants.STATUS_CONFIRMING) && !checkCaseStatusIsConfirming(currentStatus, nextStatus)) {
-					messageId = "ERR151";
-				} else if (currentStatus.equals(Constants.STATUS_NG) && !checkCaseStatusIsNg(currentStatus, nextStatus)) {
-					messageId = "ERR151";
-				} else if (currentStatus.equals(Constants.STATUS_NG) && nextStatus.equals(Constants.STATUS_CONFIRMING) && !validateComment(comment)) {
-					messageId = "ERR151";
-				} else if (currentStatus.equals(Constants.STATUS_OK) && !validateNewDirectorId(directorId)) {
+				} else if (currentStatus.equals(Constants.STATUS_NEW) && !validateNewDirectorId(directorId)) {
 					messageId = "ERR151";
 				} else if (currentStatus.equals(Constants.STATUS_PROCESSING) && !validateCrawlDate(crawlDate)) {
 					messageId = "ERR151";
 				} else if (currentStatus.equals(Constants.STATUS_FINISHED)) {
 					messageId = "ERR151"; 
 				} else {
-					if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
-						request.setStatus(nextStatus);
-					} else if (currentStatus.equals(Constants.STATUS_NEW)) {
-						request.setStatus(Constants.STATUS_CONFIRMING);
-					} else if (currentStatus.equals(Constants.STATUS_OK)) {
+					if (currentStatus.equals(Constants.STATUS_NEW)) {
 						int newDirectorId = Integer.parseInt(directorId);
 						request.setAssign_user_id(newDirectorId);
 						request.setStatus(Constants.STATUS_PROCESSING);
@@ -424,11 +374,7 @@ public class RelationRequestController extends BaseController {
 					commentDAL.setSession(session);
 
 					// Insert into table comment
-					if (currentStatus.equals(Constants.STATUS_NG) && nextStatus.equals(Constants.STATUS_CONFIRMING)) {
-						commentDAL.updateRequest(comment, oldInfo, newInfo, newRequest);
-					} else {
-						commentDAL.updateRequest(null, oldInfo, newInfo, newRequest);
-					}
+					commentDAL.updateRequest(null, oldInfo, newInfo, newRequest);
 					
 					session.commit();
 
@@ -474,22 +420,6 @@ public class RelationRequestController extends BaseController {
 		requestChangeInfo.setRenkei_date(request.getCrawl_date_to_display());
 
 		return requestChangeInfo;
-	}
-
-	private boolean checkCaseStatusIsConfirming(String currentStatus, String nextStatus) {
-		if (Validator.isNullOrEmpty(nextStatus)) {
-			return false;
-		} else {
-			return nextStatus.equals(Constants.STATUS_OK) || nextStatus.equals(Constants.STATUS_NG);
-		}
-	}
-
-	private boolean checkCaseStatusIsNg(String currentStatus, String nextStatus) {
-		if (Validator.isNullOrEmpty(nextStatus)) {
-			return false;
-		} else {
-			return nextStatus.equals(Constants.STATUS_CONFIRMING) || nextStatus.equals(Constants.STATUS_DELETED);
-		}
 	}
 
 	private boolean validateNewDirectorId(String directorId) {
@@ -783,7 +713,7 @@ public class RelationRequestController extends BaseController {
 			
 			Status status = statusDAL.get(currentStatus);
 			
-			if (status == null || status.getStatus_type().equals(Constants.STATUS_DELETED) || status.getStatus_type().equals(Constants.STATUS_DESTROYED)) {
+			if (status == null || status.getStatus_type().equals(Constants.STATUS_DESTROYED)) {
 				return false;
 			}
 		}
