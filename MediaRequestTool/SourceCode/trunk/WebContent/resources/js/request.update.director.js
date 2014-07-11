@@ -50,6 +50,21 @@ function confirmUpdateDirector(requestId) {
 					}, {
 						text : 'はい',
 						action : function(targetBox) {
+							var inputRelationReqID = $('<input>').attr({'name' : 'relation_request_id'});
+							$(inputRelationReqID).val(targetBox.main.find('#update-director-form').find('[name="relation_request_id"]').val());
+							var inputCurrentDirectorID = $('<input>').attr({'name' : 'current_director_id'});
+							$(inputCurrentDirectorID).val(targetBox.main.find('#update-director-form').find('[name="current_director_id"]').val());
+							var inputNewDirectorID = $('<input>').attr({'name' : 'new_director_id'});
+							$(inputNewDirectorID).val(targetBox.main.find('#update-director-form').find('[name="new_director_id"]').val());
+							var form = $('<form method="POST" action=' + '"' + $(targetBox.main.find('#update-director-form')[0]).attr('action') + '"' + '/>');
+							var inputFolowId = $('<input/>').attr({'name' : 'flow_id'});
+							inputFolowId.val($('#stored_httprequestid_input').val());
+							
+							form.append(inputRelationReqID);
+							form.append(inputCurrentDirectorID);
+							form.append(inputNewDirectorID);
+							form.append(inputFolowId);
+							//form.submit();
 							targetBox.main.find('#update-director-form').submit();
 						}
 					} ]
@@ -116,11 +131,12 @@ function confirmUpdateDirector(requestId) {
 				text : 'OK',
 				action : function(targetBox) {
 					if (isSet(targetBox._response) && targetBox._response.message_id == "ERR201") {
-						location.reload();
+						ajaxPostFormSubmit();
 					} else if (isSet(targetBox._error) && targetBox._error.status == 403) {
 						location.href = me.dapps.global['url.context'] + "/"; // redirect to login page
 					} else if (isSet(targetBox._error) && targetBox._error.status == 404) {
-						location.reload();
+						
+						ajaxPostFormSubmit();
 					} else {
 						if (isSet(targetBox._parent)) {
 							targetBox._parent.close();
@@ -131,11 +147,11 @@ function confirmUpdateDirector(requestId) {
 			} ]
 		}
 	});
-
 	me.dapps.global['request.update_director_confirm_box'].showFromUrl({
 		url : me.dapps.global['url.confirm_update_director'],
 		method : 'post',
 		data : {
+			flow_id : $('#stored_httprequestid_input').val(),
 			relation_request_id : requestId,
 			current_director_id : $('#current-director').val(),
 			new_director_id : $('#select-update-director').val()
@@ -151,7 +167,7 @@ function confirmUpdateDirector(requestId) {
 				dataType : 'json',
 				success : function(response) {
 					if (response.success) {
-						location.reload();
+						ajaxPostFormSubmit(me.dapps.global['url.back_to_list']);
 					} else {
 						message = me.dapps.ui.enhanced.locale.text(response.message_id);
 						messageBox._response = response;
@@ -202,3 +218,4 @@ function confirmUpdateDirector(requestId) {
 		}
 	});
 }
+

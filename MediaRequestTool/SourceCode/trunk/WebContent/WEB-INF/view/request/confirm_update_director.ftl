@@ -5,5 +5,8 @@
 	<input type="hidden" name="current_director_id" value="${request.assign_user_id!""}" />
 	<input type="hidden" name="new_director_id" value="${newDirectorId!""}" />
 </form>
+<script type="text/javascript">
+    me.dapps.global['url.back_to_list'] = '${formatter.url("/request/list/")}';
+</script>
 </#escape>
 </#compress>

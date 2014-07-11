@@ -61,14 +61,7 @@ public class RelationRequestController extends BaseController {
 		 * httpRequest.getAttribute(Constants.STORED_REQUEST_ID) == id of
 		 * httprequest
 		 */
-		String flowId = httpRequest.getParameter(Constants.FOLOW_ID);
-		if (flowId == null || flowId.equals("undefined")) {
-			flowId = this.generateHttpReqID(authentication.getPrincipal());
-			model.addAttribute("flowId", flowId);
-			session.setAttribute(flowId, new SearchObject());
-		} else {
-			model.addAttribute("flowId", flowId);
-		}
+		createFlowId(httpRequest, model, authentication, session);
 
 		ViewBuilder viewBuilder = null;
 		try {
@@ -103,7 +96,7 @@ public class RelationRequestController extends BaseController {
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
 			Role role = new Role(authentication.getPrincipal());
 			PagingResult<RelationRequest> relationRequests = null;
-			String flowId = httpRequest.getParameter(Constants.FOLOW_ID);
+			String flowId = httpRequest.getParameter(Constants.FLOW_ID);
 			if (firstLoad != null) {
 				Object search = session.getAttribute(flowId);
 				SearchObject searchObject = (SearchObject) search;
@@ -122,7 +115,7 @@ public class RelationRequestController extends BaseController {
 					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority());
 				}
 			} else {
-				if (flowId == null) {
+				if (flowId == null || flowId.contains("undefined")) {
 					flowId = this.generateHttpReqID(authentication.getPrincipal());
 					model.addAttribute("flowId", flowId);
 				} else {
@@ -163,10 +156,7 @@ public class RelationRequestController extends BaseController {
 		ViewBuilder builder = getViewBuilder("request.detail", model);
 
 		try {
-			String flowId = httpRequest.getParameter(Constants.FOLOW_ID);
-			if (flowId != null) {
-				model.addAttribute("flowId", flowId);
-			}
+			setFlowId(httpRequest, model);
 			// get data from database
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 
@@ -253,6 +243,7 @@ public class RelationRequestController extends BaseController {
 	@RequestMapping(value = "/confirm_change/", method = RequestMethod.POST)
 	public ModelAndView confirmChange(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
 		try {
+			setFlowId(httpRequest, model);
 			ViewBuilder builder = getViewBuilder("request.confirm-change", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
 			String currentStatusOnScreen = httpRequest.getParameter("current_status");
@@ -310,7 +301,9 @@ public class RelationRequestController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/change/", method = RequestMethod.POST)
 	public String submitChange(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-
+		
+		setFlowId(httpRequest, model);
+		
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
@@ -490,6 +483,7 @@ public class RelationRequestController extends BaseController {
 	public ModelAndView confirmUpdateDirector(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
 
 		try {
+			setFlowId(httpRequest, model);
 			ViewBuilder builder = getViewBuilder("request.confirm-update-director", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
 			int currentDirectorIdOnView = Integer.parseInt(httpRequest.getParameter("current_director_id"));
@@ -528,10 +522,7 @@ public class RelationRequestController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/update_director/", method = RequestMethod.POST)
 	public String submitUpdateDirector(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-		String flowId = httpRequest.getParameter(Constants.FOLOW_ID);
-		if (flowId != null) {
-			model.addAttribute("flowId", flowId);
-		}
+		setFlowId(httpRequest, model);
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
@@ -622,10 +613,8 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/confirm_destroy/", method = RequestMethod.POST)
 	public ModelAndView confirmDestroy(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
-		String flowId = httpRequest.getParameter(Constants.FOLOW_ID);
-		if (flowId != null) {
-			model.addAttribute("flowId", flowId);
-		}
+		setFlowId(httpRequest, model);
+
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-destroy", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
@@ -662,10 +651,8 @@ public class RelationRequestController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/destroy/", method = RequestMethod.POST)
 	public String submitDestroy(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-		String flowId = httpRequest.getParameter(Constants.FOLOW_ID);
-		if (flowId != null) {
-			model.addAttribute("flowId", flowId);
-		}
+		setFlowId(httpRequest, model);
+		
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
@@ -780,6 +767,7 @@ public class RelationRequestController extends BaseController {
 		return true;
 	}
 
+	
 	protected ModelAndView fallbackToRequestList(HttpServletRequest httpRequest, RedirectAttributes redirectAttributes, Throwable exception) {
 		ModelMap model = new ModelMap();
 		model.put("exception", exception);
@@ -788,6 +776,23 @@ public class RelationRequestController extends BaseController {
 		return redirect("err/");
 	}
 
+	private void setFlowId(HttpServletRequest httpRequest, ModelMap model) {
+		String flowId = httpRequest.getParameter(Constants.FLOW_ID);
+		if(flowId != null && !flowId.equals("undefined")) {
+			model.addAttribute("flowId", flowId);
+		}
+	}
+	
+	private void createFlowId(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, HttpSession session) {
+		String flowId = httpRequest.getParameter(Constants.FLOW_ID);
+		if (flowId == null || flowId.equals("undefined")) {
+			flowId = this.generateHttpReqID(authentication.getPrincipal());
+			model.addAttribute("flowId", flowId);
+			session.setAttribute(flowId, new SearchObject());
+		} else {
+			model.addAttribute("flowId", flowId);
+		}
+	}
 	private class SearchObject {
 		private int page;
 		private String direction;

@@ -22,3 +22,17 @@ function showFlashMessage(id) {
 		alert(message);
 	}
 }
+
+function ajaxPostFormSubmit(url) {
+	var form = undefined;
+	var value = $('#stored_httprequestid_input').val();
+	if(isSet(url)) {
+		form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
+	} else {
+		var url = window.location.pathname;
+		form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
+	}
+	var input = $('<input id="flow_id" name="flow_id" value="' + value + '"' + '>');
+	form.append(input);
+	form.submit();
+};

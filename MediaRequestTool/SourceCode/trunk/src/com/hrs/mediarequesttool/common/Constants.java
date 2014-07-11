@@ -21,7 +21,7 @@ public class Constants {
 	public final static String ANGWS_LOGIN_PASSWORD_1 = "パスワード";
 	public final static String ANGWS_LOGIN_PASSWORD_2 = "応募管理者用パスワード";
 	
-	public final static String FOLOW_ID = "flow_id";
+	public final static String FLOW_ID = "flow_id";
 	public final static String UKERUKUN_MEDIA_ID = "ukerukun"; // for compare to submit data to Kintone
 	
 	public final static int USER_ROLE_MEDIA_CHECKER = 0;
