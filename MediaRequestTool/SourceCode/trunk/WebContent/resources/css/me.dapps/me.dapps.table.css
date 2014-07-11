@@ -36,29 +36,18 @@
 }
 
 .dapps-table-header-text {
-	margin-right: 30px;
+	display : table-cell;
+	margin-right: 3px;
+	float: left;
+	line-height: 30px;
+	vertical-align: middle;
 }
 
 .dapps-table-header-sort-control {
-	position: absolute;
+	display : table-cell;
 	width: 20px;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	background-repeat: no-repeat;
-	background-position: center center;
-	cursor: pointer;
-	-webkit-user-select: none;
-	border-left: 1px solid rgb(85, 142, 213);
-	z-index: 1;
-}
-
-.dapps-table-header-sort-control_browser_ie {
-	position: absolute;
-	width: 20px;
-	top: 0;
-	right: 0;
-	bottom: -8px;
+	height : 100%;
+	float : right;
 	background-repeat: no-repeat;
 	background-position: center center;
 	cursor: pointer;
