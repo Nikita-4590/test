@@ -53,6 +53,20 @@
 	z-index: 1;
 }
 
+.dapps-table-header-sort-control_browser_ie {
+	position: absolute;
+	width: 20px;
+	top: 0;
+	right: 0;
+	bottom: -8px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	cursor: pointer;
+	-webkit-user-select: none;
+	border-left: 1px solid rgb(85, 142, 213);
+	z-index: 1;
+}
+
 .dapps-table-header-sort-control:hover {
 	background-color: white;
 }
