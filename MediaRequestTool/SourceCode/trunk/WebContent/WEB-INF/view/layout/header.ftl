@@ -9,7 +9,9 @@
     </#if>
 	<div id="header-buttons">
 		<#if user??>
-			<!--<a href="${formatter.url("/request/")}" class="button-link">依頼一覧へ</a>-->
+			<#if show_button_list?? && show_button_list = "on">
+				<a href="${formatter.url("/request/list/")}" id="back-to-list" class="button-link">依頼一覧へ</a>
+			</#if>
 			<a href="${formatter.url("/auth/logout/")}" class="button-link">ログアウト</a>
 		</#if>
 	</div>

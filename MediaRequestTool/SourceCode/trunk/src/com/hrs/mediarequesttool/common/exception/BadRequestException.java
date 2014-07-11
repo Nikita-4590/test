@@ -19,6 +19,24 @@ public class BadRequestException extends RuntimeException {
 		logger = null;
 	}
 
+	public BadRequestException(String message) {
+		this(message, BadRequestException.class);
+	}
+
+	public BadRequestException(String message, Class<?> source) {
+		super(message);
+
+		logger = Logger.getLogger(source);
+
+		this.logException();
+	}
+
+	public BadRequestException(Throwable cause) {
+		this(cause, BadRequestException.class);
+
+		this.logException();
+	}
+	
 	public BadRequestException(Throwable cause, Class<?> source) {
 		super(cause);
 
@@ -26,5 +44,25 @@ public class BadRequestException extends RuntimeException {
 
 		logger.error(this.getMessage(), this.getCause());
 	}
+	
+	public BadRequestException(String message, Throwable cause) {
+		this(message, cause, BadRequestException.class);
 
+		this.logException();
+	}
+
+	public BadRequestException(String message, Throwable cause, Class<?> source) {
+		super(message, cause);
+
+		logger = Logger.getLogger(source);
+
+		this.logException();
+	}
+
+	
+	private void logException() {
+		if (logger != null) {
+			logger.error(this.getMessage(), this.getCause());
+		}
+	}
 }
