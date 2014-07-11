@@ -161,7 +161,6 @@ public class RelationRequestController extends BaseController {
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 
 			// get Request detail
-
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
@@ -193,7 +192,7 @@ public class RelationRequestController extends BaseController {
 			} else if (currentStatus.equals(Constants.STATUS_FINISHED)) {
 				model.addAttribute("view", Constants.STATUS_FINISHED);
 			} else if (currentStatus.equals(Constants.STATUS_DESTROYED)) {
-				throw new ResourceNotFoundException(Constants.MSG_INFO_DESTROYED + request.getRelation_request_id());
+				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.MSG_INFO_DESTROYED + request.getRelation_request_id()));
 			} else {
 				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.MSG_INVALID_REQUEST_STATUS + request.getStatus()));
 			}
@@ -207,7 +206,7 @@ public class RelationRequestController extends BaseController {
 			MediaLabel mediaLabel = mediaLabelDAL.get(request.getMedia_id());
 
 			if (mediaLabel == null) {
-				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.MSG_INVALID_MEDIA_LABEL + request.getMedia_id()));
+				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException());
 			}
 
 			if (mediaLabel.getMedia_id().equals(Constants.WEBAN_MEDIA_ID)) {
@@ -232,7 +231,7 @@ public class RelationRequestController extends BaseController {
 			builder.setStylesheets("global.form.css", "request.detail.css");
 			builder.setScripts("jquery/jquery.form.min.js", "request.detail.js", "request.change.js", "request.update.director.js", "request.destroy.js");
 
-		} catch (Exception e) {
+		} catch (GenericException e) {
 			e.printStackTrace();
 			return fallbackToRequestList(httpRequest, redirectAttributes, e);
 		}
@@ -262,7 +261,7 @@ public class RelationRequestController extends BaseController {
 			} else {
 				if (!request.getStatus().equals(currentStatusOnScreen)) {
 					// status has been changed
-					throw new ResourceNotFoundException(Constants.MSG_INFO_STATUS_CHANGED + request.getRelation_request_id());
+					throw new ResourceNotFoundException();
 				} else {
 					if (request.getStatus().equals(Constants.STATUS_NEW)) {
 						String directorId = httpRequest.getParameter("new_director_id");
@@ -290,8 +289,6 @@ public class RelationRequestController extends BaseController {
 
 			return view(builder);
 		} catch (NumberFormatException e) {
-			throw new ResourceNotFoundException(e, this.getClass());
-		} catch (ResourceNotFoundException e) {
 			throw new ResourceNotFoundException(e, this.getClass());
 		} catch (GenericException e) {
 			throw new BadRequestException(e, this.getClass());
@@ -335,7 +332,6 @@ public class RelationRequestController extends BaseController {
 				if (!request.getStatus().equals(currentStatusOnScreen)) {
 					// status has been changed
 					messageId = "ERR151";
-					throw new ResourceNotFoundException(Constants.MSG_INFO_STATUS_CHANGED + request.getRelation_request_id());
 				} else {
 					if (request.getStatus().equals(Constants.STATUS_NEW) && !validateNewDirectorId(directorId)) {
 						messageId = "ERR153";
@@ -501,9 +497,9 @@ public class RelationRequestController extends BaseController {
 			} else if (!validateNewDirectorId(directorId)) {
 				throw new BadRequestException(Constants.MSG_INVALID_DIRECTOR_ID + directorId);
 			} else if (currentDirectorIdOnView != request.getAssign_user_id()) {
-				throw new ResourceNotFoundException(Constants.MSG_INFO_DIRECTOR_CHANGED + requestId);
+				throw new ResourceNotFoundException();
 			} else if (!request.getStatus().equals(Constants.STATUS_PROCESSING)) {
-				throw new ResourceNotFoundException(Constants.MSG_INFO_STATUS_CHANGED + requestId);
+				throw new ResourceNotFoundException();
 			}
 
 			int newDirectorId = Integer.parseInt(directorId);
@@ -550,11 +546,9 @@ public class RelationRequestController extends BaseController {
 			} else if (currentDirectorIdOnView != request.getAssign_user_id()) {
 				// reload page
 				messageId = "ERR201";
-				throw new ResourceNotFoundException(Constants.MSG_INFO_DIRECTOR_CHANGED + requestId);
 			} else if (!request.getStatus().equals(Constants.STATUS_PROCESSING)) {
 				// reload page
 				messageId = "ERR201";
-				throw new ResourceNotFoundException(Constants.MSG_INFO_STATUS_CHANGED + requestId);
 			} else {
 				int newDirectorId = Integer.parseInt(directorId);
 				request.setAssign_user_id(newDirectorId);
@@ -634,7 +628,7 @@ public class RelationRequestController extends BaseController {
 			} else {
 				if (!request.getStatus().equals(currentStatusOnScreen)) {
 					// status has been changed
-					throw new ResourceNotFoundException(Constants.MSG_INFO_STATUS_CHANGED + request.getRelation_request_id());
+					throw new ResourceNotFoundException();
 				} else {
 					model.addAttribute("request", request);
 				}
@@ -679,12 +673,11 @@ public class RelationRequestController extends BaseController {
 				throw new BadRequestException(Constants.MSG_INVALID_STATUS_ON_SCREEN + currentStatusOnScreen);
 			} else if (!validateComment(comment)) {
 				messageId = "ERR253";
-				throw new BadRequestException(Constants.MSG_INVALID_COMMENT + currentStatusOnScreen);
+				throw new BadRequestException();
 			} else {
 				if (!request.getStatus().equals(currentStatusOnScreen)) {
 					// status has been changed => for refresh page
 					messageId = "ERR251";
-					throw new ResourceNotFoundException(Constants.MSG_INFO_STATUS_CHANGED + request.getRelation_request_id());
 				} else {
 					// create session
 					session = sqlSessionFactory.openSession();

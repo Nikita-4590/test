@@ -29,12 +29,9 @@ public class Constants {
 	
 	public final static String MSG_INVALID_REQUEST_ID = "Invalid Request (NOT FOUND). RequestID: ";
     public final static String MSG_INVALID_REQUEST_STATUS = "Invalid current status of request (DATA CORRUPT): ";
-    public final static String MSG_INVALID_MEDIA_LABEL = "Invalid Media label (NOT FOUND). mediaId: ";
     public final static String MSG_INVALID_STATUS_ON_SCREEN = "Invalid status on screen (DATA CORRUPT). Status on screen: ";
     public final static String MSG_INVALID_DIRECTOR_ID = "Invalid directorId (DATA CORRUPT). Selected directorId: ";
     public final static String MSG_INVALID_CRAWLDATE = "Invalid crawlDate (DATA CORRUPT). Selected crawlDate: ";
-    public final static String MSG_INVALID_COMMENT = "Invalid comment. User don't have comment";
-    public final static String MSG_INFO_DESTROYED = "This request has been destroyed. RequestID: ";
-    public final static String MSG_INFO_STATUS_CHANGED = "Status of this request has been changed. RequestID: ";
-    public final static String MSG_INFO_DIRECTOR_CHANGED = "Director of this request has been changed. RequestID: ";
+    
+    public final static String MSG_INFO_DESTROYED = "他のユーザによりレコードが取消されました。レコードID： ";
 }

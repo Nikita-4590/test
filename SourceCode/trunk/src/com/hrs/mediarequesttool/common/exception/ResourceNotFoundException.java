@@ -19,25 +19,6 @@ public class ResourceNotFoundException extends RuntimeException {
 
 		logger = null;
 	}
-	
-	public ResourceNotFoundException(String message) {
-		this(message, ResourceNotFoundException.class);
-	}
-	
-	public ResourceNotFoundException(String message, Class<?> source) {
-		super(message);
-		
-		logger = Logger.getLogger(source);
-		
-		this.logException();
-		
-	}
-	
-	public ResourceNotFoundException(Throwable cause) {
-		this(cause, ResourceNotFoundException.class);
-		
-		this.logException();
-	}
 
 	public ResourceNotFoundException(Throwable cause, Class<?> source) {
 		super(cause);
@@ -45,26 +26,6 @@ public class ResourceNotFoundException extends RuntimeException {
 		logger = Logger.getLogger(source);
 		
 		logger.error(this.getMessage(), this.getCause());
-	}
-	
-	public ResourceNotFoundException(String message, Throwable cause) {
-		this(message, cause, ResourceNotFoundException.class);
-		
-		this.logException();
-	}
-	
-	public ResourceNotFoundException(String message, Throwable cause, Class<?> source) {
-		super(message, cause);
-		
-		logger = Logger.getLogger(source);
-		
-		this.logException();
-	}
-	
-	private void logException() {
-		if (logger != null) {
-			logger.error(this.getMessage(), this.getCause());
-		}
 	}
 
 }
