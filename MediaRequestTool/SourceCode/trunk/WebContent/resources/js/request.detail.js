@@ -26,11 +26,6 @@ $(me.dapps).bind('load', function() {
 		e.preventDefault();// can suy nghi them
 	});
 	
-	$('#close-button').click(function() {
-		var url = me.dapps.global['url.back_to_list'];
-		ajaxPostFormSubmit(me.dapps.global['url.back_to_list']);
-	});
-	
 	$('#back-to-list').click(function(e) {
 		e.preventDefault();
 		var url = $('#back-to-list').attr('href');
