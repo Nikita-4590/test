@@ -120,7 +120,6 @@ function confirmUpdateDirector(requestId) {
 					} else if (isSet(targetBox._error) && targetBox._error.status == 403) {
 						location.href = me.dapps.global['url.context'] + "/"; // redirect to login page
 					} else if (isSet(targetBox._error) && targetBox._error.status == 404) {
-						
 						ajaxPostFormSubmit();
 					} else {
 						if (isSet(targetBox._parent)) {
@@ -174,13 +173,7 @@ function confirmUpdateDirector(requestId) {
 					messageBox.show(message);
 				},
 				complete : function() {
-					me.dapps.global['request.update_director_confirm_box'].submitAgent.endSubmit();// Alert
-																									// to
-																									// submitAgent
-																									// that
-																									// Submit
-																									// have
-																									// finished
+					me.dapps.global['request.update_director_confirm_box'].submitAgent.endSubmit();
 				}
 			});
 

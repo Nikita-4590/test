@@ -23,7 +23,7 @@ $(me.dapps).bind('load', function() {
 		$('#show-more').hide();
 		$('#cancel-change-director').hide();
 		$('#enable-change-director').show();
-		e.preventDefault();// can suy nghi them
+		e.preventDefault();
 	});
 	
 	$('#back-to-list').click(function(e) {
