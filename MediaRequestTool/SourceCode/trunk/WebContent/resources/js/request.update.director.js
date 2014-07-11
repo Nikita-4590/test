@@ -150,7 +150,7 @@ function confirmUpdateDirector(requestId) {
 				dataType : 'json',
 				success : function(response) {
 					if (response.success) {
-						ajaxPostFormSubmit(me.dapps.global['url.back_to_list']);
+						ajaxPostFormSubmit();
 					} else {
 						message = me.dapps.ui.enhanced.locale.text(response.message_id);
 						messageBox._response = response;

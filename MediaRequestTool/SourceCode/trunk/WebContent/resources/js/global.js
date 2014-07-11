@@ -24,10 +24,16 @@ function showFlashMessage(id) {
 }
 
 function ajaxPostFormSubmit(url) {
-	if(isUnset(url)) {
-		url = window.location.pathname;
+	var form = undefined;
+	var value = $('#stored_httprequestid_input').val();
+	if(isSet(url)) {
+		form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
+	} else {
+		var url = window.location.pathname;
+		form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
 	}
-	var form = $('#flow_id');
-	$(form).attr({'action' : url});
+	var input = $('<input id="flow_id" name="flow_id" value="' + value + '"' + '>');
+	form.append(input);
+	$('body').append(form);
 	form.submit();
 };
