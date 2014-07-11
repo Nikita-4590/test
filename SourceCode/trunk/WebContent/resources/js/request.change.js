@@ -141,7 +141,7 @@ function confirmChange(requestId) {
 			method : 'post',
 			data : {
 				relation_request_id : requestId,
-				selected_next_status : $('#select-next-status').val(),
+				current_status : $('#current-status').val(),
 				new_director_id : $('#select-new-director').val(),
 				crawl_date : $('#crawl-date-dapps-value').val()
 			},

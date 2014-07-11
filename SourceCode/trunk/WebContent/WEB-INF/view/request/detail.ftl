@@ -22,54 +22,53 @@
 			</div>
 			<div class="form-col-middle-special">
 				<label id="label-current-status">${request.status_description}</label>
+				<input type="hidden" id="current-status" value="${request.status}" />
 			</div>
 		</div>
 		
-		<#if view = "NEW" || view = "PROCESSING" || view = "FINISHED">
-			<div class="form-line">
+		<div class="form-line">
+			<div class="form-col-left-special">
+				<label>担当ディレクター</label>
+			</div>
+			<div class="form-col-right-special">
+				<#if view = "NEW">
+					<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">担当ディレクターを依頼</a>
+				</#if>
+				<#if view = "PROCESSING">
+					<a href="#"　id="enable-change-director" >担当ディレクターを変更</a>
+					<a href="#"　id="cancel-change-director" style="display: none;">担当ディレクターを変更しない</a>
+				</#if>
+			</div>
+			<div class="form-col-middle-special">
+				<#if view = "NEW">
+					<select name="new_director" id="select-new-director">
+						<#list directors as director>
+							<option value="${director.id}">${director.user_name}</option>
+						</#list>
+					</select>
+				<#else>
+					<label><b>${request.assign_user_name!""}</b></label>
+					<input type="hidden" id="current-director" value="${request.assign_user_id!""}" />
+				</#if>
+			</div>
+		</div>
+			
+		<#if view = "PROCESSING">
+			<div class="form-line" id="show-more" style="display: none;">
 				<div class="form-col-left-special">
-					<label>担当ディレクター</label>
+					<label>新規担当ディレクター</label>
 				</div>
 				<div class="form-col-right-special">
-					<#if view = "NEW">
-						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">担当ディレクターを依頼</a>
-					</#if>
-					<#if view = "PROCESSING">
-						<a href="#"　id="enable-change-director" >担当ディレクターを変更</a>
-						<a href="#"　id="cancel-change-director" style="display: none;">担当ディレクターを変更しない</a>
-					</#if>
+					<a href="#" class="button-link" id="update-director" onclick="confirmUpdateDirector(${request.relation_request_id}); return false;">変更する</a>
 				</div>
 				<div class="form-col-middle-special">
-					<#if view = "NEW">
-						<select name="new_director" id="select-new-director">
-							<#list directors as director>
-								<option value="${director.id}">${director.user_name}</option>
-							</#list>
-						</select>
-					<#else>
-						<label><b>${request.assign_user_name!""}</b></label>
-						<input type="hidden" id="current-director" value="${request.assign_user_id!""}" />
-					</#if>
+					<select name="update_director" id="select-update-director">
+						<#list directors as director>
+							<option value="${director.id}">${director.user_name}</option>
+						</#list>
+					</select>
 				</div>
 			</div>
-			
-			<#if view = "PROCESSING">
-				<div class="form-line" id="show-more" style="display: none;">
-					<div class="form-col-left-special">
-						<label>新規担当ディレクター</label>
-					</div>
-					<div class="form-col-right-special">
-						<a href="#" class="button-link" id="update-director" onclick="confirmUpdateDirector(${request.relation_request_id}); return false;">変更する</a>
-					</div>
-					<div class="form-col-middle-special">
-						<select name="update_director" id="select-update-director">
-							<#list directors as director>
-								<option value="${director.id}">${director.user_name}</option>
-							</#list>
-						</select>
-					</div>
-				</div>
-			</#if>
 		</#if>
 		
 		<div class="form-line">
