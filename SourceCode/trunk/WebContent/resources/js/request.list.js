@@ -4,12 +4,6 @@ var status = undefined;
 $(me.dapps).bind(
 'load',
 function() {
-	function ajaxPostFormSubmit(url, value) {
-		var form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
-		var input = $('<input id="flow_id" name="flow_id" value="' + value + '"' + '>');
-		form.append(input);
-		form.submit();
-	};
 	table = $('#request-ajax-table').table({
 		width : '100',
 		select_row : false,
@@ -22,11 +16,11 @@ function() {
 		url : me.dapps.global['url.request_list'],
 		no_data_message : me.dapps.ui.enhanced.locale
 				.text('INF100'),
-		row_selected : function(row) {			
+		row_selected : function(row) {
 			var requestId = $(row).attr('row-id');
 			var url = me.dapps.global['url.request_redirect']
 					.replace('{request_id}', requestId);
-			ajaxPostFormSubmit(url, $('#stored_httprequestid_input').val());
+			ajaxPostFormSubmit(url);
 		},
 		store_data : [{
 			'id' : 'input_text_search',

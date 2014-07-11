@@ -18,7 +18,7 @@
 				<property name="url"
 					value="jdbc:postgresql://127.0.0.1:5432/padb_public?useUnicode=yes&amp;characterEncoding=UTF8" />
 				<property name="username" value="postgres" />
-				<property name="password" value="123456789" />
+				<property name="password" value="02091990vd" />
 			</dataSource>
 		</environment>
 	</environments>

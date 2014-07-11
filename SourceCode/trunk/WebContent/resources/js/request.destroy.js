@@ -1,9 +1,4 @@
-function ajaxPostFormSubmit(url, value) {
-		var form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
-		var input = $('<input id="flow_id" name="flow_id" value="' + value + '"' + '>');
-		form.append(input);
-		form.submit();
-	};
+
 function confirmDestroy(requestId) {
 
 	if (isUnset(me.dapps.global['request.destroy_confirm_box'])) {
@@ -93,11 +88,11 @@ function confirmDestroy(requestId) {
 				text : 'OK',
 				action : function(targetBox) {
 					if (isSet(targetBox._response) && targetBox._response.message_id == "ERR251") {
-						location.reload();
+						ajaxPostFormSubmit();
 					} else if (isSet(targetBox._error) && targetBox._error.status == 403) {
 						location.href = me.dapps.global['url.context'] + "/"; // redirect to login page
 					} else if (isSet(targetBox._error) && targetBox._error.status == 404) {
-						location.reload();
+						ajaxPostFormSubmit();
 					} else {
 						if (isSet(targetBox._parent)) {
 							targetBox._parent.close();
@@ -129,8 +124,7 @@ function confirmDestroy(requestId) {
 				dataType : 'json',
 				success : function(response) {
 					if (response.success) {
-						var url = me.dapps.global['url.back_to_list'];
-						ajaxPostFormSubmit(url, $('#stored_httprequestid_input').val());
+						ajaxPostFormSubmit(me.dapps.global['url.back_to_list']);
 						//window.open("", "_self").close();
 					} else {
 						message = me.dapps.ui.enhanced.locale.text(response.message_id);
@@ -175,5 +169,4 @@ function confirmDestroy(requestId) {
 			messageBox.show(message);
 		}
 	});
-
 }

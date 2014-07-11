@@ -28,12 +28,12 @@ $(me.dapps).bind('load', function() {
 	
 	$('#close-button').click(function() {
 		var url = me.dapps.global['url.back_to_list'];
-		ajaxPostFormSubmit(url, $('#stored_httprequestid_input').val());
+		ajaxPostFormSubmit(me.dapps.global['url.back_to_list']);
 	});
-	function ajaxPostFormSubmit(url, value) {
-		var form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
-		var input = $('<input id="flow_id" name="flow_id" value="' + value + '"' + '>');
-		form.append(input);
-		form.submit();
-	};
+	
+	$('#back-to-list').click(function(e) {
+		e.preventDefault();
+		var url = $('#back-to-list').attr('href');
+		ajaxPostFormSubmit(url);
+	});
 });

@@ -1,11 +1,5 @@
-function ajaxPostFormSubmit(url, value) {
-	var form = $('<form method="POST" action=' + '"' + url + '"' + '/>');
-	var input = $('<input id="flow_id" name="flow_id" value="' + value + '"' + '>');
-	form.append(input);
-	form.submit();
-};
-function confirmChange(requestId) {
 
+function confirmChange(requestId) {	
 	var select_new_director = $('#select-new-director').val();
 
 	if ($('#view').val() == 'NEW' && $.trim(select_new_director) == '') {
@@ -120,11 +114,11 @@ function confirmChange(requestId) {
 					text : 'OK',
 					action : function(targetBox) {
 						if (isSet(targetBox._response) && targetBox._response.message_id == "ERR151") {
-							location.reload();
+							ajaxPostFormSubmit();
 						} else if (isSet(targetBox._error) && targetBox._error.status == 403) {
 							location.href = me.dapps.global['url.context'] + "/"; // redirect to login page
 						} else if (isSet(targetBox._error) && targetBox._error.status == 404) {
-							location.reload();
+							ajaxPostFormSubmit();
 						} else {
 							if (isSet(targetBox._parent)) {
 								targetBox._parent.close();
@@ -156,8 +150,7 @@ function confirmChange(requestId) {
 					dataType : 'json',
 					success : function(response) {
 						if (response.success) {
-							var url = me.dapps.global['url.back_to_list'];
-							ajaxPostFormSubmit(url, $('#stored_httprequestid_input').val());
+							ajaxPostFormSubmit(me.dapps.global['url.back_to_list']);
 							// window.open("", "_self").close();
 						} else {
 							message = me.dapps.ui.enhanced.locale.text(response.message_id);
