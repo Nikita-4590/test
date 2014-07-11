@@ -3,12 +3,7 @@
 		this.defaultSort = defaultSort;
 		this.sort = thisSortValue;
 		$UI.call(this, 'div');
-		 if (navigator.appName == 'Microsoft Internet Explorer') {
-			 this.applyCss('dapps-table-header-sort-control_browser_ie');
-		 } else {
-			 this.applyCss('dapps-table-header-sort-control');
-		 }
-		
+		 this.applyCss('dapps-table-header-sort-control');
 	};
 	me.lib.SortControl.displayName = 'div';
 	me.lib.SortControl.prototype = Object.create($UI.prototype);
