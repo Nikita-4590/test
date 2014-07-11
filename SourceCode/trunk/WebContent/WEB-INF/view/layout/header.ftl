@@ -4,7 +4,7 @@
 <div id="header-line" class="clearfix">
     <#if flowId??>
         <form id="flow_id" type="submit" method="POST">
-            <input type="hidden" id="stored_httprequestid_input" name="stored_httprequestid_input" value="${flowId}">
+            <input type="hidden" id="stored_httprequestid_input" name="flow_id" value="${flowId}">
         </form>
     </#if>
 	<div id="header-buttons">

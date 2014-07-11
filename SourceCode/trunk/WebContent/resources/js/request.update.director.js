@@ -50,21 +50,6 @@ function confirmUpdateDirector(requestId) {
 					}, {
 						text : 'はい',
 						action : function(targetBox) {
-							var inputRelationReqID = $('<input>').attr({'name' : 'relation_request_id'});
-							$(inputRelationReqID).val(targetBox.main.find('#update-director-form').find('[name="relation_request_id"]').val());
-							var inputCurrentDirectorID = $('<input>').attr({'name' : 'current_director_id'});
-							$(inputCurrentDirectorID).val(targetBox.main.find('#update-director-form').find('[name="current_director_id"]').val());
-							var inputNewDirectorID = $('<input>').attr({'name' : 'new_director_id'});
-							$(inputNewDirectorID).val(targetBox.main.find('#update-director-form').find('[name="new_director_id"]').val());
-							var form = $('<form method="POST" action=' + '"' + $(targetBox.main.find('#update-director-form')[0]).attr('action') + '"' + '/>');
-							var inputFolowId = $('<input/>').attr({'name' : 'flow_id'});
-							inputFolowId.val($('#stored_httprequestid_input').val());
-							
-							form.append(inputRelationReqID);
-							form.append(inputCurrentDirectorID);
-							form.append(inputNewDirectorID);
-							form.append(inputFolowId);
-							//form.submit();
 							targetBox.main.find('#update-director-form').submit();
 						}
 					} ]
@@ -151,7 +136,6 @@ function confirmUpdateDirector(requestId) {
 		url : me.dapps.global['url.confirm_update_director'],
 		method : 'post',
 		data : {
-			flow_id : $('#stored_httprequestid_input').val(),
 			relation_request_id : requestId,
 			current_director_id : $('#current-director').val(),
 			new_director_id : $('#select-update-director').val()
