@@ -22,53 +22,54 @@
 			</div>
 			<div class="form-col-middle-special">
 				<label id="label-current-status">${request.status_description}</label>
-				<input type="hidden" id="current-status" value="${request.status}" />
 			</div>
 		</div>
 		
-		<div class="form-line">
-			<div class="form-col-left-special">
-				<label>担当ディレクター</label>
-			</div>
-			<div class="form-col-right-special">
-				<#if view = "NEW">
-					<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">担当ディレクターを依頼</a>
-				</#if>
-				<#if view = "PROCESSING">
-					<a href="#"　id="enable-change-director" >担当ディレクターを変更</a>
-					<a href="#"　id="cancel-change-director" style="display: none;">担当ディレクターを変更しない</a>
-				</#if>
-			</div>
-			<div class="form-col-middle-special">
-				<#if view = "NEW">
-					<select name="new_director" id="select-new-director">
-						<#list directors as director>
-							<option value="${director.id}">${director.user_name}</option>
-						</#list>
-					</select>
-				<#else>
-					<label><b>${request.assign_user_name!""}</b></label>
-					<input type="hidden" id="current-director" value="${request.assign_user_id!""}" />
-				</#if>
-			</div>
-		</div>
-			
-		<#if view = "PROCESSING">
-			<div class="form-line" id="show-more" style="display: none;">
+		<#if view = "OK" || view = "PROCESSING" || view = "FINISHED">
+			<div class="form-line">
 				<div class="form-col-left-special">
-					<label>新規担当ディレクター</label>
+					<label>担当ディレクター</label>
 				</div>
 				<div class="form-col-right-special">
-					<a href="#" class="button-link" id="update-director" onclick="confirmUpdateDirector(${request.relation_request_id}); return false;">変更する</a>
+					<#if view = "OK">
+						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;">担当ディレクターを依頼</a>
+					</#if>
+					<#if view = "PROCESSING">
+						<a href="#"　id="enable-change-director" >担当ディレクターを変更</a>
+						<a href="#"　id="cancel-change-director" style="display: none;">担当ディレクターを変更しない</a>
+					</#if>
 				</div>
 				<div class="form-col-middle-special">
-					<select name="update_director" id="select-update-director">
-						<#list directors as director>
-							<option value="${director.id}">${director.user_name}</option>
-						</#list>
-					</select>
+					<#if view = "OK">
+						<select name="new_director" id="select-new-director">
+							<#list directors as director>
+								<option value="${director.id}">${director.user_name}</option>
+							</#list>
+						</select>
+					<#else>
+						<label><b>${request.assign_user_name!""}</b></label>
+						<input type="hidden" id="current-director" value="${request.assign_user_id!""}" />
+					</#if>
 				</div>
 			</div>
+			
+			<#if view = "PROCESSING">
+				<div class="form-line" id="show-more" style="display: none;">
+					<div class="form-col-left-special">
+						<label>新規担当ディレクター</label>
+					</div>
+					<div class="form-col-right-special">
+						<a href="#" class="button-link" id="update-director" onclick="confirmUpdateDirector(${request.relation_request_id}); return false;">変更する</a>
+					</div>
+					<div class="form-col-middle-special">
+						<select name="update_director" id="select-update-director">
+							<#list directors as director>
+								<option value="${director.id}">${director.user_name}</option>
+							</#list>
+						</select>
+					</div>
+				</div>
+			</#if>
 		</#if>
 		
 		<div class="form-line">
@@ -92,12 +93,23 @@
 		<#if view != "FINISHED">
 			<div class="form-line">
 				<div class="form-col-left-special">
-					<label>次のステータス</label>
+					<label><#if view = "CONFIRMING">接続確認の結果<#else>次のステータス</#if></label>
 				</div>
-				<div class="form-col-right-special">	
+				<div class="form-col-right-special">
+					<#if view = "NEW" || view = "CONFIRMING" || view = "NG">
+						<a href="#" class="button-link" id="change-status" onclick="confirmChange(${request.relation_request_id}); return false;"><#if view = "NEW">依頼を受け付ける<#else>変更する</#if></a>
+					</#if>	
 				</div>
 				<div class="form-col-middle-special">
-					<#if view = "NEW" || view = "PROCESSING">
+					<#if view = "CONFIRMING" || view= "NG">
+						<select name="select_next_status" id="select-next-status">
+							<#list listNextStatus as status>
+								<#if view = "NG"><option value="${status.status_type}">${status.description}</option>
+								<#else><option value="${status.status_type}"<#if status.status_type = "OK">selected="selected">ログイン成功<#else>>ログイン失敗</#if></option>
+								</#if>
+							</#list>
+						</select>
+					<#elseif view = "NEW" || view = "OK" || view = "PROCESSING">
 						<label id="label-next-status">${nextStatus.description}</label>
 					</#if>
 				</div>
@@ -113,9 +125,10 @@
 		<input type="hidden" id="view" value="${view}" />
 	</div>
 	
-	<#if view = "NEW" || view = "PROCESSING">
+	<#if view = "CONFIRMING" || view = "OK" || view = "PROCESSING">
 		<div id="message">
-			<#if view = "NEW">※担当ディレクターを設定してください。
+			<#if view = "CONFIRMING">※ログイン確認を実施してください。
+			<#elseif view = "OK">※担当ディレクターを設定してください。
 			<#else>※連携開始日を設定してください。
 			</#if>
 		</div>

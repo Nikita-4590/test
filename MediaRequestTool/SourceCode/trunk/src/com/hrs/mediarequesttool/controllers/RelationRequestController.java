@@ -1,5 +1,6 @@
 package com.hrs.mediarequesttool.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,22 +162,45 @@ public class RelationRequestController extends BaseController {
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 
 			// get Request detail
+
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
 
 			if (request == null) {
-				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.MSG_INVALID_REQUEST_ID + requestId));
+				throw new ResourceNotFoundException();
 			}
 
 			StatusDAL statusDAL = DALFactory.getDAL(StatusDAL.class, sqlSessionFactory);
 			Status nextStatus = new Status();
+			String[] listStatus = null;
 			String currentStatus = request.getStatus();
 
-			if (currentStatus.equals(Constants.STATUS_NEW) || currentStatus.equals(Constants.STATUS_PROCESSING)) {
+			List<Status> listNextStatus = new ArrayList<Status>();
 
-				if (currentStatus.equals(Constants.STATUS_NEW)) {
-					model.addAttribute("view", Constants.STATUS_NEW);
+			if (currentStatus.equals(Constants.STATUS_NEW)) {
+
+				model.addAttribute("view", Constants.STATUS_NEW);
+
+				nextStatus = statusDAL.get(Constants.STATUS_CONFIRMING);
+
+			} else if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
+
+				if (currentStatus.equals(Constants.STATUS_CONFIRMING)) {
+					model.addAttribute("view", Constants.STATUS_CONFIRMING);
+					listStatus = Constants.NEXT_CONFIRMING;
+				} else {
+					model.addAttribute("view", Constants.STATUS_NG);
+					listStatus = Constants.NEXT_NG;
+				}
+				listNextStatus = statusDAL.getListNextStatus(listStatus);
+
+				model.addAttribute("listNextStatus", listNextStatus);
+
+			} else if (currentStatus.equals(Constants.STATUS_OK) || currentStatus.equals(Constants.STATUS_PROCESSING)) {
+
+				if (currentStatus.equals(Constants.STATUS_OK)) {
+					model.addAttribute("view", Constants.STATUS_OK);
 					nextStatus = statusDAL.get(Constants.STATUS_PROCESSING);
 				} else {
 					model.addAttribute("view", Constants.STATUS_PROCESSING);
@@ -191,10 +215,8 @@ public class RelationRequestController extends BaseController {
 
 			} else if (currentStatus.equals(Constants.STATUS_FINISHED)) {
 				model.addAttribute("view", Constants.STATUS_FINISHED);
-			} else if (currentStatus.equals(Constants.STATUS_DESTROYED)) {
-				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.MSG_INFO_DESTROYED + request.getRelation_request_id()));
 			} else {
-				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.MSG_INVALID_REQUEST_STATUS + request.getStatus()));
+				throw new ResourceNotFoundException();
 			}
 
 			if (nextStatus != null) {
@@ -206,7 +228,7 @@ public class RelationRequestController extends BaseController {
 			MediaLabel mediaLabel = mediaLabelDAL.get(request.getMedia_id());
 
 			if (mediaLabel == null) {
-				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException());
+				throw new BadRequestException();
 			}
 
 			if (mediaLabel.getMedia_id().equals(Constants.WEBAN_MEDIA_ID)) {
@@ -226,7 +248,7 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("request", request);
 			model.addAttribute("mediaLabel", mediaLabel);
 			model.addAttribute("show_button_list", "on");
-			
+
 			builder.setPageTitle("依頼詳細");
 			builder.setStylesheets("global.form.css", "request.detail.css");
 			builder.setScripts("jquery/jquery.form.min.js", "request.detail.js", "request.change.js", "request.update.director.js", "request.destroy.js");
@@ -245,7 +267,6 @@ public class RelationRequestController extends BaseController {
 			setFlowId(httpRequest, model);
 			ViewBuilder builder = getViewBuilder("request.confirm-change", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
-			String currentStatusOnScreen = httpRequest.getParameter("current_status");
 
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 
@@ -253,35 +274,48 @@ public class RelationRequestController extends BaseController {
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
-			
+
 			if (request == null) {
-				throw new BadRequestException(Constants.MSG_INVALID_REQUEST_ID + requestId);
-			} else if(!validateStatus(currentStatusOnScreen)) {
-				throw new BadRequestException(Constants.MSG_INVALID_STATUS_ON_SCREEN + currentStatusOnScreen);
-			} else {
-				if (!request.getStatus().equals(currentStatusOnScreen)) {
-					// status has been changed. Reload the current page
+				throw new ResourceNotFoundException();
+			}
+
+			String currentStatus = request.getStatus();
+
+			if (!validateCurrentStatus(currentStatus) || currentStatus.equals(Constants.STATUS_FINISHED)) {
+				throw new ResourceNotFoundException();
+			} else if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
+				String nextStatus = httpRequest.getParameter("selected_next_status");
+
+				if (currentStatus.equals(Constants.STATUS_CONFIRMING)) {
+					if (checkCaseStatusIsConfirming(currentStatus, nextStatus)) {
+						model.addAttribute("nextStatus", nextStatus);
+					} else {
+						throw new ResourceNotFoundException();
+					}
+				} else {
+					if (checkCaseStatusIsNg(currentStatus, nextStatus)) {
+						model.addAttribute("nextStatus", nextStatus);
+					} else {
+						throw new ResourceNotFoundException();
+					}
+				}
+			} else if (currentStatus.equals(Constants.STATUS_OK)) {
+				String directorId = httpRequest.getParameter("new_director_id");
+				if (!validateNewDirectorId(directorId)) {
 					throw new ResourceNotFoundException();
 				} else {
-					if (request.getStatus().equals(Constants.STATUS_NEW)) {
-						String directorId = httpRequest.getParameter("new_director_id");
-						if (!validateNewDirectorId(directorId)) {
-							throw new BadRequestException(Constants.MSG_INVALID_DIRECTOR_ID + directorId);
-						} else {
-							int newDirectorId = Integer.parseInt(directorId);
+					int newDirectorId = Integer.parseInt(directorId);
 
-							model.addAttribute("newDirectorId", newDirectorId);
-						}
-					} else if (request.getStatus().equals(Constants.STATUS_PROCESSING)) {
-						String crawlDate = httpRequest.getParameter("crawl_date");
-						if (!validateCrawlDate(crawlDate)) {
-							throw new BadRequestException(Constants.MSG_INVALID_CRAWLDATE + crawlDate);
-						} else {
-							model.addAttribute("crawlDate", crawlDate);
-						}
-					} else {
-						throw new BadRequestException(Constants.MSG_INVALID_REQUEST_STATUS + request.getStatus());
-					}
+					model.addAttribute("newDirectorId", newDirectorId);
+					model.addAttribute("nextStatus", Constants.STATUS_PROCESSING);
+				}
+			} else if (currentStatus.equals(Constants.STATUS_PROCESSING)) {
+				String crawlDate = httpRequest.getParameter("crawl_date");
+				if (!validateCrawlDate(crawlDate)) {
+					throw new ResourceNotFoundException();
+				} else {
+					model.addAttribute("crawlDate", crawlDate);
+					model.addAttribute("nextStatus", Constants.STATUS_FINISHED);
 				}
 			}
 
@@ -298,9 +332,9 @@ public class RelationRequestController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/change/", method = RequestMethod.POST)
 	public String submitChange(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-		
+
 		setFlowId(httpRequest, model);
-		
+
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
@@ -309,7 +343,6 @@ public class RelationRequestController extends BaseController {
 
 		try {
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
-			String currentStatusOnScreen = httpRequest.getParameter("current_status");
 
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 
@@ -320,83 +353,92 @@ public class RelationRequestController extends BaseController {
 
 			if (request == null) {
 				// inform error message about invalid data. Not found
-				messageId = "ERR153";
-				throw new BadRequestException(Constants.MSG_INVALID_REQUEST_ID + requestId);
-			} else if (!validateStatus(currentStatusOnScreen)) {
-				messageId = "ERR153";
-				throw new BadRequestException(Constants.MSG_INVALID_STATUS_ON_SCREEN + currentStatusOnScreen);
+				messageId = "ERR151";
 			} else {
+				String currentStatus = request.getStatus();
+				String nextStatus = httpRequest.getParameter("selected_next_status");
 				String directorId = httpRequest.getParameter("new_director_id");
 				String crawlDate = httpRequest.getParameter("crawl_date");
+				String comment = httpRequest.getParameter("backToConfirming-comment");
 
-				if (!request.getStatus().equals(currentStatusOnScreen)) {
-					// status has been changed. Reload this page
+				if (!validateCurrentStatus(currentStatus)) {
+					messageId = "ERR151";
+				} else if (currentStatus.equals(Constants.STATUS_CONFIRMING) && !checkCaseStatusIsConfirming(currentStatus, nextStatus)) {
+					messageId = "ERR151";
+				} else if (currentStatus.equals(Constants.STATUS_NG) && !checkCaseStatusIsNg(currentStatus, nextStatus)) {
+					messageId = "ERR151";
+				} else if (currentStatus.equals(Constants.STATUS_NG) && nextStatus.equals(Constants.STATUS_CONFIRMING) && !validateComment(comment)) {
+					messageId = "ERR151";
+				} else if (currentStatus.equals(Constants.STATUS_OK) && !validateNewDirectorId(directorId)) {
+					messageId = "ERR151";
+				} else if (currentStatus.equals(Constants.STATUS_PROCESSING) && !validateCrawlDate(crawlDate)) {
+					messageId = "ERR151";
+				} else if (currentStatus.equals(Constants.STATUS_FINISHED)) {
 					messageId = "ERR151";
 				} else {
-					if (request.getStatus().equals(Constants.STATUS_NEW) && !validateNewDirectorId(directorId)) {
-						messageId = "ERR153";
-						throw new BadRequestException(Constants.MSG_INVALID_DIRECTOR_ID + directorId);
-					} else if (request.getStatus().equals(Constants.STATUS_PROCESSING) && !validateCrawlDate(crawlDate)) {
-						messageId = "ERR153";
-						throw new BadRequestException(Constants.MSG_INVALID_CRAWLDATE + crawlDate);
-					} else {
-						if (request.getStatus().equals(Constants.STATUS_NEW)) {
-							int newDirectorId = Integer.parseInt(directorId);
-							request.setAssign_user_id(newDirectorId);
-							request.setStatus(Constants.STATUS_PROCESSING);
-						} else if (request.getStatus().equals(Constants.STATUS_PROCESSING)) {
-							request.setCrawl_date(crawlDate);
-							request.setStatus(Constants.STATUS_FINISHED);
-						}
-
-						// create session
-						session = sqlSessionFactory.openSession();
-
-						requestDAL.setSession(session);
-
-						// get old information before update
-						RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
-						RequestChangeInfo oldInfo = setInfo(oldRequest);
-
-						// update request
-						requestDAL.updateRequest(request);
-
-						// get new information after update
-						RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
-						RequestChangeInfo newInfo = setInfo(newRequest); // to send Email
-
-						// renkei with API Kintone
-						if (newRequest.getStatus().equals(Constants.STATUS_FINISHED)) {
-							if (newRequest.getMedia_id().equals(Constants.UKERUKUN_MEDIA_ID)) {
-								new API().post(newRequest, true);
-							} else {
-								new API().post(newRequest, false);
-							}
-						}
-
-						// open sql session
-						commentDAL = DALFactory.getDAL(CommentDAL.class, sqlSessionFactory);
-						commentDAL.setSession(session);
-
-						// Insert into table comment
-						commentDAL.updateRequest(null, oldInfo, newInfo, newRequest);
-
-						session.commit();
-
-						// Display information message when change successful
-						success = true;
+					if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
+						request.setStatus(nextStatus);
+					} else if (currentStatus.equals(Constants.STATUS_NEW)) {
+						request.setStatus(Constants.STATUS_CONFIRMING);
+					} else if (currentStatus.equals(Constants.STATUS_OK)) {
+						int newDirectorId = Integer.parseInt(directorId);
+						request.setAssign_user_id(newDirectorId);
+						request.setStatus(Constants.STATUS_PROCESSING);
+					} else if (currentStatus.equals(Constants.STATUS_PROCESSING)) {
+						request.setCrawl_date(crawlDate);
+						request.setStatus(Constants.STATUS_FINISHED);
 					}
+
+					// create session
+					session = sqlSessionFactory.openSession();
+
+					requestDAL.setSession(session);
+
+					// get old information before update
+					RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
+					RequestChangeInfo oldInfo = setInfo(oldRequest);
+
+					// update request
+					requestDAL.updateRequest(request);
+
+					// get new information after update
+					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
+					RequestChangeInfo newInfo = setInfo(newRequest); // to send
+																		// Email
+
+					// renkei with API Kintone
+					if (currentStatus.equals(Constants.STATUS_PROCESSING) && nextStatus.equals(Constants.STATUS_FINISHED)) {
+						if (newRequest.getMedia_id().equals(Constants.UKERUKUN_MEDIA_ID)) {
+							new API().post(newRequest, true);
+						} else {
+							new API().post(newRequest, false);
+						}
+					}
+
+					// open sql session
+					commentDAL = DALFactory.getDAL(CommentDAL.class, sqlSessionFactory);
+					commentDAL.setSession(session);
+
+					// Insert into table comment
+					if (currentStatus.equals(Constants.STATUS_NG) && nextStatus.equals(Constants.STATUS_CONFIRMING)) {
+						commentDAL.updateRequest(comment, oldInfo, newInfo, newRequest);
+					} else {
+						commentDAL.updateRequest(null, oldInfo, newInfo, newRequest);
+					}
+
+					session.commit();
+
+					// Display information message when change successful
+					success = true;
 				}
 			}
 
 		} catch (NumberFormatException e) {
 			// inform invalid data
-			messageId = "ERR153";
-			e.printStackTrace();
+			messageId = "ERR151";
 		} catch (GenericException e) {
 			// inform error message about access database failure
 			messageId = "ERR150";
-			e.printStackTrace();
 		} catch (KintoneException e) {
 			// inform error message about cannot submit to Kintone
 			messageId = "ERR154";
@@ -418,6 +460,7 @@ public class RelationRequestController extends BaseController {
 		// if (success) {
 		// map.put("url", "/request/list/");
 		// }
+
 		return GSON.toJson(map);
 	}
 
@@ -428,6 +471,22 @@ public class RelationRequestController extends BaseController {
 		requestChangeInfo.setRenkei_date(request.getCrawl_date_to_display());
 
 		return requestChangeInfo;
+	}
+	
+	private boolean checkCaseStatusIsConfirming(String currentStatus, String nextStatus) {
+		if (Validator.isNullOrEmpty(nextStatus)) {
+			return false;
+		} else {
+			return nextStatus.equals(Constants.STATUS_OK) || nextStatus.equals(Constants.STATUS_NG);
+		}
+	}
+
+	private boolean checkCaseStatusIsNg(String currentStatus, String nextStatus) {
+		if (Validator.isNullOrEmpty(nextStatus)) {
+			return false;
+		} else {
+			return nextStatus.equals(Constants.STATUS_CONFIRMING) || nextStatus.equals(Constants.STATUS_DELETED);
+		}
 	}
 
 	private boolean validateNewDirectorId(String directorId) {
@@ -491,14 +550,8 @@ public class RelationRequestController extends BaseController {
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
-			
-			if (request == null) {
-				throw new BadRequestException(Constants.MSG_INVALID_REQUEST_ID + requestId);
-			} else if (!validateNewDirectorId(directorId)) {
-				throw new BadRequestException(Constants.MSG_INVALID_DIRECTOR_ID + directorId);
-			} else if (currentDirectorIdOnView != request.getAssign_user_id()) {
-				throw new ResourceNotFoundException();
-			} else if (!request.getStatus().equals(Constants.STATUS_PROCESSING)) {
+
+			if (request == null || (currentDirectorIdOnView != request.getAssign_user_id()) || !validateNewDirectorId(directorId) || !request.getStatus().equals(Constants.STATUS_PROCESSING)) {
 				throw new ResourceNotFoundException();
 			}
 
@@ -536,18 +589,9 @@ public class RelationRequestController extends BaseController {
 			requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
-			
-			if (request == null) {
-				messageId = "ERR203";
-				throw new BadRequestException(Constants.MSG_INVALID_REQUEST_ID + requestId);
-			} else if (!validateNewDirectorId(directorId)) {
-				messageId = "ERR203";
-				throw new BadRequestException(Constants.MSG_INVALID_DIRECTOR_ID + directorId);
-			} else if (currentDirectorIdOnView != request.getAssign_user_id()) {
-				// reload page
-				messageId = "ERR201";
-			} else if (!request.getStatus().equals(Constants.STATUS_PROCESSING)) {
-				// reload page
+
+			if (request == null || (currentDirectorIdOnView != request.getAssign_user_id()) || !validateNewDirectorId(directorId) || !request.getStatus().equals(Constants.STATUS_PROCESSING)) {
+				// inform error message about invalid data
 				messageId = "ERR201";
 			} else {
 				int newDirectorId = Integer.parseInt(directorId);
@@ -612,7 +656,6 @@ public class RelationRequestController extends BaseController {
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-destroy", model);
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
-			String currentStatusOnScreen = httpRequest.getParameter("current_status");
 
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 
@@ -620,19 +663,11 @@ public class RelationRequestController extends BaseController {
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
-			
-			if (request == null) {
-				throw new BadRequestException(Constants.MSG_INVALID_REQUEST_ID + requestId);
-			} else if(!validateStatus(currentStatusOnScreen)) {
-				throw new BadRequestException(Constants.MSG_INVALID_STATUS_ON_SCREEN + currentStatusOnScreen);
-			} else {
-				if (!request.getStatus().equals(currentStatusOnScreen)) {
-					// status has been changed
-					throw new ResourceNotFoundException();
-				} else {
-					model.addAttribute("request", request);
-				}
+
+			if (request == null || !validateCurrentStatus(request.getStatus()) || request.getStatus().equals(Constants.STATUS_FINISHED)) {
+				throw new ResourceNotFoundException();
 			}
+			model.addAttribute("request", request);
 
 			return view(builder);
 		} catch (NumberFormatException e) {
@@ -646,7 +681,7 @@ public class RelationRequestController extends BaseController {
 	@RequestMapping(value = "/destroy/", method = RequestMethod.POST)
 	public String submitDestroy(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
 		setFlowId(httpRequest, model);
-		
+
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
@@ -655,7 +690,6 @@ public class RelationRequestController extends BaseController {
 
 		try {
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
-			String currentStatusOnScreen = httpRequest.getParameter("current_status");
 			String comment = httpRequest.getParameter("destroy-comment");
 
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
@@ -664,59 +698,47 @@ public class RelationRequestController extends BaseController {
 			requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
-			
-			if (request == null) {
-				messageId = "ERR253";
-				throw new BadRequestException(Constants.MSG_INVALID_REQUEST_ID + requestId);
-			} else if(!validateStatus(currentStatusOnScreen)) {
-				messageId = "ERR253";
-				throw new BadRequestException(Constants.MSG_INVALID_STATUS_ON_SCREEN + currentStatusOnScreen);
-			} else if (!validateComment(comment)) {
-				messageId = "ERR253";
-				throw new BadRequestException();
+
+			if (request == null || !validateComment(comment) || !validateCurrentStatus(request.getStatus()) || request.getStatus().equals(Constants.STATUS_FINISHED)) {
+				// inform error message about invalid data
+				messageId = "ERR251";
 			} else {
-				if (!request.getStatus().equals(currentStatusOnScreen)) {
-					// status has been changed => for refresh page
-					messageId = "ERR251";
-				} else {
-					// create session
-					session = sqlSessionFactory.openSession();
 
-					requestDAL.setSession(session);
+				// create session
+				session = sqlSessionFactory.openSession();
 
-					// get old information before update
-					RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
-					RequestChangeInfo oldInfo = setInfo(oldRequest);
+				requestDAL.setSession(session);
 
-					// update request
-					requestDAL.updateRequestToDestroy(request);
+				// get old information before update
+				RelationRequest oldRequest = requestDAL.get(request.getRelation_request_id());
+				RequestChangeInfo oldInfo = setInfo(oldRequest);
 
-					// get new information after update
-					RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
-					RequestChangeInfo newInfo = setInfo(newRequest);
+				// update request
+				requestDAL.updateRequestToDestroy(request);
 
-					// open sql session
-					commentDAL = DALFactory.getDAL(CommentDAL.class, sqlSessionFactory);
-					commentDAL.setSession(session);
+				// get new information after update 
+				RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
+				RequestChangeInfo newInfo = setInfo(newRequest);
 
-					// Insert into table comment
-					commentDAL.updateRequest(comment, oldInfo, newInfo, newRequest);
+				// open sql session
+				commentDAL = DALFactory.getDAL(CommentDAL.class, sqlSessionFactory);
+				commentDAL.setSession(session);
 
-					session.commit();
+				// Insert into table comment
+				commentDAL.updateRequest(comment, oldInfo, newInfo, newRequest);
 
-					// Display information message when destroy successful
-					success = true;
-				}
+				session.commit();
+
+				// Display information message when destroy successful
+				success = true;
 			}
 
 		} catch (NumberFormatException e) {
 			// inform error message about invalid data
-			messageId = "ERR253";
-			e.printStackTrace();
+			messageId = "ERR251";
 		} catch (GenericException e) {
 			// inform error message about access database failure
 			messageId = "ERR250";
-			e.printStackTrace();
 		} finally {
 			if (session != null) {
 				session.close();
@@ -731,9 +753,9 @@ public class RelationRequestController extends BaseController {
 		map.put("message_id", messageId);
 		map.put("success", success);
 
-//		if (success) {
-//			map.put("url", "/request/list/");
-//		}
+		if (success) {
+			map.put("url", "/request/list/");
+		}
 
 		return GSON.toJson(map);
 	}
@@ -742,25 +764,24 @@ public class RelationRequestController extends BaseController {
 		return !(Validator.isNullOrEmpty(comment) || Validator.checkExceedLength(Constants.MAX_LENGTH_COMMENT, comment));
 	}
 
-	private boolean validateStatus(String currentStatus) throws GenericException {
+	private boolean validateCurrentStatus(String currentStatus) throws GenericException {
 		if (Validator.isNullOrEmpty(currentStatus)) {
 			return false;
 		} else {
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
-
+			
 			StatusDAL statusDAL = DALFactory.getDAL(StatusDAL.class, sqlSessionFactory);
-
+			
 			Status status = statusDAL.get(currentStatus);
-
-			if (status == null) {
+			
+			if (status == null || status.getStatus_type().equals(Constants.STATUS_DELETED) || status.getStatus_type().equals(Constants.STATUS_DESTROYED)) {
 				return false;
 			}
 		}
-
+		
 		return true;
 	}
 
-	
 	protected ModelAndView fallbackToRequestList(HttpServletRequest httpRequest, RedirectAttributes redirectAttributes, Throwable exception) {
 		ModelMap model = new ModelMap();
 		model.put("exception", exception);
@@ -771,11 +792,11 @@ public class RelationRequestController extends BaseController {
 
 	private void setFlowId(HttpServletRequest httpRequest, ModelMap model) {
 		String flowId = httpRequest.getParameter(Constants.FLOW_ID);
-		if(flowId != null && !flowId.equals("undefined")) {
+		if (flowId != null && !flowId.equals("undefined")) {
 			model.addAttribute("flowId", flowId);
 		}
 	}
-	
+
 	private void createFlowId(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, HttpSession session) {
 		String flowId = httpRequest.getParameter(Constants.FLOW_ID);
 		if (flowId == null || flowId.equals("undefined")) {
@@ -786,6 +807,7 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("flowId", flowId);
 		}
 	}
+
 	private class SearchObject {
 		private int page;
 		private String direction;
