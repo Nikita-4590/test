@@ -6,7 +6,7 @@
 <script type="text/javascript" src="${formatter.url("/js/jquery/jquery-ui-timepicker-locale-jp.js")}"></script>
 <script type="text/javascript" src="${formatter.url("/js/me.dapps/me.dapps.core.js")}"></script>
 
-<script type="text/javascript" src="${formatter.url("/js/me.dapps/me.lib.table.js")}"></script>
+<script type="text/javascript" src="${formatter.url("/js/me.dapps/me.dapps.table.js")}"></script>
 
 <script type="text/javascript" src="${formatter.url("/js/me.dapps/me.dapps.box.js")}"></script>
 <script type="text/javascript" src="${formatter.url("/js/me.dapps/me.dapps.validator.js")}"></script>
