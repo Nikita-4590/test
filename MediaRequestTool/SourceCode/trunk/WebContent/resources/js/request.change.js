@@ -29,7 +29,7 @@ function confirmChange(requestId) {
 		if (isUnset(me.dapps.global['request.change_confirm_box'])) {
 			me.dapps.global['request.change_confirm_box'] = new me.dapps.box({
 				auto_hide : false,
-				title : '同意しますか？',
+				title : '登録しますか？',
 				close_button : false,
 				loading_text : '読み込み中。。。',
 				button : {
