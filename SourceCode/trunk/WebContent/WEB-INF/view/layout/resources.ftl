@@ -6,15 +6,6 @@
 <script type="text/javascript" src="${formatter.url("/js/jquery/jquery-ui-timepicker-locale-jp.js")}"></script>
 <script type="text/javascript" src="${formatter.url("/js/me.dapps/me.dapps.core.js")}"></script>
 
-
-<script type="text/javascript" src="${formatter.url("/js/me.dapps/me.dapps.ui.js")}"></script>
-<script type="text/javascript" src="${formatter.url("/js/me.dapps/me.lib.table_td.js")}"></script>
-<script type="text/javascript" src="${formatter.url("/js/me.dapps/me.lib.table_th.js")}"></script>
-<script type="text/javascript" src="${formatter.url("/js/me.dapps/me.lib.table_row.js")}"></script>
-<script type="text/javascript" src="${formatter.url("/js/me.dapps/me.lib.table_header.js")}"></script>
-<script type="text/javascript" src="${formatter.url("/js/me.dapps/me.lib.table_footer.js")}"></script>
-<script type="text/javascript" src="${formatter.url("/js/me.dapps/me.lib.table_body.js")}"></script>
-<script type="text/javascript" src="${formatter.url("/js/me.dapps/me.lib.sort_control.js")}"></script>
 <script type="text/javascript" src="${formatter.url("/js/me.dapps/me.lib.table.js")}"></script>
 
 <script type="text/javascript" src="${formatter.url("/js/me.dapps/me.dapps.box.js")}"></script>
