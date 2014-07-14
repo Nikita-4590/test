@@ -2,7 +2,6 @@
 <#escape x as x?html>
 <form id="destroy-request-form" action="${formatter.url("/request/destroy/?ajax")}" method="post">
 	<input type="hidden" name="relation_request_id" value="${request.relation_request_id}" />
-	<input type="hidden" name="current_status" value="${request.status!""}" />
 	<div>
 		<label><b>＜依頼情報＞</b></label>
 	</div>
