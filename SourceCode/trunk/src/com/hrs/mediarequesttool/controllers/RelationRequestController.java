@@ -260,7 +260,7 @@ public class RelationRequestController extends BaseController {
 				throw new BadRequestException(Constants.MSG_INVALID_STATUS_ON_SCREEN + currentStatusOnScreen);
 			} else {
 				if (!request.getStatus().equals(currentStatusOnScreen)) {
-					// status has been changed
+					// status has been changed. Reload the current page
 					throw new ResourceNotFoundException();
 				} else {
 					if (request.getStatus().equals(Constants.STATUS_NEW)) {
@@ -330,7 +330,7 @@ public class RelationRequestController extends BaseController {
 				String crawlDate = httpRequest.getParameter("crawl_date");
 
 				if (!request.getStatus().equals(currentStatusOnScreen)) {
-					// status has been changed
+					// status has been changed. Reload this page
 					messageId = "ERR151";
 				} else {
 					if (request.getStatus().equals(Constants.STATUS_NEW) && !validateNewDirectorId(directorId)) {
