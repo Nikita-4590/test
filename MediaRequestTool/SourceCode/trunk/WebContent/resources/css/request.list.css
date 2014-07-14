@@ -49,7 +49,7 @@
 	width : 130px;
 }
 .column_company_id {
-	width : 9%;
+	width : 7%;
 }
 .column_company_name {
 	width : 12%;
@@ -62,6 +62,6 @@
 }
 .column_tantosha {
 	width : auto;
-	min-width : 9%;
+	min-width : 11%;
 }
 
