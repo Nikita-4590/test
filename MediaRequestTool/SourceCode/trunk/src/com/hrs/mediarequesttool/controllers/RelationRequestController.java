@@ -66,6 +66,7 @@ public class RelationRequestController extends BaseController {
 
 		ViewBuilder viewBuilder = null;
 		try {
+			
 			StatusDAL statusDAL = getDAL(StatusDAL.class);
 			Role role = new Role(authentication.getPrincipal());
 			List<Status> listStatus = statusDAL.getAll(role.getUnReadStatus());
@@ -75,6 +76,7 @@ public class RelationRequestController extends BaseController {
 			viewBuilder.setScripts("request.list.js");
 			viewBuilder.setStylesheets("request.list.css", "global.css");
 			viewBuilder.setPageTitle("依頼一覧");
+		
 		} catch (GenericException e) {
 			e.printStackTrace();
 			return fallbackToRequestList(httpRequest, redirectAttributes, e);
@@ -94,6 +96,7 @@ public class RelationRequestController extends BaseController {
 			String directionParam = httpRequest.getParameter("direction");
 			String firstLoad = httpRequest.getParameter("firstload");
 			int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
+			
 			
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
 			
@@ -129,7 +132,7 @@ public class RelationRequestController extends BaseController {
 			} else {
 				if (flowId == null || flowId.contains("undefined")) {
 					
-					flowId = this.generateHttpReqID(authentication.getPrincipal());
+					flowId = this.generateFlowId(authentication.getPrincipal());
 					
 					model.addAttribute("flowId", flowId);
 				} else {
@@ -868,10 +871,13 @@ public class RelationRequestController extends BaseController {
 	private void createFlowId(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, HttpSession session) {
 		String flowId = httpRequest.getParameter(Constants.FLOW_ID);
 		if (flowId == null || flowId.equals("undefined")) {
-			flowId = this.generateHttpReqID(authentication.getPrincipal());
+			
+			flowId = this.generateFlowId(authentication.getPrincipal());
 			model.addAttribute("flowId", flowId);
+			
 			session.setAttribute(flowId, new SearchObject());
 		} else {
+			
 			model.addAttribute("flowId", flowId);
 		}
 	}
