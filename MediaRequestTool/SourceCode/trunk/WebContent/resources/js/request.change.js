@@ -57,7 +57,7 @@ function confirmChange(requestId) {
 			} else {
 				me.dapps.global['request.change_confirm_box'] = new me.dapps.box({
 					auto_hide : false,
-					title : '同意しますか？',
+					title : '登録しますか？',
 					close_button : false,
 					loading_text : '読み込み中。。。',
 					button : {
@@ -164,6 +164,7 @@ function confirmChange(requestId) {
 			method : 'post',
 			data : {
 				relation_request_id : requestId,
+				current_status: $('#current-status').val(),
 				selected_next_status : $('#select-next-status').val(),
 				new_director_id : $('#select-new-director').val(),
 				crawl_date: $('#crawl-date-dapps-value').val()

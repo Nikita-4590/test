@@ -22,6 +22,7 @@
 			</div>
 			<div class="form-col-middle-special">
 				<label id="label-current-status">${request.status_description}</label>
+				<input type="hidden" id="current-status" value="${request.status}" />
 			</div>
 		</div>
 		

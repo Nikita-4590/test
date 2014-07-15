@@ -34,11 +34,14 @@ public class Constants {
 	public final static int USER_ROLE_MEDIA_CHECKER = 0;
 	public final static int USER_ROLE_DIRECTOR = 1;
 	
-	public final static String MSG_INVALID_REQUEST_ID = "Invalid Request (NOT FOUND). RequestID: ";
-    public final static String MSG_INVALID_REQUEST_STATUS = "Invalid current status of request (DATA CORRUPT): ";
-    public final static String MSG_INVALID_STATUS_ON_SCREEN = "Invalid status on screen (DATA CORRUPT). Status on screen: ";
-    public final static String MSG_INVALID_DIRECTOR_ID = "Invalid directorId (DATA CORRUPT). Selected directorId: ";
-    public final static String MSG_INVALID_CRAWLDATE = "Invalid crawlDate (DATA CORRUPT). Selected crawlDate: ";
+	public final static String LOG_INVALID_REQUEST_ID = "無効なレコード (NOT FOUND)。 レコードID: ";
+    public final static String LOG_INVALID_REQUEST_STATUS = "無効なレコードの現在ステータス (DATA CORRUPT)。 ステータス: ";
+    public final static String LOG_INVALID_DIRECTOR_ID = "無効な担当ディレクターID (DATA CORRUPT)。 選択されたディレクターID: ";
+    public final static String LOG_INVALID_CRAWLDATE = "無効な連携開始日 (DATA CORRUPT)。 選択された連携開始日: ";
+    public final static String LOG_INVALID_NEXT_STATUS_OF_CONFIRMING = "無効な選択されたステータス (DATA CORRUPT)。現在のステータス：「接続確認中」。選択されたステータス: )";
+    public final static String LOG_INVALID_NEXT_STATUS_OF_NG = "無効な選択されたステータス (DATA CORRUPT)。現在のステータス：「顧客確認中」。選択されたステータス: )";
+    public final static String LOG_INVALID_COMMENT = "無効なコメント (DATA CORRUPT). 入力されたコメント: ";
     
     public final static String MSG_INFO_DESTROYED = "他のユーザによりレコードが取消されました。レコードID： ";
+    public final static String MSG_INFO_DELETED = "他のユーザによりレコードが削除されました。レコードID： ";
 }
