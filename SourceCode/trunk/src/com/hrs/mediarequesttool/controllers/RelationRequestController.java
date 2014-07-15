@@ -97,7 +97,6 @@ public class RelationRequestController extends BaseController {
 			String firstLoad = httpRequest.getParameter("firstload");
 			int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
 			
-			
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
 			
 			Role role = new Role(authentication.getPrincipal());
