@@ -110,7 +110,8 @@ function confirmDestroy(requestId) {
 		url : me.dapps.global['url.confirm_destroy'],
 		method : 'post',
 		data : {
-			relation_request_id : requestId
+			relation_request_id : requestId,
+			current_status: $('#current-status').val()
 		},
 		callback : function(targetBox) {
 			targetBox.main.find('#destroy-request-form').validator();
