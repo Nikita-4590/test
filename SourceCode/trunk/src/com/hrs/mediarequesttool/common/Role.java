@@ -5,17 +5,14 @@ import com.hrs.mediarequesttool.pojos.User;
 public class Role {
 	
 	private final static String[] MEDIA_CHECKER = {"NEW", "CONFIRMING", "NG", "OK","PROCESSING"};
-//	private final static String[] LEADER = {"NEW", "CONFIRMING", "NG", "OK", "PROCESSING"};
 	private final static String[] DIRECTOR = {"PROCESSING", "FINISHED"};
 	
 	private final static String DIRECTOR_STATUS_PRIORITY = "director";
-//	private final static String LEADER_STATUS_PRIORITY = "leader";
 	private final static String MEDIA_CHECKER_STATUS_PRIORITY = "media_checker";
 	
 	private final static String[] REQUEST_STATUS_UNREAD = {"DELETED","DESTROYED"};
 	private final static String HIGHT_LIGHT_IF_DIRECTOR = "PROCESSING";
-//	private final static String HIGHT_LIGHT_LEADER = "OK";
-	private final static String HIGHT_LIGHT_IF_MEDIA_CHECKER = "NEW";
+	private final static String HIGHT_LIGHT_IF_MEDIA_CHECKER = "OK";
 	
 	private String[] roles;
 	private String priority;	
