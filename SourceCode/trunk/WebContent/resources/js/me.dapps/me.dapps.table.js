@@ -501,13 +501,15 @@ if (isSet($)) {
 		var _this = this;
 		var _checkDirection = false;
 		var _checkSort = false;
+		var isResetTotal = false;
 		
 		$(tbody).each(function() {
 			$.each(this.attributes, function() {
+				
 				if(this.specified) {
-					
 					if(this.name == 'total-page') {
 						_this.$parent.totalPage = $(tbody).attr('total-page');
+						isResetTotal = true;
 					} else if(this.name == 'current-page') {
 						_this.$parent.page = parseInt($(tbody).attr('current-page')) + 1;
 					} else if(this.name == 'sort') {
@@ -539,7 +541,8 @@ if (isSet($)) {
 				}
 			});
 		});
-		if(isUnset(_this.$parent.totalPage)) {
+		
+		if(!isResetTotal) {
 			_this.$parent.totalPage = 1;
 		}
 		if(_checkDirection && _checkSort) {
