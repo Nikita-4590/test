@@ -177,7 +177,7 @@ public abstract class BaseController {
 		private String pageTitle;
 	}
 	
-	public String generateHttpReqID(Object user) {
+	public String generateFlowId(Object user) {
 		Date date = new Date();
 		double random = Math.random();
 		long time = date.getTime();
