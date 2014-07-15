@@ -94,22 +94,33 @@ public class RelationRequestController extends BaseController {
 			String directionParam = httpRequest.getParameter("direction");
 			String firstLoad = httpRequest.getParameter("firstload");
 			int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
+			
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
+			
 			Role role = new Role(authentication.getPrincipal());
+			
 			PagingResult<RelationRequest> relationRequests = null;
+			
 			String flowId = httpRequest.getParameter(Constants.FLOW_ID);
+			
 			if (firstLoad != null) {
 				Object search = session.getAttribute(flowId);
 				SearchObject searchObject = (SearchObject) search;
+				
 				if (searchObject != null && searchObject.getDirection() != null && searchObject.getSort() != null) {
 					model.addAttribute("sort", searchObject.getSort());
 					model.addAttribute("direction", searchObject.getDirection());
+					
 					if (searchObject.getStatus() != null && searchObject.getSearchText() != null) {
+						
 						relationRequests = requestDAL.getAllRecord(searchObject.getPage(), searchObject.getDirection(), searchObject.getSort(), searchObject.getSearchText(), searchObject.getStatus(),
 								role.getPriority(), role.getUnReadStatus());
+
 						model.addAttribute("searchText", searchObject.getSearchText());
 						model.addAttribute("searchStatus", searchObject.getStatus());
+					
 					} else {
+						
 						relationRequests = requestDAL.paging(searchObject.getPage(), searchObject.getDirection(), searchObject.getSort(), role.getRoles(), role.getPriority());
 					}
 				} else {
@@ -117,31 +128,41 @@ public class RelationRequestController extends BaseController {
 				}
 			} else {
 				if (flowId == null || flowId.contains("undefined")) {
+					
 					flowId = this.generateHttpReqID(authentication.getPrincipal());
+					
 					model.addAttribute("flowId", flowId);
 				} else {
 					model.addAttribute("flowId", flowId);
 				}
+				
 				SearchObject searchObject = new SearchObject();
+				
 				if (statusParam != null || searchParam != null) {
+					
 					searchObject.setPage(page);
 					searchObject.setDirection(directionParam);
 					searchObject.setSort(sortParam);
 					searchObject.setSearchText(searchParam);
 					searchObject.setStatus(statusParam);
+					
 					relationRequests = requestDAL.getAllRecord(page, directionParam, sortParam, searchParam, statusParam, role.getPriority(), role.getUnReadStatus());
 				} else {
+					
 					searchObject.setPage(page);
 					searchObject.setDirection(directionParam);
 					searchObject.setSort(sortParam);
+					
 					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority());
 				}
 				session.setAttribute(flowId, searchObject);
 			}
+			
 			model.addAttribute("relationRequests", relationRequests);
 			model.addAttribute("compare_status", role.getHightLight());
 			model.addAttribute("currentUser", role.getUserID());
 			model.addAttribute("isDirector", role.isDirector());
+		
 		} catch (GenericException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
