@@ -24,6 +24,7 @@
                     WHEN status = 'CONFIRMING' THEN 4
                     WHEN status = 'NG' THEN 3
                     WHEN status = 'OK' THEN 2
+                    WHEN status = 'PROCESSING' THEN 1 END
                </if>
                ${direction}, created_at ASC, relation_request_id ASC
             </if>
@@ -44,6 +45,7 @@
                     WHEN status = 'CONFIRMING' THEN 4
                     WHEN status = 'NG' THEN 3
                     WHEN status = 'OK' THEN 2
+                    WHEN status = 'PROCESSING' THEN 1 END
                </if>
                DESC,
              created_at ASC,
