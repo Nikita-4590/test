@@ -832,7 +832,7 @@ if (isSet($)) {
 	me.dapps.table.prototype.callAjax = function(isFirstLoad) {
 		
 		var _this = this;
-		var url = _this.hashUrl(true);
+		var url = '&' + 'rand=' + new Date().getTime() + _this.hashUrl(true);
 		
 		if(isSet(isFirstLoad)) {
 			url += '&firstload=true';
@@ -1045,10 +1045,15 @@ if (isSet($)) {
 		}
 		if(isSet(_this.queries)) {
 			$.each(_this.queries, function(index) {
-				url += '&' + _this.queries[index]['query_name'] + '=' + _this.queries[index]['query_value'];
+				if(!isHashUrl || navigator.appName != 'Microsoft Internet Explorer') {
+					url += '&' + _this.queries[index]['query_name'] + '=' + _this.queries[index]['query_value'];
+				} else {
+					url += '&' + _this.queries[index]['query_name'] + '=' + encodeURIComponent(_this.queries[index]['query_value']);
+				}
 			});
 		}
 		return url;
+		
 	};
 	
 	/*
