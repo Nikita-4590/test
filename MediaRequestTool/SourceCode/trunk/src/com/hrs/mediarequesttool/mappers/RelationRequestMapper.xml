@@ -65,6 +65,8 @@
                 OR company_id ILIKE #{searchParam} AND status ILIKE #{status}
                 OR media_name ILIKE #{searchParam} AND status ILIKE #{status}
                 OR assign_user_name ILIKE #{searchParam} AND status ILIKE #{status}
+                OR requester_name ILIKE #{searchParam} AND status ILIKE #{status}
+                OR requester_mail ILIKE #{searchParam} AND status ILIKE #{status}
             </if>
             <if test="status == null or status == ''">
                 CAST(relation_request_id AS TEXT) ILIKE #{searchParam} AND status NOT IN 
@@ -92,6 +94,16 @@
                     separator="," close=")">
                        #{item}
                    </foreach>
+               OR requester_name ILIKE #{searchParam} AND status NOT IN 
+		            <foreach collection="unReadStatus" index="index" item="item" open="("
+		             separator="," close=")">
+		                #{item}
+		            </foreach>
+                OR requester_mail ILIKE #{searchParam} AND status NOT IN 
+	                <foreach collection="unReadStatus" index="index" item="item" open="("
+	                 separator="," close=")">
+	                    #{item}
+	                </foreach>
             </if>
         </where>
     </select>
@@ -122,6 +134,8 @@
                 OR company_id ILIKE #{searchParam} AND status ILIKE #{status}
                 OR media_name ILIKE #{searchParam} AND status ILIKE #{status}
                 OR assign_user_name ILIKE #{searchParam} AND status ILIKE #{status}
+                OR requester_name ILIKE #{searchParam} AND status ILIKE #{status}
+                OR requester_mail ILIKE #{searchParam} AND status ILIKE #{status}
             </if>
             <if test="status == null or status == ''">
                 CAST(relation_request_id AS TEXT) ILIKE #{searchParam} AND status NOT IN 
@@ -149,6 +163,16 @@
                     separator="," close=")">
                        #{item}
                    </foreach>
+                OR requester_name ILIKE #{searchParam} AND status NOT IN 
+	                <foreach collection="unReadStatus" index="index" item="item" open="("
+	                 separator="," close=")">
+	                    #{item}
+	                </foreach>
+                OR requester_mail ILIKE #{searchParam} AND status NOT IN 
+	                <foreach collection="unReadStatus" index="index" item="item" open="("
+	                 separator="," close=")">
+	                    #{item}
+	                </foreach>
             </if>
             </where>
             ORDER BY
