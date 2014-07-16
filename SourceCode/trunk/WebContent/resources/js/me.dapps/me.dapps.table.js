@@ -27,37 +27,50 @@
 	
 	$UI.createDomFromHTML = function(tagName, node) {
 		
-		if(isSet(node) && node instanceof Node) {
+		if (isSet(node) && node instanceof Node) {
 			var myLibXtag = me.dapps;
 			var xtagFunction = undefined;
-			for(var key in myLibXtag) {
-				if(tagName == myLibXtag[key].displayName) {
+			for ( var key in myLibXtag) {
+				if (tagName == myLibXtag[key].displayName) {
 					xtagFunction = key;
 					break;
 				}
 			}
-			
+
 			var meUI = new window['me']['dapps'][xtagFunction](this.tagName);
 			meUI.applyAllAttr(node);
-			var checkHasChild = false;
-			for(var key in myLibXtag) {
-				var xtag = myLibXtag[key].displayName;
-				if(isSet(xtag)) {
-					var children = $(node).find(xtag);
-					for(var index = 0; index < children.length; index++) {
-						var childrenUi = $UI.createDomFromHTML(xtag, children[index]);
-						meUI.appendChild(childrenUi);
-						checkHasChild = true;
+
+			var checkXtagCell = window['me']['dapps'][xtagFunction].displayName;
+			if (isSet(checkXtagCell) && (checkXtagCell == 'td' || checkXtagCell == 'th')) {
+				var parseNode = $(node).html();
+
+				$(meUI.htmlElement).html(parseNode);
+			} else {
+				var checkHasChild = false;
+
+				for ( var key in myLibXtag) {
+					var xtag = myLibXtag[key].displayName;
+
+					if (isSet(xtag)) {
+						var children = $(node).find(xtag);
+
+						for ( var index = 0; index < children.length; index++) {
+							var childrenUi = $UI.createDomFromHTML(xtag,
+									children[index]);
+							meUI.appendChild(childrenUi);
+							checkHasChild = true;
+						}
 					}
 				}
+
+				if (!checkHasChild) {
+					$(meUI.htmlElement).text($(node).text());
+				}
 			}
-			
-			if(!checkHasChild) {
-				$(meUI.htmlElement).text($(node).text());
-			}
+
 			return meUI;
 		}
-				
+
 	};
 	
 	$UI.prototype.appendChild = function(childNode) {
