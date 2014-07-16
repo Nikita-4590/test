@@ -14,7 +14,7 @@
             </div>
             <div class="free_text_search_form">
                 <label class="label_search">フリーワード検索</label>
-                <input type="text" id="input_text_search" placeholder="企業ID、企業名、媒体名、依頼ID、担当ディレクターで検索"/>
+                <input type="text" id="input_text_search" placeholder="企業、担当者名、Email、媒体名、依頼ID、HRS担当で検索"/>
                 <input type="submit" id="button_search" class="button orange" value="検索"/>
             </div>
         </form>
@@ -24,12 +24,12 @@
             <tr>
                 <th class="column_status">ステータス</th>
                 <th class="column_registered_time">登録日時</th>
-                <th class="column_renkei_date">連携開始日</th>
-                <th class="column_company_id">企業ID</th>
-                <th class="column_company_name">企業名</th>
+                <th class="column_company">企業</th>
+                <th class="column_tantoshaname">担当者名</th>
+                <th class="column_email">メール</th>
                 <th class="column_media_name">媒体名</th>
                 <th class="column_request_id">依頼ID</th>
-                <th class="column_tantosha">担当ディレクター</th>
+                <th class="column_hrs_tantosha"> HRS担当</th>
             </tr>
         </thead>
     </table>
@@ -37,7 +37,7 @@
 <dapps-locale-text>ERR001</dapps-locale-text>
 <script type="text/javascript">
     me.dapps.global['url.request_list'] = '${formatter.url("/request/ajax_list/?ajax")}';
-    me.dapps.global['data_binding'] = ['status','created_at','crawl_date',,,,,,];
+    me.dapps.global['data_binding'] = ['status','created_at',,,,,,,];
     me.dapps.global['url.request_redirect'] = '${formatter.url("/request/view_request/{request_id}/")}';
     me.dapps.global['url.ajax_call'] = '${formatter.url("/request/redirect/")}';
 </script>
