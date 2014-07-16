@@ -40,27 +40,27 @@
 }
 
 .column_status {
-	width : 15%;
+	width : 9%;
 }
 .column_registered_time {
-	width : 155px;
+	width : 135px;
 }
-.column_renkei_date {
-	width : 130px;
+.column_company {
+	width : 18%;
 }
-.column_company_id {
-	width : 7%;
+.column_tantoshaname {
+	width : 11%;
 }
-.column_company_name {
-	width : 12%;
+.column_email {
+	width : 17%;
 }
 .column_media_name {
-	width : 21%;
+	width : 20%;
 }
 .column_request_id {
 	width : 7%;
 }
-.column_tantosha {
+.column_hrs_tantosha {
 	width : auto;
 	min-width : 11%;
 }

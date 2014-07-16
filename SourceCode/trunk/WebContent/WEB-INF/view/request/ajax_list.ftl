@@ -20,14 +20,20 @@
 			${relationRequest.created_at!"－"}
 		</td>
 		<td>
-			${relationRequest.crawl_date!"－"}
+			(${relationRequest.company_id!"－"})
+			${relationRequest.company_name!"－"}
 		</td>
 		<td>
-			${relationRequest.company_id!"－"}
+			${relationRequest.requester_name!"－"}
 		</td>
 		
 		<td>
-			${relationRequest.company_name!"－"}
+			<#if relationRequest.requester_mail??>
+				<a href="mailto:${relationRequest.requester_mail}">${relationRequest.requester_mail}</a>
+			<#else>
+				－
+			</#if>
+			
 		</td>
 		<td>
 			${relationRequest.media_name!"－"}
