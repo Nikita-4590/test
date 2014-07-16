@@ -830,6 +830,26 @@ if (isSet($)) {
 	 * call ajax when first load or click sort, change page
 	 */
 	me.dapps.table.prototype.callAjax = function(isFirstLoad) {
+		var _this = this;
+		
+		if(isSet(this.config.method) && this.config.method.toLowerCase() == 'post') {
+			_this.ajaxPost(isFirstLoad);
+		} else {
+			_this.ajaxGet( isFirstLoad);
+		}
+		
+		if(this.config.use_hashes) {
+			var url = _this.hashUrl();
+			window.location.hash = url;
+		}
+		
+		
+	};
+	/*
+	 * call ajax with method get
+	 */
+	
+	me.dapps.table.prototype.ajaxGet = function(isFirstLoad) {
 		
 		var _this = this;
 		var url = '&' + 'rand=' + new Date().getTime() + _this.hashUrl(true);
@@ -838,10 +858,8 @@ if (isSet($)) {
 			url += '&firstload=true';
 		}
 		
-		if(_this.config.method.toLowerCase() == 'post') {
-			if(isSet($('#' + _this.config.flow_id).val())) {
-				url += '&flow_id=' + $('#' + _this.config.flow_id).val();
-			}
+		if(isSet($('#' + _this.config.flow_id).val())) {
+			url += '&flow_id=' + $('#' + _this.config.flow_id).val();
 		}
 		
 		$.ajax({
@@ -862,14 +880,64 @@ if (isSet($)) {
 				}
 			}
 		});
+	};
+	/*
+	 * call ajax with post method
+	 */
+	
+	me.dapps.table.prototype.ajaxPost = function(isFirstLoad) {
+		var data = {};
+		var _this = this;
 		
-		if(this.config.use_hashes) {
-			var url = _this.hashUrl();
-			window.location.hash = url;
+		if(this.config.paging) {
+			var currentPage = isUnset(_this.page) ? 0 : (_this.page-1).toString();
+			data['page'] = currentPage;
 		}
 		
+		if(isSet(_this.sort) && isSet(_this.direction)) {
+			
+			data['sort'] = _this.sort;
+			data['direction'] = _this.direction;
+		} else {
+			
+			data['sort'] = _this.config.default_sort;
+			data['direction'] = 'desc';
+		}
+		if(isSet(_this.queries)) {
+			$.each(_this.queries, function(index) {
+				
+				data[_this.queries[index]['query_name']] = _this.queries[index]['query_value'];
+			});
+		}
+		if(isSet(isFirstLoad) && isFirstLoad) {
+			data['firstload'] = true;
+		}
 		
+		if(isSet($('#' + _this.config.flow_id).val())) {
+			data['flow_id'] = $('#' + _this.config.flow_id).val();
+		}
+		
+		$.ajax({
+			  type: "POST",
+			  url: _this.config.url,
+			  data: data,
+			  contentType : "application/x-www-form-urlencoded; charset=utf-8",
+			  success : function(response) {
+					if(isFirstLoad) {
+						var thead = $(_this.table).find('thead')[0];
+						_this.removeHeader();
+						_this.createHeader(thead);
+					}
+					_this.tableProcess($.trim(response));
+				},
+				error : function(e) {
+					if (isFunction(_this.config.post_load)) {
+						_this.config.post_load(_this, e);
+					}
+				}
+			});
 	};
+	
 	/*
 	 * apply body when table have action
 	 */
@@ -1045,11 +1113,7 @@ if (isSet($)) {
 		}
 		if(isSet(_this.queries)) {
 			$.each(_this.queries, function(index) {
-				if(!isHashUrl || navigator.appName != 'Microsoft Internet Explorer') {
-					url += '&' + _this.queries[index]['query_name'] + '=' + _this.queries[index]['query_value'];
-				} else {
-					url += '&' + _this.queries[index]['query_name'] + '=' + encodeURIComponent(_this.queries[index]['query_value']);
-				}
+				url += '&' + _this.queries[index]['query_name'] + '=' + encodeURIComponent(_this.queries[index]['query_value']);
 			});
 		}
 		return url;
