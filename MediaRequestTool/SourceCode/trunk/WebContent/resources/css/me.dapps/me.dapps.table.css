@@ -122,6 +122,9 @@
 .dapps-table-main tbody tr.account-disabled td {
 	background-color: #FFCCCC;
 }
+.dapps-table-main tbody tr.request-change-hightlight td {
+	background-color: yellow;
+}
 .dapps-table-main thead th.dapps-table-scroll-header {
 	border: none;
 	width: 15px;

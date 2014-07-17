@@ -62,7 +62,7 @@ public class RelationRequestController extends BaseController {
 		 * httpRequest.getAttribute(Constants.STORED_REQUEST_ID) == id of
 		 * httprequest
 		 */
-		createFlowId(httpRequest, model, authentication, session);
+		createFlowId(httpRequest, model, authentication, session, 0);
 
 		ViewBuilder viewBuilder = null;
 		try {
@@ -105,7 +105,15 @@ public class RelationRequestController extends BaseController {
 			
 			String flowId = httpRequest.getParameter(Constants.FLOW_ID);
 			
-			if (firstLoad != null) {
+			if(flowId != null && !flowId.equals("undefined")) {
+				SearchObject searchObject = (SearchObject) session.getAttribute(flowId);
+				int requestId = searchObject.getRelationRequestId();
+				if(requestId > 0) {
+					model.addAttribute("requestId", requestId);
+				}
+			}
+			
+			if (firstLoad != null && !isNullOrUndefined(flowId)) {
 				Object search = session.getAttribute(flowId);
 				SearchObject searchObject = (SearchObject) search;
 				
@@ -163,7 +171,6 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("relationRequests", relationRequests);
 			model.addAttribute("compare_status", role.getHightLight());
 			model.addAttribute("currentUser", role.getUserID());
-			model.addAttribute("isDirector", role.isDirector());
 		
 		} catch (GenericException e) {
 			e.printStackTrace();
@@ -175,10 +182,10 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/view_request/{relation_request_id}/")
 	@ResponseBody
-	public ModelAndView viewRequest(HttpServletRequest httpRequest, @PathVariable("relation_request_id") int requestId, ModelMap model, RedirectAttributes redirectAttributes) {
+	public ModelAndView viewRequest(HttpServletRequest httpRequest, @PathVariable("relation_request_id") int requestId, ModelMap model, RedirectAttributes redirectAttributes, HttpSession session, Authentication authentication) {
 
 		// for link with Request List page
-		setFlowId(httpRequest, model);
+		createFlowId(httpRequest, model, authentication, session, requestId);
 		
 		ViewBuilder builder = getViewBuilder("request.detail", model);
 
@@ -866,20 +873,38 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("flowId", flowId);
 		}
 	}
-
-	private void createFlowId(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, HttpSession session) {
+	
+	private boolean isNullOrUndefined(String inp) {
+		return inp == null || inp.equals("undefined");
+	}
+	
+	private void createFlowId(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, HttpSession session, int requestId) {
 		String flowId = httpRequest.getParameter(Constants.FLOW_ID);
 		if (flowId == null || flowId.equals("undefined")) {
 			
 			flowId = this.generateFlowId(authentication.getPrincipal());
 			model.addAttribute("flowId", flowId);
 			
-			session.setAttribute(flowId, new SearchObject());
+			SearchObject searchObject = new SearchObject();
+			if(requestId >0) {
+				searchObject.setRelationRequestId(requestId);
+			}
+			
+			session.setAttribute(flowId, searchObject);
 		} else {
 			
 			model.addAttribute("flowId", flowId);
+			
+			SearchObject searchObject = (SearchObject) session.getAttribute(flowId);
+			if(requestId >0) {
+				searchObject.setRelationRequestId(requestId);
+			}
+			
+			session.setAttribute(flowId, searchObject);
 		}
 	}
+	
+	//private void setHight
 
 	private class SearchObject {
 		private int page;
@@ -887,7 +912,8 @@ public class RelationRequestController extends BaseController {
 		private String status;
 		private String searchText;
 		private String sort;
-
+		private int relationRequestId;
+		
 		public int getPage() {
 			return page;
 		}
@@ -928,5 +954,13 @@ public class RelationRequestController extends BaseController {
 			this.sort = sort;
 		}
 
+		public int getRelationRequestId() {
+			return relationRequestId;
+		}
+
+		public void setRelationRequestId(int relationRequestId) {
+			this.relationRequestId = relationRequestId;
+		}
+		
 	}
 }

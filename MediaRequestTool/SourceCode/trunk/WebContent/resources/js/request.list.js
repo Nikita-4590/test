@@ -1,9 +1,17 @@
 var table = undefined;
 var searchParam = undefined;
 var status = undefined;
+var inpTextSearchWidth = undefined;
+var screenWidth = undefined;
+var marginRightForm = undefined;
 $(me.dapps).bind(
 'load',
 function() {
+	
+	screenWidth = window.screen.availWidth;
+	marginRightForm = (screenWidth - $('#company-list-page').outerWidth())/2;
+	inpTextSearchWidth = $('#input_text_search').outerWidth();
+	setHeight();
 	table = $('#request-ajax-table').table({
 		width : '100',
 		select_row : false,
@@ -99,4 +107,28 @@ function() {
 			query_value : status
 		}]);
 	});
+	
+	$(window).on('resize', function() {
+		setHeight();
+	});
+	 
+	function setHeight() {
+	    
+	    var currentWindowWidth = $(window).outerWidth();
+//	    var newWidth = inpTextSearchWidth*currentWindowWidth/screenWidth <= screenWidth/2 ? currentWindowWidth - 210 : inpTextSearchWidth*currentWindowWidth/screenWidth;
+	    var newWidth = currentWindowWidth - 210;
+	    if(newWidth >= 20) {
+	    	$('#input_text_search').css({'width' : inpTextSearchWidth*currentWindowWidth/screenWidth + 'px'});
+	    } else {
+	    	$('#input_text_search').css({'width' : '20px'});
+	    }
+	    
+	    if(currentWindowWidth <= 1100) {
+	    	$('#button_search').css({'margin-left' : '10px', 'float' : 'left'});
+	    } else {
+	    	$('#button_search').css({'margin-left' : '0px', 'float' : 'right'});
+	    }
+	    
+	    
+	  };
 });
