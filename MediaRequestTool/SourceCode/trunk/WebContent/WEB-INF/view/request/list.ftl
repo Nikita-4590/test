@@ -14,7 +14,7 @@
             </div>
             <div class="free_text_search_form">
                 <label class="label_search">フリーワード検索</label>
-                <input type="text" id="input_text_search" placeholder="企業、担当者名、E-Mail、媒体名、依頼ID、HRS担当で検索"/>
+                <input type="text" id="input_text_search" placeholder="企業ID、企業名、担当者名、E-Mail、媒体名、依頼ID、HRS担当で検索"/>
                 <input type="submit" id="button_search" class="button orange" value="検索"/>
             </div>
         </form>
@@ -24,7 +24,7 @@
             <tr>
                 <th class="column_status">ステータス</th>
                 <th class="column_registered_time">登録日時</th>
-                <th class="column_company">企業</th>
+                <th class="column_company">(企業ID) 企業名</th>
                 <th class="column_tantoshaname">担当者名</th>
                 <th class="column_email">E-Mail</th>
                 <th class="column_media_name">媒体名</th>

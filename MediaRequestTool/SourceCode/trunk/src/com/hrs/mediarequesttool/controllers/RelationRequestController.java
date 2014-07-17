@@ -262,7 +262,7 @@ public class RelationRequestController extends BaseController {
 					mediaLabel.setLogin_password_1(Constants.ANGWS_LOGIN_PASSWORD_1);
 					mediaLabel.setLogin_password_2(Constants.ANGWS_LOGIN_PASSWORD_2);
 				} else {
-					mediaLabel.setLogin_id_1(Constants.WEBAN_LOGIN_ID_1);
+					mediaLabel.setLogin_id_1(null);
 					mediaLabel.setLogin_id_2(null);
 					mediaLabel.setLogin_password_1(Constants.WEBAN_LOGIN_PASSWORD_1);
 					mediaLabel.setLogin_password_2(null);

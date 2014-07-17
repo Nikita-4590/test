@@ -74,7 +74,7 @@ function confirmChange(requestId) {
 								targetBox.close();
 							}
 						}, {
-							text : '同意する',
+							text : '登録する',
 							action : function(targetBox) {
 								targetBox.main.find('#change-request-form').submit();
 							}

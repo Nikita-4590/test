@@ -21,7 +21,6 @@ public class Constants {
 	public final static int USER_ROLE_OF_DIRECTOR = 1;
 	
 	public final static String WEBAN_MEDIA_ID = "weban";
-	public final static String WEBAN_LOGIN_ID_1 = "Webbox ID";
 	public final static String WEBAN_LOGIN_PASSWORD_1 = "パスワード";
 	public final static String ANGWS_LOGIN_ID_1 = "利用者ID";
 	public final static String ANGWS_LOGIN_ID_2 = "ユーザーID";
