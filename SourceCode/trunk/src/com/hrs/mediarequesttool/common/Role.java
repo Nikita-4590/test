@@ -19,7 +19,6 @@ public class Role {
 	private String [] unReadStatus;
 	private String hightLight;
 	private int userID;
-	private boolean isDirector;
 	
 	public Role(Object object) {
 		setUnReadStatus(REQUEST_STATUS_UNREAD);
@@ -28,14 +27,12 @@ public class Role {
 			setUserID(user.getId());
 			switch (user.getUser_role()) {
 			case Constants.USER_ROLE_MEDIA_CHECKER:
-				setDirector(false);
 				setHightLight(HIGHT_LIGHT_IF_MEDIA_CHECKER);
 				setRoles(MEDIA_CHECKER);
 				setPriority(MEDIA_CHECKER_STATUS_PRIORITY);
 				break;
 			case Constants.USER_ROLE_DIRECTOR:
 			default:
-				setDirector(true);
 				setHightLight(HIGHT_LIGHT_IF_DIRECTOR);
 				setRoles(DIRECTOR);
 				setPriority(DIRECTOR_STATUS_PRIORITY);
@@ -87,13 +84,4 @@ public class Role {
 		this.userID = userID;
 	}
 
-	public boolean isDirector() {
-		return isDirector;
-	}
-
-	public void setDirector(boolean isDirector) {
-		this.isDirector = isDirector;
-	}
-
-	
 }
