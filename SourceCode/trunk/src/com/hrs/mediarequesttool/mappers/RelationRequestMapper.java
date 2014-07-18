@@ -20,7 +20,7 @@ public interface RelationRequestMapper {
 	List<RelationRequest> paging(@Param("page") Page page,
 			@Param("sort") String sort, 
 			@Param("direction") String direction,
-			@Param("roles") String[] roles,@Param("priority") String priority);
+			@Param("roles") String[] roles, @Param("priority") String priority, @Param("user_id") int userId);
 	
 	// get Request detail information
 	RelationRequest get(@Param("request_id") int requestId, @Param("pgcrypto") String pgcrypto);

@@ -20,7 +20,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 		super(sessionFactory, RelationRequestMapper.class);
 	}
 
-	public PagingResult<RelationRequest> paging(int page, String direction, String sort, String[] role, String priority) throws GenericException {
+	public PagingResult<RelationRequest> paging(int page, String direction, String sort, String[] role, String priority, int userId) throws GenericException {
 
 		try {
 			openSession();
@@ -30,7 +30,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			result.setPage(page, total, pagingSetting.getLimit());
 			List<RelationRequest> relationRequests = new ArrayList<RelationRequest>();
 			if (!result.isExceed() && total != 0) {
-				relationRequests = mapper.paging(pagingSetting, sort, direction, role, priority);
+				relationRequests = mapper.paging(pagingSetting, sort, direction, role, priority, userId);
 				result.setList(relationRequests);
 			}
 			return result;

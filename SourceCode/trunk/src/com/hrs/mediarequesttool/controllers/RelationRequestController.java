@@ -107,9 +107,11 @@ public class RelationRequestController extends BaseController {
 			
 			if(flowId != null && !flowId.equals("undefined")) {
 				SearchObject searchObject = (SearchObject) session.getAttribute(flowId);
-				int requestId = searchObject.getRelationRequestId();
-				if(requestId > 0) {
-					model.addAttribute("requestId", requestId);
+				if (searchObject != null) {
+					int requestId = searchObject.getRelationRequestId();
+					if (requestId > 0) {
+						model.addAttribute("requestId", requestId);
+					}
 				}
 			}
 			
@@ -131,10 +133,10 @@ public class RelationRequestController extends BaseController {
 					
 					} else {
 						
-						relationRequests = requestDAL.paging(searchObject.getPage(), searchObject.getDirection(), searchObject.getSort(), role.getRoles(), role.getPriority());
+						relationRequests = requestDAL.paging(searchObject.getPage(), searchObject.getDirection(), searchObject.getSort(), role.getRoles(), role.getPriority(), role.getUserID());
 					}
 				} else {
-					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority());
+					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority(), role.getUserID());
 				}
 			} else {
 				if (flowId == null || flowId.contains("undefined")) {
@@ -163,7 +165,7 @@ public class RelationRequestController extends BaseController {
 					searchObject.setDirection(directionParam);
 					searchObject.setSort(sortParam);
 					
-					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority());
+					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority(), role.getUserID());
 				}
 				session.setAttribute(flowId, searchObject);
 			}
