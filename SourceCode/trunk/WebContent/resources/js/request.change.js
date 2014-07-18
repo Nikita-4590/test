@@ -167,7 +167,8 @@ function confirmChange(requestId) {
 				current_status: $('#current-status').val(),
 				selected_next_status : $('#select-next-status').val(),
 				new_director_id : $('#select-new-director').val(),
-				crawl_date: $('#crawl-date-dapps-value').val()
+				crawl_date: $('#crawl-date-dapps-value').val(),
+				current_director_id: $('#current-director').val()
 			},
 			callback : function(targetBox) {
 				targetBox.main.find('#change-request-form').validator();

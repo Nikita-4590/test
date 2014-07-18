@@ -352,8 +352,13 @@ public class RelationRequestController extends BaseController {
 				if (!validateCrawlDate(crawlDate)) {
 					throw new BadRequestException(Constants.LOG_INVALID_CRAWLDATE + crawlDate);
 				} else {
-					model.addAttribute("crawlDate", crawlDate);
-					model.addAttribute("nextStatus", Constants.STATUS_FINISHED);
+					String currentDirectorIdOnScreen = httpRequest.getParameter("current_director_id");
+					if (request.getAssign_user_id() != Integer.parseInt(currentDirectorIdOnScreen)) {
+						throw new ResourceNotFoundException();
+					} else {
+						model.addAttribute("crawlDate", crawlDate);
+						model.addAttribute("nextStatus", Constants.STATUS_FINISHED);
+					}
 				}
 			}
 
@@ -406,6 +411,7 @@ public class RelationRequestController extends BaseController {
 					String directorId = httpRequest.getParameter("new_director_id");
 					String crawlDate = httpRequest.getParameter("crawl_date");
 					String comment = httpRequest.getParameter("backToConfirming-comment");
+					String currentDirectorIdOnScreen = httpRequest.getParameter("current_director_id");
 
 					if (currentStatus.equals(Constants.STATUS_CONFIRMING) && !checkCaseStatusIsConfirming(nextStatus)) {
 						messageId = "ERR153";
@@ -426,6 +432,9 @@ public class RelationRequestController extends BaseController {
 					} else if (currentStatus.equals(Constants.STATUS_PROCESSING) && !validateCrawlDate(crawlDate)) {
 						messageId = "ERR153";
 						throw new BadRequestException(Constants.LOG_INVALID_CRAWLDATE + crawlDate);
+						
+					} else if(currentStatus.equals(Constants.STATUS_PROCESSING) && (request.getAssign_user_id() != Integer.parseInt(currentDirectorIdOnScreen))) {
+						messageId = "ERR151";
 						
 					} else {
 						if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
@@ -745,6 +754,12 @@ public class RelationRequestController extends BaseController {
 					// Status may be changed. Show message dialog and reload the detail page 
 					throw new ResourceNotFoundException();
 				} else {
+					if (request.getStatus().equals(Constants.STATUS_PROCESSING)) {
+						String currentDirectorIdOnScreen = httpRequest.getParameter("current_director_id");
+						if (request.getAssign_user_id() != Integer.parseInt(currentDirectorIdOnScreen)) {
+							throw new ResourceNotFoundException();
+						}
+					}
 					model.addAttribute("request", request);
 				}
 			}
@@ -797,6 +812,13 @@ public class RelationRequestController extends BaseController {
 						throw new BadRequestException(Constants.LOG_INVALID_COMMENT + comment);
 						
 					} else {
+						if (request.getStatus().equals(Constants.STATUS_PROCESSING)) {
+							String currentDirectorIdOnScreen = httpRequest.getParameter("current_director_id");
+							if (request.getAssign_user_id() != Integer.parseInt(currentDirectorIdOnScreen)) {
+								throw new ResourceNotFoundException();
+							}
+						}
+						
 						model.addAttribute("request", request);
 						// create session
 						session = sqlSessionFactory.openSession();

@@ -6,6 +6,7 @@
 	<input type="hidden" name="selected_next_status" value="${nextStatus!""}" />
 	<input type="hidden" name="new_director_id" value="${newDirectorId!""}" />
 	<input type="hidden" name="crawl_date" value="${crawlDate!""}" />
+	<input type="hidden" name="current_director_id" value="${request.assign_user_id!""}" />
 	
 	<#if request.status = "NG" && nextStatus = "CONFIRMING">
 		<div>
@@ -17,9 +18,11 @@
 		<div>
 			<label>・${request.media_name!""}</label>
 		</div>
-		<div>
-			<label>・${request.login_id_1!""}</label>
-		</div>
+		<#if request.login_id_1??>
+			<div>
+				<label>・${request.login_id_1}</label>
+			</div>
+		</#if>	
 		<div class="form-line">
 			<div class="form-col-right-box">
 				<textarea placeholder="ここに戻す理由を入力してください。"maxlength="255"　name="backToConfirming-comment"

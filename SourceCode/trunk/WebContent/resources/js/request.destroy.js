@@ -111,7 +111,8 @@ function confirmDestroy(requestId) {
 		method : 'post',
 		data : {
 			relation_request_id : requestId,
-			current_status: $('#current-status').val()
+			current_status: $('#current-status').val(),
+			current_director_id: $('#current-director').val()
 		},
 		callback : function(targetBox) {
 			targetBox.main.find('#destroy-request-form').validator();
