@@ -258,7 +258,9 @@
             other_media.relation_request
         SET
             status = #{status},
-            assign_user_id = #{assign_user_id},
+            <if test="assign_user_id != 0">
+            	assign_user_id = #{assign_user_id},
+            </if>
             crawl_date = #{crawl_date}::date,
             updated_at = CURRENT_TIMESTAMP
         WHERE
