@@ -9,6 +9,9 @@
              separator="," close=")">
              #{item}
          </foreach>
+         <if test="priority != null and priority == 'director'">
+         	AND assign_user_id = #{user_id}
+         </if>
        </where>
        ORDER BY
        <if test="sort != null and direction != null">
