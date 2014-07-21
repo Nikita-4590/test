@@ -1,5 +1,5 @@
 #company-list-page {
-	width: 1200px;
+	width: 95%;
 }
 
 #search-form {
@@ -11,31 +11,37 @@
     display:inline-block;
 }
 
+#free_text_search_form {
+	display: inline-block;
+	width : 100%;
+	margin: 0 10 0 0
+}
+
 #status_search_form {
 	display: inline-block;
 	width : 100%;
 	margin: 0 10 0 0
 }
 .label_search {
+	display : inline-block;
 	width : 110px;
     margin-left : 0px;
     text-align: left;
     float : left;
 }
-.input_text_search {
-	margin-left: 50px;
-	width : auto;
-	min-width : 200px;
-    float : left;
-}
-#input_text_search {
-	width : auto;
-	min-width : 75%;
+.combobox_status_search {
+	display : inline-block;
 	margin-left: 50px;
 	float : left;
 }
+
+#input_text_search {
+	width : calc(100% - 260px);
+	margin-left : 50px;
+	float : left;
+}
 #button_search {
-	width : 80px;	
+	width : 70px;
 	margin-right: 0px;
 	float: right;
 }
