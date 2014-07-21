@@ -5,7 +5,7 @@
         <form id="search-relation-request-form">
             <div id="status_search_form">
                 <label class="label_search">ステータス検索</label>
-                <select id="status_select_option" class="input_text_search">
+                <select id="status_select_option" class="combobox_status_search">
                     <option value=""></option>
                  <#list listStatus as status>
                     <option value="${status.status_type}">${status.description}</option>
