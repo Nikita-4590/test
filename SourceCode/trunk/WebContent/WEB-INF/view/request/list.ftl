@@ -1,6 +1,6 @@
 <#compress>
 <#escape x as x?html>
-<div id="company-list-page" class="page">
+<div id="request-list-page" class="page">
     <div id="search-form">
         <form id="search-relation-request-form">
             <div id="status_search_form">
