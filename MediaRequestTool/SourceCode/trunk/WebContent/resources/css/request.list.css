@@ -22,7 +22,6 @@
 #status_search_form {
 	display: inline-block;
 	width: 100%;
-	margin: 0 20 0 0;
 	margin-bottom: 5px;
 }
 
@@ -42,7 +41,7 @@
 }
 
 #input_text_search {
-	width: calc(100% - 260px);
+	width: calc(100% -   260px);
 	margin-left: 50px;
 	float: left;
 }
