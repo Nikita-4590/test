@@ -4,25 +4,22 @@
 }
 
 #search-form {
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 }
 
 #search-relation-request-form {
 	display: inline-block;
 	width: 100%;
-	margin-bottom: 5px;
 }
 
 #free_text_search_form {
 	display: inline-block;
 	width: 100%;
-	margin-bottom: 5px;
 }
 
 #status_search_form {
 	display: inline-block;
 	width: 100%;
-	margin-bottom: 5px;
 }
 
 .label_search {
@@ -41,7 +38,7 @@
 }
 
 #input_text_search {
-	width: calc(100% -   260px);
+	width: calc(100% - 260px);
 	margin-left: 50px;
 	float: left;
 }
