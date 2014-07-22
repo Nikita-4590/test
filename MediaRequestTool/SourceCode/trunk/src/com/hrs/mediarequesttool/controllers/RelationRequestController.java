@@ -910,7 +910,7 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("flowId", flowId);
 			
 			SearchObject searchObject = new SearchObject();
-			if(requestId >0) {
+			if(requestId > 0) {
 				searchObject.setRelationRequestId(requestId);
 			}
 			
@@ -920,7 +920,7 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("flowId", flowId);
 			
 			SearchObject searchObject = (SearchObject) session.getAttribute(flowId);
-			if(requestId >0) {
+			if(requestId > 0) {
 				searchObject.setRelationRequestId(requestId);
 			}
 			
