@@ -4,25 +4,26 @@
 }
 
 #search-form {
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 #search-relation-request-form {
 	display: inline-block;
 	width: 100%;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 #free_text_search_form {
 	display: inline-block;
 	width: 100%;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 #status_search_form {
 	display: inline-block;
 	width: 100%;
-	margin-bottom: 10px;
+	margin: 0 20 0 0;
+	margin-bottom: 5px;
 }
 
 .label_search {
