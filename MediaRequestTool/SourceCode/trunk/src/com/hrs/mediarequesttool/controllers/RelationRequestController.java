@@ -66,7 +66,7 @@ public class RelationRequestController extends BaseController {
 
 		ViewBuilder viewBuilder = null;
 		try {
-			
+
 			StatusDAL statusDAL = getDAL(StatusDAL.class);
 			Role role = new Role(authentication.getPrincipal());
 			List<Status> listStatus = statusDAL.getAll(role.getUnReadStatus());
@@ -76,7 +76,7 @@ public class RelationRequestController extends BaseController {
 			viewBuilder.setScripts("request.list.js");
 			viewBuilder.setStylesheets("request.list.css", "global.css");
 			viewBuilder.setPageTitle("依頼一覧");
-		
+
 		} catch (GenericException e) {
 			e.printStackTrace();
 			return fallbackToRequestList(httpRequest, redirectAttributes, e);
@@ -96,16 +96,16 @@ public class RelationRequestController extends BaseController {
 			String directionParam = httpRequest.getParameter("direction");
 			String firstLoad = httpRequest.getParameter("firstload");
 			int page = pageParam == null ? -1 : Integer.parseInt(pageParam);
-			
+
 			RelationRequestDAL requestDAL = getDAL(RelationRequestDAL.class);
-			
+
 			Role role = new Role(authentication.getPrincipal());
-			
+
 			PagingResult<RelationRequest> relationRequests = null;
-			
+
 			String flowId = httpRequest.getParameter(Constants.FLOW_ID);
-			
-			if(flowId != null && !flowId.equals("undefined")) {
+
+			if (flowId != null && !flowId.equals("undefined")) {
 				SearchObject searchObject = (SearchObject) session.getAttribute(flowId);
 				if (searchObject != null) {
 					int requestId = searchObject.getRelationRequestId();
@@ -114,25 +114,25 @@ public class RelationRequestController extends BaseController {
 					}
 				}
 			}
-			
+
 			if (firstLoad != null && !isNullOrUndefined(flowId)) {
 				Object search = session.getAttribute(flowId);
 				SearchObject searchObject = (SearchObject) search;
-				
+
 				if (searchObject != null && searchObject.getDirection() != null && searchObject.getSort() != null) {
 					model.addAttribute("sort", searchObject.getSort());
 					model.addAttribute("direction", searchObject.getDirection());
-					
+
 					if (searchObject.getStatus() != null && searchObject.getSearchText() != null) {
-						
+
 						relationRequests = requestDAL.getAllRecord(searchObject.getPage(), searchObject.getDirection(), searchObject.getSort(), searchObject.getSearchText(), searchObject.getStatus(),
 								role.getPriority(), role.getUnReadStatus());
 
 						model.addAttribute("searchText", searchObject.getSearchText());
 						model.addAttribute("searchStatus", searchObject.getStatus());
-					
+
 					} else {
-						
+
 						relationRequests = requestDAL.paging(searchObject.getPage(), searchObject.getDirection(), searchObject.getSort(), role.getRoles(), role.getPriority(), role.getUserID());
 					}
 				} else {
@@ -140,40 +140,40 @@ public class RelationRequestController extends BaseController {
 				}
 			} else {
 				if (flowId == null || flowId.contains("undefined")) {
-					
+
 					flowId = this.generateFlowId(authentication.getPrincipal());
-					
+
 					model.addAttribute("flowId", flowId);
 				} else {
 					model.addAttribute("flowId", flowId);
 				}
-				
+
 				SearchObject searchObject = new SearchObject();
-				
+
 				if (statusParam != null || searchParam != null) {
-					
+
 					searchObject.setPage(page);
 					searchObject.setDirection(directionParam);
 					searchObject.setSort(sortParam);
 					searchObject.setSearchText(searchParam);
 					searchObject.setStatus(statusParam);
-					
+
 					relationRequests = requestDAL.getAllRecord(page, directionParam, sortParam, searchParam, statusParam, role.getPriority(), role.getUnReadStatus());
 				} else {
-					
+
 					searchObject.setPage(page);
 					searchObject.setDirection(directionParam);
 					searchObject.setSort(sortParam);
-					
+
 					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority(), role.getUserID());
 				}
 				session.setAttribute(flowId, searchObject);
 			}
-			
+
 			model.addAttribute("relationRequests", relationRequests);
 			model.addAttribute("compare_status", role.getHightLight());
 			model.addAttribute("currentUser", role.getUserID());
-		
+
 		} catch (GenericException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -184,15 +184,16 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/view_request/{relation_request_id}/")
 	@ResponseBody
-	public ModelAndView viewRequest(HttpServletRequest httpRequest, @PathVariable("relation_request_id") int requestId, ModelMap model, RedirectAttributes redirectAttributes, HttpSession session, Authentication authentication) {
+	public ModelAndView viewRequest(HttpServletRequest httpRequest, @PathVariable("relation_request_id") int requestId, ModelMap model, RedirectAttributes redirectAttributes, HttpSession session,
+			Authentication authentication) {
 
 		// for link with Request List page
 		createFlowId(httpRequest, model, authentication, session, requestId);
-		
+
 		ViewBuilder builder = getViewBuilder("request.detail", model);
 
 		try {
-			
+
 			// get data from database
 			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
 
@@ -211,16 +212,16 @@ public class RelationRequestController extends BaseController {
 			String currentStatus = request.getStatus();
 
 			List<Status> listNextStatus = new ArrayList<Status>();
-			
+
 			if (currentStatus.equals(Constants.STATUS_DELETED)) {
 				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.MSG_INFO_DELETED + requestId));
 			} else if (currentStatus.equals(Constants.STATUS_DESTROYED)) {
 				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.MSG_INFO_DESTROYED + requestId));
 			} else if (currentStatus.equals(Constants.STATUS_NEW)) {
-				
+
 				model.addAttribute("view", Constants.STATUS_NEW);
 				nextStatus = statusDAL.get(Constants.STATUS_CONFIRMING);
-				
+
 			} else if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
 
 				if (currentStatus.equals(Constants.STATUS_CONFIRMING)) {
@@ -296,13 +297,13 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/confirm_change/", method = RequestMethod.POST)
 	public ModelAndView confirmChange(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
-		
-		//for link with Request List page
+
+		// for link with Request List page
 		setFlowId(httpRequest, model);
-		
+
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-change", model);
-			
+
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
 			String currentStatusOnScreen = httpRequest.getParameter("current_status");
 
@@ -376,7 +377,7 @@ public class RelationRequestController extends BaseController {
 	@RequestMapping(value = "/change/", method = RequestMethod.POST)
 	public String submitChange(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
 
-		//for link with Request List page
+		// for link with Request List page
 		setFlowId(httpRequest, model);
 
 		String messageId = null;
@@ -402,7 +403,7 @@ public class RelationRequestController extends BaseController {
 			} else {
 				String currentStatus = request.getStatus();
 				String currentStatusOnScreen = httpRequest.getParameter("current_status");
-				
+
 				if (!currentStatus.equals(currentStatusOnScreen)) {
 					// Status may be changed. Show message dialog and reload the detail page
 					messageId = "ERR151";
@@ -416,26 +417,26 @@ public class RelationRequestController extends BaseController {
 					if (currentStatus.equals(Constants.STATUS_CONFIRMING) && !checkCaseStatusIsConfirming(nextStatus)) {
 						messageId = "ERR153";
 						throw new BadRequestException(Constants.LOG_INVALID_NEXT_STATUS_OF_CONFIRMING + nextStatus);
-						
+
 					} else if (currentStatus.equals(Constants.STATUS_NG) && !checkCaseStatusIsNg(nextStatus)) {
 						messageId = "ERR153";
 						throw new BadRequestException(Constants.LOG_INVALID_NEXT_STATUS_OF_NG + nextStatus);
-						
+
 					} else if (currentStatus.equals(Constants.STATUS_NG) && nextStatus.equals(Constants.STATUS_CONFIRMING) && !validateComment(comment)) {
 						messageId = "ERR153";
 						throw new BadRequestException(Constants.LOG_INVALID_COMMENT + comment);
-						
+
 					} else if (currentStatus.equals(Constants.STATUS_OK) && !validateNewDirectorId(directorId)) {
 						messageId = "ERR153";
 						throw new BadRequestException(Constants.LOG_INVALID_DIRECTOR_ID + directorId);
-						
+
 					} else if (currentStatus.equals(Constants.STATUS_PROCESSING) && !validateCrawlDate(crawlDate)) {
 						messageId = "ERR153";
 						throw new BadRequestException(Constants.LOG_INVALID_CRAWLDATE + crawlDate);
-						
-					} else if(currentStatus.equals(Constants.STATUS_PROCESSING) && (request.getAssign_user_id() != Integer.parseInt(currentDirectorIdOnScreen))) {
+
+					} else if (currentStatus.equals(Constants.STATUS_PROCESSING) && (request.getAssign_user_id() != Integer.parseInt(currentDirectorIdOnScreen))) {
 						messageId = "ERR151";
-						
+
 					} else {
 						if (currentStatus.equals(Constants.STATUS_CONFIRMING) || currentStatus.equals(Constants.STATUS_NG)) {
 							request.setStatus(nextStatus);
@@ -515,10 +516,6 @@ public class RelationRequestController extends BaseController {
 		map.put("message_id", messageId);
 		map.put("success", success);
 
-		// if (success) {
-		// map.put("url", "/request/list/");
-		// }
-
 		return GSON.toJson(map);
 	}
 
@@ -530,7 +527,7 @@ public class RelationRequestController extends BaseController {
 
 		return requestChangeInfo;
 	}
-	
+
 	private boolean checkCaseStatusIsConfirming(String nextStatus) {
 		if (Validator.isNullOrEmpty(nextStatus)) {
 			return false;
@@ -594,13 +591,13 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/confirm_update_director/", method = RequestMethod.POST)
 	public ModelAndView confirmUpdateDirector(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
-		
-		//for link with Request List page
+
+		// for link with Request List page
 		setFlowId(httpRequest, model);
 
 		try {
 			ViewBuilder builder = getViewBuilder("request.confirm-update-director", model);
-			
+
 			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
 			int currentDirectorIdOnView = Integer.parseInt(httpRequest.getParameter("current_director_id"));
 			String directorId = httpRequest.getParameter("new_director_id");
@@ -611,7 +608,7 @@ public class RelationRequestController extends BaseController {
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
-			
+
 			if (request == null) {
 				throw new BadRequestException(Constants.LOG_INVALID_REQUEST_ID + requestId);
 			} else if (!validateNewDirectorId(directorId)) {
@@ -636,10 +633,10 @@ public class RelationRequestController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/update_director/", method = RequestMethod.POST)
 	public String submitUpdateDirector(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
-		
-		//for link with Request List page
+
+		// for link with Request List page
 		setFlowId(httpRequest, model);
-		
+
 		String messageId = null;
 		boolean success = false;
 		SqlSession session = null;
@@ -657,21 +654,21 @@ public class RelationRequestController extends BaseController {
 			requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
-			
+
 			if (request == null) {
 				// inform error message about invalid data
 				messageId = "ERR203";
 				throw new BadRequestException(Constants.LOG_INVALID_REQUEST_ID + requestId);
-				
+
 			} else if (!validateNewDirectorId(directorId)) {
 				// inform error message about invalid data
 				messageId = "ERR203";
 				throw new BadRequestException(Constants.LOG_INVALID_DIRECTOR_ID + directorId);
-				
+
 			} else if (currentDirectorIdOnView != request.getAssign_user_id() || !request.getStatus().equals(Constants.STATUS_PROCESSING)) {
 				// Status or current directorId may be changed. Show message dialog and reload the detail page
 				messageId = "ERR201";
-				
+
 			} else {
 				int newDirectorId = Integer.parseInt(directorId);
 				request.setAssign_user_id(newDirectorId);
@@ -731,8 +728,8 @@ public class RelationRequestController extends BaseController {
 
 	@RequestMapping(value = "/confirm_destroy/", method = RequestMethod.POST)
 	public ModelAndView confirmDestroy(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
-		
-		//for link with Request List page
+
+		// for link with Request List page
 		setFlowId(httpRequest, model);
 
 		try {
@@ -746,12 +743,12 @@ public class RelationRequestController extends BaseController {
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
-			
+
 			if (request == null) {
 				throw new BadRequestException(Constants.LOG_INVALID_REQUEST_ID + requestId);
 			} else {
 				if (!request.getStatus().equals(currentStatusOnScreen)) {
-					// Status may be changed. Show message dialog and reload the detail page 
+					// Status may be changed. Show message dialog and reload the detail page
 					throw new ResourceNotFoundException();
 				} else {
 					if (request.getStatus().equals(Constants.STATUS_PROCESSING)) {
@@ -776,7 +773,7 @@ public class RelationRequestController extends BaseController {
 	@RequestMapping(value = "/destroy/", method = RequestMethod.POST)
 	public String submitDestroy(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
 
-		//for link with Request List page
+		// for link with Request List page
 		setFlowId(httpRequest, model);
 
 		String messageId = null;
@@ -796,7 +793,7 @@ public class RelationRequestController extends BaseController {
 			requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
-			
+
 			if (request == null) {
 				messageId = "ERR253";
 				throw new BadRequestException(Constants.LOG_INVALID_REQUEST_ID + requestId);
@@ -805,12 +802,12 @@ public class RelationRequestController extends BaseController {
 					// Status may be changed. Show message dialog and reload the detail page
 					messageId = "ERR251";
 					throw new ResourceNotFoundException();
-					
+
 				} else {
 					if (!validateComment(comment)) {
 						messageId = "ERR253";
 						throw new BadRequestException(Constants.LOG_INVALID_COMMENT + comment);
-						
+
 					} else {
 						if (request.getStatus().equals(Constants.STATUS_PROCESSING)) {
 							String currentDirectorIdOnScreen = httpRequest.getParameter("current_director_id");
@@ -818,7 +815,7 @@ public class RelationRequestController extends BaseController {
 								throw new ResourceNotFoundException();
 							}
 						}
-						
+
 						model.addAttribute("request", request);
 						// create session
 						session = sqlSessionFactory.openSession();
@@ -832,7 +829,7 @@ public class RelationRequestController extends BaseController {
 						// update request
 						requestDAL.updateRequestToDestroy(request);
 
-						// get new information after update 
+						// get new information after update
 						RelationRequest newRequest = requestDAL.get(request.getRelation_request_id());
 						RequestChangeInfo newInfo = setInfo(newRequest);
 
@@ -897,38 +894,36 @@ public class RelationRequestController extends BaseController {
 			model.addAttribute("flowId", flowId);
 		}
 	}
-	
+
 	private boolean isNullOrUndefined(String inp) {
 		return inp == null || inp.equals("undefined");
 	}
-	
+
 	private void createFlowId(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, HttpSession session, int requestId) {
 		String flowId = httpRequest.getParameter(Constants.FLOW_ID);
 		if (flowId == null || flowId.equals("undefined")) {
-			
+
 			flowId = this.generateFlowId(authentication.getPrincipal());
 			model.addAttribute("flowId", flowId);
-			
+
 			SearchObject searchObject = new SearchObject();
-			if(requestId > 0) {
+			if (requestId > 0) {
 				searchObject.setRelationRequestId(requestId);
 			}
-			
+
 			session.setAttribute(flowId, searchObject);
 		} else {
-			
+
 			model.addAttribute("flowId", flowId);
-			
+
 			SearchObject searchObject = (SearchObject) session.getAttribute(flowId);
-			if(requestId > 0) {
+			if (requestId > 0) {
 				searchObject.setRelationRequestId(requestId);
 			}
-			
+
 			session.setAttribute(flowId, searchObject);
 		}
 	}
-	
-	//private void setHight
 
 	private class SearchObject {
 		private int page;
@@ -937,7 +932,7 @@ public class RelationRequestController extends BaseController {
 		private String searchText;
 		private String sort;
 		private int relationRequestId;
-		
+
 		public int getPage() {
 			return page;
 		}
@@ -985,6 +980,6 @@ public class RelationRequestController extends BaseController {
 		public void setRelationRequestId(int relationRequestId) {
 			this.relationRequestId = relationRequestId;
 		}
-		
+
 	}
 }
