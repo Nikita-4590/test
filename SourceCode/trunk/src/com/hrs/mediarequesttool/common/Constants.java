@@ -43,4 +43,8 @@ public class Constants {
     
     public final static String MSG_INFO_DESTROYED = "他のユーザによりレコードが取消されました。レコードID： ";
     public final static String MSG_INFO_DELETED = "他のユーザによりレコードが削除されました。レコードID： ";
+    
+    public final static String LIST_PAGE_INFO_DESTROYED = "取消が正常に完了しました。";
+    public final static String LIST_PAGE_INFO_DELETED = "削除が正常に完了しました。 ";
+    public final static String LIST_PAGE_INFO_NORMAL = "最後にご覧になった依頼ID：　";
 }

@@ -42,6 +42,7 @@ import com.hrs.mediarequesttool.kintone.exception.KintoneException;
 import com.hrs.mediarequesttool.pojos.MediaLabel;
 import com.hrs.mediarequesttool.pojos.RelationRequest;
 import com.hrs.mediarequesttool.pojos.RequestChangeInfo;
+import com.hrs.mediarequesttool.pojos.SearchObject;
 import com.hrs.mediarequesttool.pojos.Status;
 import com.hrs.mediarequesttool.pojos.User;
 
@@ -71,6 +72,38 @@ public class RelationRequestController extends BaseController {
 			Role role = new Role(authentication.getPrincipal());
 			List<Status> listStatus = statusDAL.getAll(role.getUnReadStatus());
 			model.addAttribute("listStatus", listStatus);
+			
+			String flowId = httpRequest.getParameter(Constants.FLOW_ID);
+
+			if (flowId != null && !flowId.equals("undefined")) {
+				SearchObject searchObject = (SearchObject) session.getAttribute(flowId);
+				if (searchObject != null) {
+					int requestId = searchObject.getRelationRequestId();
+					if (requestId > 0) {
+						// get data from database
+						SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
+
+						// get Request detail
+						RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
+
+						RelationRequest request = requestDAL.get(requestId);
+						
+						if (request != null) {
+							if (request.getStatus().equals(Constants.STATUS_DELETED)) {
+								model.addAttribute("info", Constants.LIST_PAGE_INFO_DELETED);
+							} else if (request.getStatus().equals(Constants.STATUS_DESTROYED)) {
+								model.addAttribute("info", Constants.LIST_PAGE_INFO_DESTROYED);
+							} else {
+								model.addAttribute("info", Constants.LIST_PAGE_INFO_NORMAL + requestId);
+							}
+						}
+						
+						if (request != null && !request.getStatus().equals(Constants.STATUS_DELETED) && !request.getStatus().equals(Constants.STATUS_DESTROYED)) {
+							model.addAttribute("requestId", requestId);
+						}
+					}
+				}
+			}
 
 			viewBuilder = getViewBuilder("request.list", model);
 			viewBuilder.setScripts("request.list.js");
@@ -901,8 +934,8 @@ public class RelationRequestController extends BaseController {
 
 	private void createFlowId(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, HttpSession session, int requestId) {
 		String flowId = httpRequest.getParameter(Constants.FLOW_ID);
-		if (flowId == null || flowId.equals("undefined")) {
-
+		if (Validator.isNullOrEmpty(flowId) || flowId.equals("undefined")) {
+			
 			flowId = this.generateFlowId(authentication.getPrincipal());
 			model.addAttribute("flowId", flowId);
 
@@ -923,63 +956,5 @@ public class RelationRequestController extends BaseController {
 
 			session.setAttribute(flowId, searchObject);
 		}
-	}
-
-	private class SearchObject {
-		private int page;
-		private String direction;
-		private String status;
-		private String searchText;
-		private String sort;
-		private int relationRequestId;
-
-		public int getPage() {
-			return page;
-		}
-
-		public void setPage(int page) {
-			this.page = page;
-		}
-
-		public String getDirection() {
-			return direction;
-		}
-
-		public void setDirection(String direction) {
-			this.direction = direction;
-		}
-
-		public String getStatus() {
-			return status;
-		}
-
-		public void setStatus(String status) {
-			this.status = status;
-		}
-
-		public String getSearchText() {
-			return searchText;
-		}
-
-		public void setSearchText(String searchText) {
-			this.searchText = searchText;
-		}
-
-		public String getSort() {
-			return sort;
-		}
-
-		public void setSort(String sort) {
-			this.sort = sort;
-		}
-
-		public int getRelationRequestId() {
-			return relationRequestId;
-		}
-
-		public void setRelationRequestId(int relationRequestId) {
-			this.relationRequestId = relationRequestId;
-		}
-
 	}
 }

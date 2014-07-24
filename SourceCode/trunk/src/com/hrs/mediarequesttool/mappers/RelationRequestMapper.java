@@ -15,7 +15,7 @@ public interface RelationRequestMapper {
 			@Param("companyParam") String companyParam,
 			@Param("status") String status);
 	
-	int count (@Param("roles") String[] roles);
+	int count (@Param("roles") String[] roles, @Param("priority") String priority, @Param("user_id") int userId);
 	
 	List<RelationRequest> paging(@Param("page") Page page,
 			@Param("sort") String sort, 

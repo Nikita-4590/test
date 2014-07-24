@@ -1,6 +1,11 @@
 <#compress>
 <#escape x as x?html>
 <div id="request-list-page" class="page">
+	<#if info??>
+		<div id="info_last_view_request">
+			<span>${info}</span>
+		</div>
+	</#if>	
     <div id="search-form">
         <form id="search-relation-request-form">
             <div id="status_search_form">
