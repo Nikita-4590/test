@@ -75,7 +75,7 @@ public class RelationRequestController extends BaseController {
 			
 			String flowId = httpRequest.getParameter(Constants.FLOW_ID);
 
-			if (flowId != null && !flowId.equals("undefined")) {
+			if (!isNullOrEmptyOrUndefined(flowId)) {
 				SearchObject searchObject = (SearchObject) session.getAttribute(flowId);
 				if (searchObject != null) {
 					int requestId = searchObject.getRelationRequestId();
@@ -138,7 +138,7 @@ public class RelationRequestController extends BaseController {
 
 			String flowId = httpRequest.getParameter(Constants.FLOW_ID);
 
-			if (flowId != null && !flowId.equals("undefined")) {
+			if (!isNullOrEmptyOrUndefined(flowId)) {
 				SearchObject searchObject = (SearchObject) session.getAttribute(flowId);
 				if (searchObject != null) {
 					int requestId = searchObject.getRelationRequestId();
@@ -148,7 +148,7 @@ public class RelationRequestController extends BaseController {
 				}
 			}
 
-			if (firstLoad != null && !isNullOrUndefined(flowId)) {
+			if (firstLoad != null && !isNullOrEmptyOrUndefined(flowId)) {
 				Object search = session.getAttribute(flowId);
 				SearchObject searchObject = (SearchObject) search;
 
@@ -165,21 +165,18 @@ public class RelationRequestController extends BaseController {
 						model.addAttribute("searchStatus", searchObject.getStatus());
 
 					} else {
-
 						relationRequests = requestDAL.paging(searchObject.getPage(), searchObject.getDirection(), searchObject.getSort(), role.getRoles(), role.getPriority(), role.getUserID());
 					}
 				} else {
 					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority(), role.getUserID());
 				}
 			} else {
-				if (flowId == null || flowId.contains("undefined")) {
+				if (isNullOrEmptyOrUndefined(flowId)) {
 
 					flowId = this.generateFlowId(authentication.getPrincipal());
-
-					model.addAttribute("flowId", flowId);
-				} else {
-					model.addAttribute("flowId", flowId);
 				}
+
+				model.addAttribute("flowId", flowId);
 
 				SearchObject searchObject = new SearchObject();
 
@@ -923,38 +920,36 @@ public class RelationRequestController extends BaseController {
 
 	private void setFlowId(HttpServletRequest httpRequest, ModelMap model) {
 		String flowId = httpRequest.getParameter(Constants.FLOW_ID);
-		if (flowId != null && !flowId.equals("undefined")) {
+		if (!isNullOrEmptyOrUndefined(flowId)) {
 			model.addAttribute("flowId", flowId);
 		}
 	}
 
-	private boolean isNullOrUndefined(String inp) {
-		return inp == null || inp.equals("undefined");
+	private boolean isNullOrEmptyOrUndefined(String inp) {
+		return Validator.isNullOrEmpty(inp) || inp.equals("undefined");
 	}
 
 	private void createFlowId(HttpServletRequest httpRequest, ModelMap model, Authentication authentication, HttpSession session, int requestId) {
 		String flowId = httpRequest.getParameter(Constants.FLOW_ID);
-		if (Validator.isNullOrEmpty(flowId) || flowId.equals("undefined")) {
-			
+		
+		SearchObject searchObject = new SearchObject();
+		
+		if (isNullOrEmptyOrUndefined(flowId)) {
+			// auto generate a new flowId
 			flowId = this.generateFlowId(authentication.getPrincipal());
-			model.addAttribute("flowId", flowId);
-
-			SearchObject searchObject = new SearchObject();
-			if (requestId > 0) {
-				searchObject.setRelationRequestId(requestId);
-			}
-
-			session.setAttribute(flowId, searchObject);
+			
 		} else {
-
-			model.addAttribute("flowId", flowId);
-
-			SearchObject searchObject = (SearchObject) session.getAttribute(flowId);
-			if (requestId > 0) {
-				searchObject.setRelationRequestId(requestId);
+			// from existed flowId -> 
+			if (session.getAttribute(flowId) != null) {
+				searchObject = (SearchObject) session.getAttribute(flowId);
 			}
-
-			session.setAttribute(flowId, searchObject);
+			
 		}
+		model.addAttribute("flowId", flowId);
+		
+		if (requestId > 0) {
+			searchObject.setRelationRequestId(requestId);
+		}
+		session.setAttribute(flowId, searchObject);
 	}
 }
