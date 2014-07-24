@@ -26,7 +26,7 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			openSession();
 			PagingResult<RelationRequest> result = new PagingResult<RelationRequest>();
 			Page pagingSetting = new Page(page);
-			int total = mapper.count(role);
+			int total = mapper.count(role, priority, userId);
 			result.setPage(page, total, pagingSetting.getLimit());
 			List<RelationRequest> relationRequests = new ArrayList<RelationRequest>();
 			if (!result.isExceed() && total != 0) {
