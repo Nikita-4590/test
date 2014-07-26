@@ -5,10 +5,9 @@ $(me.dapps).bind('load', function() {
 	me.dapps.ui.enhanced.scanDatetimePickers();
 	
 	var crawlDate = $('#crawl-date');
-	var tomorrow = new Date();
-	tomorrow.setDate(tomorrow.getDate() + 1);
-	crawlDate.datetimepicker('setDate', tomorrow).change();
-	$('#crawl-date').datetimepicker('option', 'minDate', tomorrow);
+	var today = new Date();
+	crawlDate.datetimepicker('setDate', today).change();
+	$('#crawl-date').datetimepicker('option', 'minDate', today);
 	
 	$("#enable-change-director").click(function(e) {
 		

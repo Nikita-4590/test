@@ -286,7 +286,8 @@
         UPDATE
             other_media.relation_request
         SET
-            status = 'DESTROYED'
+            status = 'DESTROYED',
+            updated_at = CURRENT_TIMESTAMP
         WHERE
             relation_request_id = #{relation_request_id}    
     </update>
