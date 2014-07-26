@@ -609,9 +609,9 @@ public class RelationRequestController extends BaseController {
 			try {
 				DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
 				DateTime crawlDate = DateTime.parse(stringCrawlDate, dateFormatter);
-				DateTime tomorrow = DateTime.now().plusDays(1).withTime(0, 0, 0, 0);
+				DateTime today = DateTime.now().plusDays(0).withTime(0, 0, 0, 0);
 
-				return (crawlDate.isAfter(tomorrow) || crawlDate.isEqual(tomorrow));
+				return (crawlDate.isAfter(today) || crawlDate.isEqual(today));
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;
