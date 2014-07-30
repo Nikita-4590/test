@@ -6,7 +6,11 @@ $(me.dapps).bind('load', function() {
 	
 	var crawlDate = $('#crawl-date');
 	var today = new Date();
-	crawlDate.datetimepicker('setDate', today).change();
+	var tomorrow = new Date();
+	tomorrow.setDate(tomorrow.getDate() + 1);
+	// set default date is tomorrow
+	crawlDate.datetimepicker('setDate', tomorrow).change();
+	// set min date is today
 	$('#crawl-date').datetimepicker('option', 'minDate', today);
 	
 	$("#enable-change-director").click(function(e) {
