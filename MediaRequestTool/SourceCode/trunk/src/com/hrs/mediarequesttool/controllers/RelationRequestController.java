@@ -98,9 +98,6 @@ public class RelationRequestController extends BaseController {
 							}
 						}
 						
-						if (request != null && !request.getStatus().equals(Constants.STATUS_DELETED) && !request.getStatus().equals(Constants.STATUS_DESTROYED)) {
-							model.addAttribute("requestId", requestId);
-						}
 					}
 				}
 			}
@@ -179,21 +176,18 @@ public class RelationRequestController extends BaseController {
 				model.addAttribute("flowId", flowId);
 
 				SearchObject searchObject = new SearchObject();
+				
+				searchObject.setPage(page);
+				searchObject.setDirection(directionParam);
+				searchObject.setSort(sortParam);
 
 				if (statusParam != null || searchParam != null) {
 
-					searchObject.setPage(page);
-					searchObject.setDirection(directionParam);
-					searchObject.setSort(sortParam);
 					searchObject.setSearchText(searchParam);
 					searchObject.setStatus(statusParam);
 
 					relationRequests = requestDAL.getAllRecord(page, directionParam, sortParam, searchParam, statusParam, role.getPriority(), role.getUnReadStatus());
 				} else {
-
-					searchObject.setPage(page);
-					searchObject.setDirection(directionParam);
-					searchObject.setSort(sortParam);
 
 					relationRequests = requestDAL.paging(page, directionParam, sortParam, role.getRoles(), role.getPriority(), role.getUserID());
 				}
