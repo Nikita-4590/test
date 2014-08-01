@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrs.mediarequesttool.mappers.CommentMapper">
+  	<insert id="insert" parameterType="com.hrs.mediarequesttool.pojos.Comment" timeout="10" flushCache="true">
+		<selectKey order="AFTER" keyProperty="request_comment_id" resultType="int">
+			SELECT currval('other_media.relation_request_comment_sequence')
+		</selectKey>
+		INSERT INTO
+			other_media.relation_request_comment(request_id, user_id, comment_reason, old_value, new_value)
+		VALUES(
+			#{request_id},
+			#{user_id},
+			#{comment_reason},
+			#{old_value},
+			#{new_value});
+	</insert>
+	<select id="get" parameterType="map"
+		resultType="com.hrs.mediarequesttool.pojos.Comment">
+		SELECT c.*,
+			u.user_id as user_login_id,
+			u.user_name
+		FROM 
+			other_media.relation_request_comment c
+		LEFT JOIN other_media.user u
+			ON c.user_id = u.id
+		WHERE 
+			c.request_comment_id = #{comment_id}	
+	</select>
+</mapper>

@@ -1,0 +1,89 @@
+#request-list-page {
+	width: 95%;
+	max-width: 1200px;
+}
+
+#search-form {
+	margin-bottom: 10px;
+}
+
+#search-relation-request-form {
+	display: inline-block;
+	width: 100%;
+}
+
+#free_text_search_form {
+	display: inline-block;
+	width: 100%;
+}
+
+#status_search_form {
+	display: inline-block;
+	width: 100%;
+}
+
+.label_search {
+	display: inline-block;
+	width: 110px;
+	margin-left: 0px;
+	text-align: left;
+	float: left;
+}
+
+.combobox_status_search {
+	display: inline-block;
+	margin-left: 50px;
+	min-width: 200px;
+	float: left;
+}
+
+#input_text_search {
+	width: calc(100% - 260px);
+	margin-left: 50px;
+	float: left;
+}
+
+#button_search {
+	width: 70px;
+	margin-right: 0px;
+	float: right;
+}
+
+#info_last_view_request {
+	font-size: 15px;
+	text-align: center;
+	color: red;
+}
+
+.column_status {
+	width: 11%;
+}
+
+.column_registered_time {
+	width: 135px;
+}
+
+.column_company {
+	width: 19%;
+}
+
+.column_tantoshaname {
+	width: 11%;
+}
+
+.column_email {
+	width: 17%;
+}
+
+.column_media_name {
+	width: 15%;
+}
+
+.column_request_id {
+	width: 5%;
+}
+
+.column_hrs_tantosha {
+	width: auto;
+	min-width: 15%;
+}

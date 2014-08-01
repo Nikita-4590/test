@@ -1,0 +1,147 @@
+.dapps-table-main {
+	border-spacing: 0;
+	table-layout: fixed;
+}
+
+.dapps-table-main .dapps-table-header {
+	border-top: 1px solid rgb(85, 142, 213);
+	border-bottom: 1px solid rgb(85, 142, 213);
+	border-right: 1px solid rgb(85, 142, 213);
+	height: 30px;
+	text-align: left;
+	padding-left: 2px;
+	position: relative;
+	z-index: 1;
+	background-color: whitesmoke;
+}
+.dapps-table-main .dapps-table-header:first-of-type {
+	border-left: 1px solid rgb(85, 142, 213);
+}
+
+.dapps-table-main tbody td {
+	border-bottom: 1px solid rgb(85, 142, 213);
+	border-right: 1px solid rgb(85, 142, 213);
+	height: 25px;
+	padding: 2px;
+	background-color: white;
+	word-break: break-word;
+	word-wrap: break-word;
+}
+.dapps-table-main tbody td:first-of-type {
+	border-left: 1px solid rgb(85, 142, 213);
+}
+
+.dapps-table-main tbody td.select {
+	text-align: center;
+}
+
+.dapps-table-header-text {
+	display : table-cell;
+	margin-right: 3px;
+	float: left;
+	line-height: 30px;
+	vertical-align: middle;
+}
+
+.dapps-table-header-sort-control {
+	display : table-cell;
+	width: 20px;
+	height : 100%;
+	float : right;
+	background-repeat: no-repeat;
+	background-position: center center;
+	cursor: pointer;
+	-webkit-user-select: none;
+	border-left: 1px solid rgb(85, 142, 213);
+	z-index: 1;
+}
+
+.dapps-table-header-sort-control:hover {
+	background-color: white;
+}
+
+.dapps-table-sort-control-asc {
+	background-image: url(img/table/sort-asc.png);
+}
+
+.dapps-table-sort-control-desc {
+	background-image: url(img/table/sort-desc.png);
+}
+
+.dapps-table-footer {
+	height: 30px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.dapps-table-first-page,.dapps-table-previous-page {
+	float: left;
+	margin-left: 10px;
+}
+
+.dapps-table-next-page,.dapps-table-last-page {
+	float: right;
+	margin-right: 10px;
+}
+
+.dapps-table-footer div:hover {
+	color: #666;
+	cursor: pointer;
+}
+
+.dapps-table-main .dapps-table-footer .dapps-table-paging-text {
+	width: 100px;
+	margin: 0 auto;
+	cursor: default;
+}
+.dapps-table-footer .dapps-table-paging-text:hover {
+	color: inherit;
+}
+
+.dapps-table-loading-cell {
+	background-image: url(img/table/ajax-loader.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: white;
+	min-height: 30px;
+}
+
+.dapps-table-no-data {
+	text-align: center;
+	padding: 10px;
+}
+
+.dapps-table-selected-row {
+	background-color: #ddd;
+}
+
+.dapps-table-main tbody tr.dapps-table-row-hoverable:hover td {
+	background-color: #eee;
+	cursor: pointer;
+}
+.dapps-table-main tbody tr.account-disabled td {
+	background-color: #FFCCCC;
+}
+.dapps-table-main tbody tr.request-change-hightlight td {
+	background-color: yellow;
+}
+.dapps-table-main thead th.dapps-table-scroll-header {
+	border: none;
+	width: 15px;
+	max-width: 15px;
+	min-width: 15px;
+	background: transparent;
+}
+.dapps-table-main tbody td.dapps-table-scroll-cell {
+	padding: 0;
+	border: none;
+}
+.dapps-table-main tbody .dapps-table-scroll-container {
+	background: whitesmoke;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+.dapps-table-inside {
+	border-spacing: 0;
+	table-layout: fixed;
+}
