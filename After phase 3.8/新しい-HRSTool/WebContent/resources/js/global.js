@@ -30,6 +30,5 @@ function ajaxPostFormSubmit(url) {
 	window.location.href = url;
 };
 function logout() {
-	sessionStorage.removeItem('$storageActionOfUser');
-	window.location.href = $('#logout-btn').attr('logout-href');
+	sessionStorage.clear();
 };
