@@ -7,7 +7,7 @@
 			<#if show_button_list?? && show_button_list = "on">
 				<a href="${formatter.url("/request/list/")}" id="back-to-list" class="button-link">依頼一覧へ</a>
 			</#if>
-			<a href="#" id="logout-btn" logout-href="${formatter.url("/auth/logout/")}" onclick="event.preventDefault();logout()" class="button-link">ログアウト</a>
+			<a href="${formatter.url("/auth/logout/")}" onclick="logout()" class="button-link">ログアウト</a>
 		</#if>
 	</div>
 	<div id="breadcrumbs">
