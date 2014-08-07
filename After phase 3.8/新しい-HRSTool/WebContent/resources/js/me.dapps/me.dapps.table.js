@@ -72,7 +72,29 @@
 		}
 
 	};
+	/*
+	 * re-append child from list children
+	 */
+	$UI.prototype.appendChildFromChildren = function() {
+		var _this = this;
+		$(this.htmlElement).empty();
+		for(var i = 0; i< this.children.length; i++) {
+			this.htmlElement.appendChild(this.children[i].htmlElement);
+			if (isFunction(_this.$parent.config.row_selected)) {
+				
+				this.applyCss('dapps-table-row-hoverable');
+				$(this.children[i].htmlElement).click(function() {
+					_this.$parent.config.row_selected(this);
+				});
+			}
+			
+		}
+	};
+
 	
+	/*
+	 * append child
+	 */
 	$UI.prototype.appendChild = function(childNode) {
 		
 		try {
@@ -398,6 +420,7 @@ if (isSet($)) {
 					
 					$(divSort.htmlElement).click(function(e) {
 						e.preventDefault();
+						
 						_this.removeSortCss();
 						this.$ui.applySort(this.$ui.sort);
 						
@@ -464,6 +487,7 @@ if (isSet($)) {
 				var divChildren = rowChildren.children[indexRow].children;
 				for(var divIndex = 0; divIndex < divChildren.length; divIndex++) {
 					if(isFunction(divChildren[divIndex].reloadSort)) {
+//						divChildren[divIndex].reloadSort(isSet(_this.$parent.sort) ? _this.$parent.sort : _this.$parent.config.default_sort, isUnset(_this.$parent.direction) ? _this.$parent.direction : 'desc');
 						divChildren[divIndex].reloadSort(_this.$parent.sort, _this.$parent.direction);
 					}
 				}
@@ -566,17 +590,6 @@ if (isSet($)) {
 		noDataRow.appendChild(noDataCell);
 		_this.appendChild(noDataRow);
 		noDataCell.applyAttr('colspan', _this.$parent.head.count_column);
-		
-	};
-	me.dapps.TableBody.prototype.searchLocal = function() {
-		
-	};
-	me.dapps.TableBody.prototype.hide = function() {
-		for(var index = 0; index < this.children.length; index++) {
-			
-		}
-	};
-	me.dapps.TableBody.prototype.show = function() {
 		
 	};
 	
@@ -878,12 +891,13 @@ if (isSet($)) {
 			var entity = _this.entity;
 			data[entity['name']] = entity['id'];
 		}
-		
+
 		if(isSet(_this.queries)) {
 			$.each(_this.queries, function(index) {
 				data[_this.queries[index]['query_name']] = _this.queries[index]['query_value'];
 			});
 		}
+		console.log(data);
 		$.ajax({
 			  type: "POST",
 			  url: _this.config.url,
@@ -950,7 +964,13 @@ if (isSet($)) {
 		head.onsorting = function(head) {
 			head.$parent.sort = head.sort;
 			head.$parent.direction = head.direction;
-			head.$parent.callAjax();
+			
+			if(isSet(head.$parent.config.paging) && head.$parent.config.paging) {
+				head.$parent.callAjax();
+			} else {
+				head.$parent.sortLocal();
+			}
+
 		};
 	};
 	/*
@@ -1105,7 +1125,7 @@ if (isSet($)) {
 		this.page = 1;
 		if(isSet(new_sort)) {
 			this.setDefaultSort(new_sort);
-		} 
+		}
 		this.sort = this.config.default_sort;
 		this.direction = 'desc';
 		if(this.config.paging) {
@@ -1116,6 +1136,58 @@ if (isSet($)) {
 			this.searchLocal(searchParams);
 		}
 	};
+	
+	/*
+	 * sort local
+	 */
+	
+	me.dapps.table.prototype.sortLocal = function() {
+		var _this = this;
+		var tableBody = this.body;
+		if(tableBody.children.length != 0) {
+			var countCol = tableBody.children[0].children.length;
+			var countSort = -1;
+			for(var i = 0; i< _this.config.sort_data.length; i++) {
+				if(_this.sort = _this.config.sort_data[i]) {
+					countSort = i;
+					break;
+				}
+			}
+			
+			if(countSort != -1 && countCol >= countSort) {
+				var children = undefined;
+				
+				children = _this.createChildrenSortLocal(tableBody.children, countSort, _this.direction);
+				tableBody.children = children;
+				_this.body = tableBody;
+				_this.body.appendChildFromChildren();
+			}
+		
+		}
+		
+	};
+
+	
+	me.dapps.table.prototype.createChildrenSortLocal = function(children, countColSort, direction) {
+		for(var i = 0; i< children.length-1; i++) {
+			for(var j = 0; j<children.length - i - 1; j++) {
+				var compareVal1 = $(children[j].children[countColSort].htmlElement).text();
+				var compareVal2 = $(children[j+1].children[countColSort].htmlElement).text();
+				
+				if(compareVal1 < compareVal2) {
+					var swap = children[j];
+					children[j] = children[j+1];
+					children[j+1] = swap;
+				}
+			}
+		}
+		if(direction == 'asc') {
+			return children.reverse();
+		} else {
+			return children;
+		}
+	};
+
 	
 	/*
 	 * set data for table when user call table search function
@@ -1162,6 +1234,7 @@ if (isSet($)) {
 			}
 		}
 	};
+
 	
 	me.dapps.table.prototype.setDefaultSort = function(default_sort) {
 		this.config.default_sort = default_sort;
@@ -1228,7 +1301,6 @@ if (isSet($)) {
 	me.dapps.table.prototype.beforeLoad = function() {
 		var _this = this;
 		if(isReferrer() && isSet(this.config.is_restore_data) && this.config.is_restore_data && isSet(sessionStorage.$storageActionOfUser)) {
-			
 			var isBindData = isArray(_this.config.store_data);
 			
 			try {
@@ -1272,7 +1344,6 @@ if (isSet($)) {
 			_this.sort = _this.config.default_sort;
 			_this.direction = 'desc';
 		}
-		console.log(this);
 	};
 	
 	me.dapps.table.prototype.setSessionStorage = function() {
