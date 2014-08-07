@@ -56,6 +56,11 @@
        </if>
        LIMIT #{page.limit} OFFSET #{page.offset}
     </select>
+    <!-- example -->
+    	<select id="counttest" parameterType="map" resultType="com.hrs.mediarequesttool.pojos.RelationRequest" statementType="CALLABLE">
+        {call getpaging()}
+  	  </select>
+    
     <!-- 
         GET COUNT WHEN SEARCH
      -->

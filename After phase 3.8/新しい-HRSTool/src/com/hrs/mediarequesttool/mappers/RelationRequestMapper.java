@@ -24,7 +24,10 @@ public interface RelationRequestMapper {
 	
 	// get Request detail information
 	RelationRequest get(@Param("request_id") int requestId, @Param("pgcrypto") String pgcrypto);
-	
+	/*
+	 * test
+	 */
+	List<RelationRequest> counttest();
 	
 	/*
 	 * don't change
