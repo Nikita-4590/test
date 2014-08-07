@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<setting name="cacheEnabled" value="false" />
+		<setting name="localCacheScope" value="STATEMENT" />
+	</settings>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC">
+			</transactionManager>
+			<dataSource type="POOLED">
+				<property name="driver" value="org.postgresql.Driver" />
+				<property name="url"
+					value="jdbc:postgresql://${database_address}:${database_port}/${database_name}?useUnicode=yes&amp;characterEncoding=UTF8" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers>
+		<mapper resource="com/hrs/mediarelation/mappers/HireSectionMapper.xml" />
+		<mapper resource="com/hrs/mediarelation/mappers/database/SchemaMapper.xml" />
+		<mapper resource="com/hrs/mediarelation/mappers/database/EntryMediaMapper.xml" />
+		<mapper resource="com.hrs.mediarequest.mappers/RelationRequestMapper.xml" />
+	</mappers>
+</configuration>
