@@ -18,7 +18,7 @@ function showFlashMessage(id) {
 		}
 
 		me.dapps.global['global.splash_message_box'].show(message);
-	} else {
+	} else        {
 		alert(message);
 	}
 }
