@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrs.mediarequesttool.mappers.RelationRequestMapper">
+    <select id="paging" parameterType="map" resultType="com.hrs.mediarequesttool.pojos.RelationRequest">
+     SELECT * FROM other_media.relation_request_view
+       <where>
+         status IN
+         <foreach collection="roles" index="index" item="item" open="("
+             separator="," close=")">
+             #{item}
+         </foreach>
+         <if test="priority != null and priority == 'director'">
+         	AND assign_user_id = #{user_id}
+         </if>
+       </where>
+       ORDER BY
+       <if test="sort != null and direction != null">
+            <if test="sort == 'status'">
+                <if test="priority != null and priority == 'director'">
+                 CASE 
+                     WHEN status = 'PROCESSING' THEN 2
+                     WHEN status = 'FINISHED' THEN 1 END
+               </if>
+               <if test="priority != null and priority == 'media_checker'">
+                 CASE
+                    WHEN status = 'NEW' THEN 5
+                    WHEN status = 'CONFIRMING' THEN 4
+                    WHEN status = 'NG' THEN 3
+                    WHEN status = 'OK' THEN 2
+                    WHEN status = 'PROCESSING' THEN 1 END
+               </if>
+               ${direction}, created_at ASC, relation_request_id ASC
+            </if>
+            <if test="sort != 'status'">
+                ${sort} ${direction}, created_at ASC, relation_request_id ASC
+                
+            </if>
+       </if>
+       <if test="sort == null or direction == null">
+               <if test="priority != null and priority == 'director'">
+                 CASE 
+                    WHEN status = 'PROCESSING' THEN 2
+                    WHEN status = 'FINISHED' THEN 1 END
+               </if>
+               <if test="priority != null and priority == 'media_checker'">
+                 CASE
+                   	WHEN status = 'NEW' THEN 5
+                    WHEN status = 'CONFIRMING' THEN 4
+                    WHEN status = 'NG' THEN 3
+                    WHEN status = 'OK' THEN 2
+                    WHEN status = 'PROCESSING' THEN 1 END
+               </if>
+               DESC,
+             created_at ASC,
+             relation_request_id ASC
+       </if>
+       LIMIT #{page.limit} OFFSET #{page.offset}
+    </select>
+    <!-- 
+        GET COUNT WHEN SEARCH
+     -->
+    <select id="getCountSearch" parameterType="map" resultType="int">
+        SELECT count(relation_request_id) FROM other_media.relation_request_view
+        <where>
+            <if test="status != null and status != ''">
+                CAST(relation_request_id AS TEXT) ILIKE #{searchParam} AND status ILIKE #{status}
+                OR company_name ILIKE #{searchParam} AND status ILIKE #{status}
+                OR company_id ILIKE #{searchParam} AND status ILIKE #{status}
+                OR media_name ILIKE #{searchParam} AND status ILIKE #{status}
+                OR assign_user_name ILIKE #{searchParam} AND status ILIKE #{status}
+                OR requester_name ILIKE #{searchParam} AND status ILIKE #{status}
+                OR requester_mail ILIKE #{searchParam} AND status ILIKE #{status}
+            </if>
+            <if test="status == null or status == ''">
+                CAST(relation_request_id AS TEXT) ILIKE #{searchParam} AND status NOT IN 
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
+                OR company_name ILIKE #{searchParam} AND status NOT IN 
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
+                OR company_id ILIKE #{searchParam} AND status NOT IN 
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
+                OR media_name ILIKE #{searchParam} AND status NOT IN 
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
+                OR assign_user_name ILIKE #{searchParam} AND status NOT IN 
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
+               OR requester_name ILIKE #{searchParam} AND status NOT IN 
+		            <foreach collection="unReadStatus" index="index" item="item" open="("
+		             separator="," close=")">
+		                #{item}
+		            </foreach>
+                OR requester_mail ILIKE #{searchParam} AND status NOT IN 
+	                <foreach collection="unReadStatus" index="index" item="item" open="("
+	                 separator="," close=")">
+	                    #{item}
+	                </foreach>
+            </if>
+        </where>
+    </select>
+    <!-- 
+        GET COUNT IN DEFAULT PAGE, SORT WITHOUT SEARCH
+     -->
+    <select id="count" parameterType="map" resultType="int">
+        SELECT count(relation_request_id) FROM other_media.relation_request_view
+        <where>
+            status IN 
+            <foreach collection="roles" index="index" item="item" open="("
+                separator="," close=")">
+                #{item}
+            </foreach>
+            <if test="priority != null and priority == 'director'">
+         		AND assign_user_id = #{user_id}
+         	</if>
+        </where>
+    </select>
+    
+    
+    <!-- 
+        GET RECORD WHEN SEARCH
+     -->     
+     <select id="getAllRecord" parameterType="map" resultType="com.hrs.mediarequesttool.pojos.RelationRequest">
+        SELECT * FROM other_media.relation_request_view
+        <where>
+            <if test="status != null and status != ''">
+                CAST(relation_request_id AS TEXT) ILIKE #{searchParam} AND status ILIKE #{status}
+                OR company_name ILIKE #{searchParam} AND status ILIKE #{status}
+                OR company_id ILIKE #{searchParam} AND status ILIKE #{status}
+                OR media_name ILIKE #{searchParam} AND status ILIKE #{status}
+                OR assign_user_name ILIKE #{searchParam} AND status ILIKE #{status}
+                OR requester_name ILIKE #{searchParam} AND status ILIKE #{status}
+                OR requester_mail ILIKE #{searchParam} AND status ILIKE #{status}
+            </if>
+            <if test="status == null or status == ''">
+                CAST(relation_request_id AS TEXT) ILIKE #{searchParam} AND status NOT IN 
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
+                OR company_name ILIKE #{searchParam} AND status NOT IN 
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
+                OR company_id ILIKE #{searchParam} AND status NOT IN 
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
+                OR media_name ILIKE #{searchParam} AND status NOT IN 
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
+                OR assign_user_name ILIKE #{searchParam} AND status NOT IN 
+                   <foreach collection="unReadStatus" index="index" item="item" open="("
+                    separator="," close=")">
+                       #{item}
+                   </foreach>
+                OR requester_name ILIKE #{searchParam} AND status NOT IN 
+	                <foreach collection="unReadStatus" index="index" item="item" open="("
+	                 separator="," close=")">
+	                    #{item}
+	                </foreach>
+                OR requester_mail ILIKE #{searchParam} AND status NOT IN 
+	                <foreach collection="unReadStatus" index="index" item="item" open="("
+	                 separator="," close=")">
+	                    #{item}
+	                </foreach>
+            </if>
+            </where>
+            ORDER BY
+            <if test="sort != null and direction != null">
+                <if test="sort != 'status'">
+                  ${sort} ${direction},
+                  CASE 
+                    WHEN status = 'NEW' THEN 6
+                    WHEN status = 'CONFIRMING' THEN 5
+                    WHEN status = 'NG' THEN 4
+                    WHEN status = 'OK' THEN 3
+                    WHEN status = 'PROCESSING' THEN 2
+                    WHEN status = 'FINISHED' THEN 1 END DESC,
+                </if>
+                <if test="sort == 'status'">
+                 CASE 
+                    WHEN status = 'NEW' THEN 6
+                    WHEN status = 'CONFIRMING' THEN 5
+                    WHEN status = 'NG' THEN 4
+                    WHEN status = 'OK' THEN 3
+                    WHEN status = 'PROCESSING' THEN 2
+                    WHEN status = 'FINISHED' THEN 1 END ${direction},
+                </if>
+                created_at DESC,
+                relation_request_id DESC
+            </if>
+               
+            <if test="sort == null or direction == null">
+                created_at DESC,
+                relation_request_id DESC
+            </if>
+            LIMIT #{page.limit} OFFSET #{page.offset}
+     </select>
+    
+    <!-- select to check exist -->
+    <select id="get" parameterType="map"
+        resultType="com.hrs.mediarequesttool.pojos.RelationRequest">
+        SELECT
+            request.relation_request_id,
+            request.company_id AS company_auto_id,
+            request.media_id AS media_auto_id,
+            media.media_id,
+            request.requester_name,
+            request.requester_mail,
+            request.requester_phone,
+            request.url,
+            company.company_id, 
+            request.login_id_1,
+            request.login_id_2,
+            pgp_sym_decrypt(request.login_password_1, #{pgcrypto}) AS login_password_1,
+            pgp_sym_decrypt(request.login_password_2, #{pgcrypto}) AS login_password_2,
+            request.crawl_date,
+            to_char(request.crawl_date::timestamp with time zone, 'YYYY年MM月DD日'::text) AS crawl_date_to_display,
+            request.other_comment,
+            request.status,
+            request.assign_user_id,
+            u.user_name AS assign_user_name,
+            to_char(request.created_at, 'YYYY年MM月DD日 HH24:MI'::text) AS created_at,
+            request.updated_at,
+            company.company_name,
+            media.media_name,
+            status.description AS status_description
+        FROM
+            other_media.relation_request AS request
+        INNER JOIN
+            other_media.relation_request_status AS status ON request.status = status.status_type
+        INNER JOIN
+            other_media.contract_company AS company ON request.company_id = company.id
+        INNER JOIN
+            other_media.media AS media ON request.media_id = media.id  
+        LEFT JOIN
+            other_media.user AS u ON request.assign_user_id = u.id
+        WHERE
+            request.relation_request_id = #{request_id}
+    </select>
+    
+    <!-- update data -->
+    <update id="updateRequest" parameterType="com.hrs.mediarequesttool.pojos.RelationRequest">
+        UPDATE
+            other_media.relation_request
+        SET
+            status = #{status},
+            <if test="assign_user_id != 0">
+            	assign_user_id = #{assign_user_id},
+            </if>
+            crawl_date = #{crawl_date}::date,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE
+            relation_request_id = #{relation_request_id}    
+    </update>
+    
+    <!-- update only director -->
+    <update id="updateOnlyDirectorOfRequest" parameterType="com.hrs.mediarequesttool.pojos.RelationRequest">
+        UPDATE
+            other_media.relation_request
+        SET
+            assign_user_id = #{assign_user_id},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE
+            relation_request_id = #{relation_request_id}
+    </update>
+    
+    <!-- update request to DESTROY status -->
+    <update id="updateRequestToDestroy" parameterType="com.hrs.mediarequesttool.pojos.RelationRequest">
+        UPDATE
+            other_media.relation_request
+        SET
+            status = 'DESTROYED',
+            updated_at = CURRENT_TIMESTAMP
+        WHERE
+            relation_request_id = #{relation_request_id}    
+    </update>
+</mapper>
