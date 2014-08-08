@@ -1,7 +1,11 @@
+$(document).ready(function () {
+	$('input').placeholder();
+});
+
 /*
+ * 
  * create abstract object table
  */
-
 (function() {
 	
 	var $UI = function(tagName, node) {
@@ -26,8 +30,7 @@
 	*/
 	
 	$UI.createDomFromHTML = function(tagName, node) {
-		
-		if (isSet(node) && node instanceof Node) {
+		if (isSet(node) && isSet(node.nodeType)) {
 			var myLibXtag = me.dapps;
 			var xtagFunction = undefined;
 			for ( var key in myLibXtag) {
@@ -129,7 +132,9 @@
 	};
 	
 	$UI.prototype.applyCss = function(cssClass) {
-		$(this.htmlElement).addClass(cssClass);
+		
+		var element = $(this.htmlElement);
+		element.addClass(cssClass);
 	};
 	
 	$UI.prototype.removeCss = function(cssClass) {
@@ -185,9 +190,9 @@
 		this.sort = thisSortValue;
 		$UI.call(this, 'div');
 		 this.applyCss('dapps-table-header-sort-control');
-	};
+	};	
 	me.dapps.SortControl.displayName = 'div';
-	me.dapps.SortControl.prototype = Object.create($UI.prototype);
+	me.dapps.SortControl.prototype = $UI.prototype;
 	
 	/*
 		set value for sort controls if it is columns have sort default
@@ -257,7 +262,8 @@
 	me.dapps.Div = function(defaultSort) {
 		$UI.call(this, 'div');
 	};
-	me.dapps.Div.prototype = Object.create($UI.prototype);
+	me.dapps.Div.prototype =$UI.prototype;
+	
 	
 	me.dapps.Div.prototype.setValue = function(value) {
 		$(this.htmlElement).html(value);
@@ -283,7 +289,7 @@
 	
 	me.dapps.TableTd.displayName = 'td';
 	
-	me.dapps.TableTd.prototype = Object.create($UI.prototype);
+	me.dapps.TableTd.prototype = $UI.prototype;;
 	
 	window.me.dapps.TableTd = me.dapps.TableTd;
 })();
@@ -291,7 +297,7 @@
 	set value for td
 */
 me.dapps.TableTd.prototype.setValue = function(value) {
-	this.htmlElement.innerHTML = value;
+	$(this.htmlElement).append(value);
 };
 /*
 	get value of this td
@@ -334,7 +340,7 @@ if (isSet($)) {
 	
 	me.dapps.TableTh.displayName = 'th';
 	
-	me.dapps.TableTh.prototype = Object.create($UI.prototype);
+	me.dapps.TableTh.prototype = $UI.prototype;;
 	
 	window.me.dapps.TableTh = me.dapps.TableTh;
 })();
@@ -354,7 +360,7 @@ if (isSet($)) {
 	
 	me.dapps.TableRow.displayName = 'tr';
 	
-	me.dapps.TableRow.prototype = Object.create($UI.prototype);
+	me.dapps.TableRow.prototype = $UI.prototype;;
 	
 	me.dapps.TableRow.prototype.hide = function() {
 		$(this.htmlElement).hide();
@@ -378,7 +384,7 @@ if (isSet($)) {
 	
 	me.dapps.TableHeader.displayName = 'thead';
 	
-	me.dapps.TableHeader.prototype = Object.create($UI.prototype);
+	me.dapps.TableHeader.prototype = $UI.prototype;;
 	
 	/*
 	 * generated header from html String
@@ -522,7 +528,7 @@ if (isSet($)) {
 	};
 	
 	me.dapps.TableBody.displayName = 'tbody';
-	me.dapps.TableBody.prototype = Object.create($UI.prototype);
+	me.dapps.TableBody.prototype = $UI.prototype;;
 	/*
 	 * find all attr of body(current page, total page, data search 
 	 */
@@ -616,7 +622,7 @@ if (isSet($)) {
 	
 	me.dapps.TableFooter.displayName = 'tfoot';
 	
-	me.dapps.TableFooter.prototype = Object.create($UI.prototype);
+	me.dapps.TableFooter.prototype = $UI.prototype;;
 	
 	/*
 	 * set visibility 
@@ -769,7 +775,7 @@ if (isSet($)) {
 		$UI.call(this, 'table');
 	};
 	me.dapps.table.displayName = 'table';
-	me.dapps.table.prototype = Object.create($UI.prototype);
+	me.dapps.table.prototype = $UI.prototype;;
 	
 	/*
 	 * transform data for table
@@ -897,7 +903,6 @@ if (isSet($)) {
 				data[_this.queries[index]['query_name']] = _this.queries[index]['query_value'];
 			});
 		}
-		console.log(data);
 		$.ajax({
 			  type: "POST",
 			  url: _this.config.url,
