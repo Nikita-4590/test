@@ -39,7 +39,7 @@
 }
 
 #input_text_search {
-	width: calc(100% - 260px);
+	width: 78%;
 	margin-left: 50px;
 	float: left;
 }

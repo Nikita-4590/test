@@ -4,7 +4,13 @@ var status = undefined;
 $(me.dapps).bind(
 'load',
 function() {
-
+	function reloadSize() {
+		var size = $('#request-ajax-table').width() - 260;
+		$('#input_text_search').attr('style','width:' + size + 'px;');
+	}
+	window.onresize = function(event) {
+		reloadSize();
+	};
 	table = $('#request-ajax-table').table({
 		width : '100',
 		select_row : false,

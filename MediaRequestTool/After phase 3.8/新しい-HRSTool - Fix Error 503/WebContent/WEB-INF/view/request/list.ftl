@@ -42,7 +42,7 @@
 <dapps-locale-text>ERR001</dapps-locale-text>
 <script type="text/javascript">
     me.dapps.global['url.request_list'] = '${formatter.url("/request/ajax_list/?ajax")}';
-    me.dapps.global['data_binding'] = ['status', 'created_at',,,,,,,];
+    me.dapps.global['data_binding'] = ['status', 'created_at','','','','','',''];
     me.dapps.global['url.request_redirect'] = '${formatter.url("/request/view_request/{request_id}/")}';
     me.dapps.global['url.ajax_call'] = '${formatter.url("/request/redirect/")}';
 </script>

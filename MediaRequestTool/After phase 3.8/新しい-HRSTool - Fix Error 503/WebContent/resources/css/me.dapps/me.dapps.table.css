@@ -1,3 +1,10 @@
+input, textarea {
+	color: #000;
+}
+.placeholder {
+	color: #aaa;
+}
+
 .dapps-table-main {
 	border-spacing: 0;
 	table-layout: fixed;
@@ -14,7 +21,12 @@
 	z-index: 1;
 	background-color: whitesmoke;
 }
-.dapps-table-main .dapps-table-header:first-of-type {
+
+th:before {
+    position: absolute;
+    content: '';
+}
+.dapps-table-main .dapps-table-header:first-child {
 	border-left: 1px solid rgb(85, 142, 213);
 }
 
@@ -27,7 +39,8 @@
 	word-break: break-word;
 	word-wrap: break-word;
 }
-.dapps-table-main tbody td:first-of-type {
+
+.dapps-table-main tbody td:first-child {
 	border-left: 1px solid rgb(85, 142, 213);
 }
 
