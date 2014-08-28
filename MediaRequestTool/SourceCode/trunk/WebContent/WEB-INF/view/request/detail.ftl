@@ -2,7 +2,6 @@
 <#escape x as x?html>
 <div class="page" id="request-detail-page">
 	<div id="request-form-top" class="form">
-		<label id="updated-at" class="hidden-value">${request.updated_at}</label>
 		<div class="form-line">
 			<div class="form-col-left-special">
 				<label>依頼ID</label>
@@ -254,12 +253,13 @@
 	<div id="request-comment">
 		<label><pre style="word-wrap: break-word;">${request.other_comment!""}</pre></label>
 	</div>
-	<h3>HRS MEMO</h3>
+	<h3>運用者のメモ</h3>
+	<br /> <label id="updated-at" class="hidden-value">${request.updated_at}</label>
 	<#-- ------------------------------------------------->
 	<div>
-		<textarea id="hrs-memo" rows="7" cols="82" maxlength="700">${request.hrs_memo!""}</textarea>
+		<textarea id="hrs-memo" rows="7" cols="70" maxlength="700">${request.hrs_memo!""}</textarea>
 		<div class="form-col-right-special">
-			<a href="#" class="button-link" id="update-memo">Update</a>
+			<a href="#" class="button-link" id="update-memo">更新</a>
 		</div>
 	</div>
 	<div class="center" id="close-button-wrapper">
