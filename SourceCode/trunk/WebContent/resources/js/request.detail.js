@@ -79,6 +79,7 @@ $(me.dapps).bind('load', function() {
 					messageBox._response = response;
 					messageBox.show("Du lieu da bi thay doi, Click OK de load lai!!!");
 				} else {
+					curentMemo = $('#hrs-memo').val();
 					messageBox._response = response;
 					messageBox.show("Da update thanh cong!!!");
 				}
