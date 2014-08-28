@@ -36,7 +36,8 @@ $(me.dapps).bind('load', function() {
 	});
 	var messageBox = new me.dapps.box({
 		auto_hide : false,
-		title : 'Result',
+		title : '!!! 警告  !!!',
+		type : 'ERROR',
 		close_button : false,
 		loading_text : '読み込み中。。。',
 		button : {
@@ -45,7 +46,7 @@ $(me.dapps).bind('load', function() {
 				text : 'OK',
 				loading : true,
 				action : function(targetBox) {
-					if (isSet(targetBox._response) && targetBox._response.message_id == "ERR201") {
+					if (isSet(targetBox._response) && targetBox._response.message_id == "ERR301") {
 						ajaxPostFormSubmit();
 					} else if (isSet(targetBox._error) && targetBox._error.status == 403) {
 						location.href = me.dapps.global['url.context'] + "/"; // redirect to login page
@@ -77,14 +78,11 @@ $(me.dapps).bind('load', function() {
 					new_memo : newMemo
 				},
 				success : function(response) {
-					if (!response.success) {
-						messageBox._response = response;
-						messageBox.show(response.message_id);
-					} else {
+					if (response.success) {
 						curentMemo = $('#hrs-memo').val();
-						messageBox._response = response;
-						messageBox.show("Da update thanh cong!!!");
 					}
+					messageBox._response = response;
+					messageBox.show(me.dapps.ui.enhanced.locale[response.message_id]);
 				}
 			});
 		}
