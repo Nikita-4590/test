@@ -234,6 +234,7 @@
             to_char(request.crawl_date::timestamp with time zone, 'YYYY年MM月DD日'::text) AS crawl_date_to_display,
             request.other_comment,
             request.status,
+            request.hrs_memo,
             request.assign_user_id,
             u.user_name AS assign_user_name,
             to_char(request.created_at, 'YYYY年MM月DD日 HH24:MI'::text) AS created_at,
@@ -277,6 +278,16 @@
         SET
             assign_user_id = #{assign_user_id},
             updated_at = CURRENT_TIMESTAMP
+        WHERE
+            relation_request_id = #{relation_request_id}
+    </update>
+    
+    <!-- update only HRS comment -->
+    <update id="updateOnlyMemoOfRequest" parameterType="com.hrs.mediarequesttool.pojos.RelationRequest">
+        UPDATE
+            other_media.relation_request
+        SET
+            hrs_memo = #{hrs_memo}
         WHERE
             relation_request_id = #{relation_request_id}
     </update>

@@ -225,11 +225,10 @@ public class RelationRequestController extends BaseController {
 			RelationRequestDAL requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
 
 			RelationRequest request = requestDAL.get(requestId);
-
+			
 			if (request == null) {
 				return fallbackToRequestList(httpRequest, redirectAttributes, new IllegalArgumentException(Constants.LOG_INVALID_REQUEST_ID + requestId));
 			}
-
 			StatusDAL statusDAL = DALFactory.getDAL(StatusDAL.class, sqlSessionFactory);
 			Status nextStatus = new Status();
 			String[] listStatus = null;
@@ -750,6 +749,80 @@ public class RelationRequestController extends BaseController {
 		return GSON.toJson(map);
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/update_memo/", method = RequestMethod.POST)
+	public String submitUpdateMemo(HttpServletRequest httpRequest, ModelMap model, RedirectAttributes redirectAttributes) throws ResourceNotFoundException {
+
+		// for link with Request List page
+		setFlowId(httpRequest, model);
+
+		String messageId = null;
+		boolean success = false;
+		SqlSession session = null;
+		RelationRequestDAL requestDAL = null;
+//		CommentDAL commentDAL = null;
+
+		try {
+			int requestId = Integer.parseInt(httpRequest.getParameter("relation_request_id"));
+			String currentMemo = httpRequest.getParameter("current_memo");
+			String newMemo = httpRequest.getParameter("new_memo");
+			String updatedAt = httpRequest.getParameter("updated_at");
+			SqlSessionFactory sqlSessionFactory = DBConnection.getSqlSessionFactory(this.servletContext, DBConnection.DATABASE_PADB_PUBLIC, false);
+
+			// get Request detail
+			requestDAL = DALFactory.getDAL(RelationRequestDAL.class, sqlSessionFactory);
+			RelationRequest request = requestDAL.get(requestId);
+
+			if (request == null) {
+				// inform error message about invalid data
+				messageId = "ERR203";
+				throw new BadRequestException(Constants.LOG_INVALID_REQUEST_ID + requestId);
+
+			} else if ( !currentMemo.equals(request.getHrs_memo()) && (request.getHrs_memo() != null || !currentMemo.isEmpty()) ) {
+				// Status or current Memo may be changed. Show message dialog and reload the detail page
+				messageId = "ERR201";
+			} else if ( !updatedAt.equals(request.getUpdated_at()) ) {
+				// Status or current Memo may be changed. Show message dialog and reload the detail page
+				messageId = "ERR201";
+			} else {
+				request.setHrs_memo(newMemo);
+				// create session
+				session = sqlSessionFactory.openSession();
+
+				requestDAL.setSession(session);
+
+
+				// update request
+				requestDAL.updateOnlyMemoOfRequest(request);
+				session.commit();
+
+				// Display information message when update director successful
+				success = true;
+			}
+
+		} catch (NumberFormatException e) {
+			// inform error message about invalid data
+			messageId = "ERR203";
+			e.printStackTrace();
+		} catch (GenericException e) {
+			// inform error message about access database failure
+			messageId = "ERR200";
+		} finally {
+			if (session != null) {
+				session.close();
+				session = null;
+			}
+			if (requestDAL != null) {
+				requestDAL.forceCloseSession();
+			}
+		}
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("message_id", messageId);
+		map.put("success", success);
+		return GSON.toJson(map);
+	}
+	
 	@RequestMapping(value = "/confirm_destroy/", method = RequestMethod.POST)
 	public ModelAndView confirmDestroy(HttpServletRequest httpRequest, ModelMap model) throws RuntimeException {
 
