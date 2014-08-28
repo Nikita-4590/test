@@ -16,6 +16,7 @@ public class RelationRequest {
 	private String login_password_2;
 	private String crawl_date;
 	private String other_comment;
+	private String hrs_memo;
 	private String status;
 	private int assign_user_id;
 	private String assign_user_name;
@@ -33,7 +34,15 @@ public class RelationRequest {
 	public void setRelation_request_id(int relation_request_id) {
 		this.relation_request_id = relation_request_id;
 	}
-	
+
+	public String getHrs_memo() {
+		return hrs_memo;
+	}
+
+	public void setHrs_memo(String hrs_memo) {
+		this.hrs_memo = hrs_memo;
+	}
+
 	public int getCompany_auto_id() {
 		return company_auto_id;
 	}

@@ -190,3 +190,6 @@ input[disabled]:focus, .disabled:focus {
 input[readonly] {
 	color: #333;
 }
+.hidden-value {
+	display: none;
+}

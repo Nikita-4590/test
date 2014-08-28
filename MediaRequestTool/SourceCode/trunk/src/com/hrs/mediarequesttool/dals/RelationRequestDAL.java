@@ -96,6 +96,17 @@ public class RelationRequestDAL extends AbstractDAL<RelationRequestMapper> {
 			closeSession();
 		}
 	}
+	
+	public void updateOnlyMemoOfRequest(RelationRequest request) throws GenericException {
+		try {
+			openSession();
+			mapper.updateOnlyMemoOfRequest(request);
+		} catch (Exception e) {
+			throw new GenericException(e);
+		} finally {
+			closeSession();
+		}
+	}
 
 	public void updateRequestToDestroy(RelationRequest request) throws GenericException {
 		try {
