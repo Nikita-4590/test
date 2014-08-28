@@ -254,12 +254,12 @@
 	<div id="request-comment">
 		<label><pre style="word-wrap: break-word;">${request.other_comment!""}</pre></label>
 	</div>
-	<h3>HRS Comment</h3>
+	<h3>HRS MEMO</h3>
 	<#-- ------------------------------------------------->
 	<div>
 		<textarea id="hrs-memo" rows="7" cols="82" maxlength="700">${request.hrs_memo!""}</textarea>
 		<div class="form-col-right-special">
-			<a href="#" class="button-link" id="update-comment">Update</a>
+			<a href="#" class="button-link" id="update-memo">Update</a>
 		</div>
 	</div>
 	<div class="center" id="close-button-wrapper">

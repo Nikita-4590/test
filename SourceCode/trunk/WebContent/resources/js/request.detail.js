@@ -61,7 +61,7 @@ $(me.dapps).bind('load', function() {
 			}]
 		}
 	});
-	$('#update-comment').click(function(e) {
+	$('#update-memo').click(function(e) {
 		e.preventDefault();
 		
 		$.ajax({
