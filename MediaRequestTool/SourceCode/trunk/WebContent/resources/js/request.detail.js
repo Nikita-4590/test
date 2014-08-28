@@ -1,6 +1,6 @@
 
 $(me.dapps).bind('load', function() {
-	var curentMemo = $('#hrs-memo').val();
+	var curentMemo = $('#hrs-memo').val().trim();
 	// create datetimepicker
 	me.dapps.ui.enhanced.scanDatetimePickers();
 	
@@ -63,27 +63,30 @@ $(me.dapps).bind('load', function() {
 	});
 	$('#update-memo').click(function(e) {
 		e.preventDefault();
-		
-		$.ajax({
-			url : me.dapps.global['url.update_memo'],
-			dataType : 'json',
-			method : 'post',
-			data : {
-				relation_request_id : $('#request-id').text(),
-				current_memo : curentMemo,
-				updated_at : $('#updated-at').text(),
-				new_memo : $('#hrs-memo').val()
-			},
-			success : function(response) {
-				if (!response.success) {
-					messageBox._response = response;
-					messageBox.show("Du lieu da bi thay doi, Click OK de load lai!!!");
-				} else {
-					curentMemo = $('#hrs-memo').val();
-					messageBox._response = response;
-					messageBox.show("Da update thanh cong!!!");
+		curentMemo = curentMemo.trim();
+		var newMemo = $('#hrs-memo').val().trim();
+		if (curentMemo != newMemo) {
+			$.ajax({
+				url : me.dapps.global['url.update_memo'],
+				dataType : 'json',
+				method : 'post',
+				data : {
+					relation_request_id : $('#request-id').text(),
+					current_memo : curentMemo,
+					updated_at : $('#updated-at').text(),
+					new_memo : newMemo
+				},
+				success : function(response) {
+					if (!response.success) {
+						messageBox._response = response;
+						messageBox.show(response.message_id);
+					} else {
+						curentMemo = $('#hrs-memo').val();
+						messageBox._response = response;
+						messageBox.show("Da update thanh cong!!!");
+					}
 				}
-			}
-		});
+			});
+		}
 	});
 });
