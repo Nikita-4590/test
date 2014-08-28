@@ -2,6 +2,7 @@
 <#escape x as x?html>
 <div class="page" id="request-detail-page">
 	<div id="request-form-top" class="form">
+		<label id="updated-at" class="hidden-value">${request.updated_at}</label>
 		<div class="form-line">
 			<div class="form-col-left-special">
 				<label>依頼ID</label>
@@ -253,6 +254,14 @@
 	<div id="request-comment">
 		<label><pre style="word-wrap: break-word;">${request.other_comment!""}</pre></label>
 	</div>
+	<h3>HRS Comment</h3>
+	<#-- ------------------------------------------------->
+	<div>
+		<textarea id="hrs-memo" rows="7" cols="82" maxlength="700">${request.hrs_memo!""}</textarea>
+		<div class="form-col-right-special">
+			<a href="#" class="button-link" id="update-comment">Update</a>
+		</div>
+	</div>
 	<div class="center" id="close-button-wrapper">
 		 <#--<button id="close-button">依頼一覧へ-->
 		</button>
@@ -263,6 +272,7 @@
     me.dapps.global['url.back_to_list'] = '${formatter.url("/request/list/")}';
 	me.dapps.global['url.context'] = '${formatter.url("")}';
 	me.dapps.global['url.confirm_change'] = '${formatter.url("/request/confirm_change/?ajax")}';
+	me.dapps.global['url.update_memo'] = '${formatter.url("/request/update_memo/?ajax")}';
 	me.dapps.global['url.confirm_update_director'] = '${formatter.url("/request/confirm_update_director/?ajax")}';
 	me.dapps.global['url.confirm_destroy'] = '${formatter.url("/request/confirm_destroy/?ajax")}';
 	me.dapps.global['message.change.not_found'] = 'ERR151';
