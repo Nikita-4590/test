@@ -780,7 +780,7 @@ public class RelationRequestController extends BaseController {
 
 			if (request == null) {
 				// inform error message about invalid data
-				messageId = "ERR203";
+				messageId = "ERR303";
 				throw new BadRequestException(Constants.LOG_INVALID_REQUEST_ID + requestId);
 
 			} else if (!currentMemo.equals(request.getHrs_memo()) && (request.getHrs_memo() != null || !currentMemo.isEmpty())) {
@@ -801,18 +801,18 @@ public class RelationRequestController extends BaseController {
 				// update request
 				requestDAL.updateOnlyMemoOfRequest(request);
 				session.commit();
-				messageId = "ERR300";
+				messageId = "INF300";
 				// Display information message when update director successful
 				success = true;
 			}
 
 		} catch (NumberFormatException e) {
 			// inform error message about invalid data
-			messageId = "ERR203";
+			messageId = "ERR303";
 			e.printStackTrace();
 		} catch (GenericException e) {
 			// inform error message about access database failure
-			messageId = "ERR200";
+			messageId = "ERR300";
 		} finally {
 			if (session != null) {
 				session.close();
