@@ -286,6 +286,9 @@
 	me.dapps.global['message.destroy.not_found'] = 'ERR251';
 	me.dapps.global['message.destroy.forbidden'] = 'ERR252';
 	me.dapps.global['message.destroy.general'] = 'ERR253';
+	me.dapps.global['message.update.memo.not_found'] = 'ERR301';
+	me.dapps.global['message.update.memo.forbidden'] = 'ERR302';
+	me.dapps.global['message.update.memo.general'] = 'ERR303';
 </script>
 </#escape>
 </#compress>
