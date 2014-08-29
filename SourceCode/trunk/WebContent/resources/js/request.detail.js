@@ -83,6 +83,21 @@ $(me.dapps).bind('load', function() {
 					}
 					messageBox._response = response;
 					messageBox.show(me.dapps.ui.enhanced.locale[response.message_id]);
+				},
+				error : function(e, err) {
+					messageBox._response = null;
+					var messageId = me.dapps.global['message.update.memo.general'];
+
+					if (e.status == 403) {
+						messageId = me.dapps.global['message.update.memo.forbidden'];
+					} else if (e.status == 404) {
+						messageId = me.dapps.global['message.update.memo.not_found'];
+					}
+
+					message = me.dapps.ui.enhanced.locale.text(messageId);
+					messageBox._error = e;
+					messageBox._parent = null;
+					messageBox.show(message);
 				}
 			});
 		}
