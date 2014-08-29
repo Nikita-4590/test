@@ -1,6 +1,6 @@
 
 $(me.dapps).bind('load', function() {
-	var curentMemo = $('#hrs-memo').val().trim();
+	var currentMemo = $('#hrs-memo').val().trim();
 	// create datetimepicker
 	me.dapps.ui.enhanced.scanDatetimePickers();
 	
@@ -64,22 +64,22 @@ $(me.dapps).bind('load', function() {
 	});
 	$('#update-memo').click(function(e) {
 		e.preventDefault();
-		curentMemo = curentMemo.trim();
+		currentMemo = currentMemo.trim();
 		var newMemo = $('#hrs-memo').val().trim();
-		if (curentMemo != newMemo) {
+		if (currentMemo != newMemo) {
 			$.ajax({
 				url : me.dapps.global['url.update_memo'],
 				dataType : 'json',
 				method : 'post',
 				data : {
 					relation_request_id : $('#request-id').text(),
-					current_memo : curentMemo,
+					current_memo : currentMemo,
 					updated_at : $('#updated-at').text(),
 					new_memo : newMemo
 				},
 				success : function(response) {
 					if (response.success) {
-						curentMemo = $('#hrs-memo').val();
+						currentMemo = $('#hrs-memo').val();
 					}
 					messageBox._response = response;
 					messageBox.show(me.dapps.ui.enhanced.locale[response.message_id]);

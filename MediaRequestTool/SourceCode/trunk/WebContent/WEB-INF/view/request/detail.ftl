@@ -117,6 +117,18 @@
 			</div>
 		</#if>
 		
+		<div class="form-line">
+			<div class="form-col-left-memo">
+				<label>メモ</label>
+			</div>
+			<div class="form-col-right-memo">
+				<a href="#" class="button-link" id="update-memo">保存</a>
+			</div>
+			<div class="form-col-middle-memo">
+				<textarea id="hrs-memo" rows="4" cols="50" maxlength="1000">${request.hrs_memo!""}</textarea>
+			</div>
+		</div>
+		
 		<#if view != "FINISHED">
 			<div class="form-line-bottom">
 				<a href="#"　id="button-destroy" onclick="confirmDestroy(${request.relation_request_id}); return false;" >ｘこの依頼を取消す</a>
@@ -253,15 +265,8 @@
 	<div id="request-comment">
 		<label><pre style="word-wrap: break-word;">${request.other_comment!""}</pre></label>
 	</div>
-	<h3>運用者のメモ</h3>
-	<br /> <label id="updated-at" class="hidden-value">${request.updated_at}</label>
+	<label id="updated-at" class="hidden-value">${request.updated_at}</label>
 	<#-- ------------------------------------------------->
-	<div>
-		<textarea id="hrs-memo" rows="7" cols="70" maxlength="700">${request.hrs_memo!""}</textarea>
-		<div class="form-col-right-special">
-			<a href="#" class="button-link" id="update-memo">更新</a>
-		</div>
-	</div>
 	<div class="center" id="close-button-wrapper">
 		 <#--<button id="close-button">依頼一覧へ-->
 		</button>

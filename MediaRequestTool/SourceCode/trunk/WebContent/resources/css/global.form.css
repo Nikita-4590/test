@@ -59,6 +59,22 @@
 	margin-right: 450px; 
 }
 
+.form-col-left-memo {
+	margin-left: 45px;
+	float: left; 
+	width: 200px; 
+}
+
+.form-col-right-memo {
+	float: right; 
+	width: 310px; 
+}
+
+.form-col-middle-memo {
+	margin-left: 200px;
+	margin-right: 310px; 
+}
+
 .form-input-note {
 	color: #999;
 	font-size: 11px;
