@@ -783,13 +783,11 @@ public class RelationRequestController extends BaseController {
 				messageId = "ERR303";
 				throw new BadRequestException(Constants.LOG_INVALID_REQUEST_ID + requestId);
 
-			} else if (!currentMemo.equals(request.getHrs_memo()) && (request.getHrs_memo() != null || !currentMemo.isEmpty())) {
-				// current Memo may be changed. Show message dialog
-				// and reload the detail page
+			} else if (!currentMemo.equals(request.getHrs_memo()) && (!Validator.isNullOrEmpty(request.getHrs_memo()) || !Validator.isNullOrEmpty(currentMemo))) {
+				// current Memo may be changed. Show message dialog and reload the detail page
 				messageId = "ERR301";
 			} else if (!updatedAt.equals(request.getUpdated_at())) {
-				// Data may be changed. Show message dialog
-				// and reload the detail page
+				// Data may be changed. Show message dialog and reload the detail page
 				messageId = "ERR301";
 			} else {
 				request.setHrs_memo(newMemo);
@@ -802,7 +800,8 @@ public class RelationRequestController extends BaseController {
 				requestDAL.updateOnlyMemoOfRequest(request);
 				session.commit();
 				messageId = "INF300";
-				// Display information message when update director successful
+				
+				// Display information message when save memo successful
 				success = true;
 			}
 

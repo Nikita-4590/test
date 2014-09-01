@@ -34,6 +34,7 @@ $(me.dapps).bind('load', function() {
 		var url = $('#back-to-list').attr('href');
 		ajaxPostFormSubmit(url);
 	});
+	
 	var messageBox = new me.dapps.box({
 		auto_hide : false,
 		title : '!!! 警告  !!!',
@@ -62,6 +63,26 @@ $(me.dapps).bind('load', function() {
 			}]
 		}
 	});
+	
+	var messageBoxInfo = new me.dapps.box({
+		auto_hide : false,
+		close_button : false,
+		loading_text : '読み込み中。。。',
+		button : {
+			align : 'right',
+			list : [ {
+				text : 'OK',
+				loading : true,
+				action : function(targetBox) {
+					if (isSet(targetBox._parent)) {
+						targetBox._parent.close();
+					}
+					targetBox.close();
+				}
+			}]
+		}
+	});
+	
 	$('#update-memo').click(function(e) {
 		e.preventDefault();
 		currentMemo = currentMemo.trim();
@@ -81,8 +102,16 @@ $(me.dapps).bind('load', function() {
 					if (response.success) {
 						currentMemo = $('#hrs-memo').val();
 					}
-					messageBox._response = response;
-					messageBox.show(me.dapps.ui.enhanced.locale[response.message_id]);
+					
+					message = me.dapps.ui.enhanced.locale.text(response.message_id);
+					
+					if (response.message_id == "INF300") {
+						messageBoxInfo._response = response;
+						messageBoxInfo.show(message);
+					} else {
+						messageBox._response = response;
+						messageBox.show(message);
+					}
 				},
 				error : function(e, err) {
 					messageBox._response = null;
