@@ -124,9 +124,13 @@
 			<div class="form-col-right-memo">
 				<a href="#" class="button-link" id="update-memo">保存</a>
 			</div>
+</#escape>
+</#compress>
 			<div class="form-col-middle-memo">
 				<textarea id="hrs-memo" rows="4" cols="50" maxlength="1000">${request.hrs_memo!""}</textarea>
 			</div>
+<#compress>
+<#escape x as x?html>
 		</div>
 		
 		<#if view != "FINISHED">
